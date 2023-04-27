@@ -1,0 +1,41 @@
+ManifestFileVersion: 0
+CRC: 3057730679
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 5bdad435631f921696258f0b2e46c603
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 978b157e5f106b2d60607a71e974f7e8
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: a32f24553f5f7d44e92439b19a2e5b7a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6fd2e8874f60266498a388d7229a1bac, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- "Assets/Res_AssetsBundles/Prefabs/\u6C34\u7206.prefab"
+Dependencies: []
