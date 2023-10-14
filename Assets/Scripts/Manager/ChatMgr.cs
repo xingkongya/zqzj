@@ -9,11 +9,13 @@ public class ChatMgr : BaseManager<ChatMgr>
     public List<string> 战斗信息 = new List<string>();
     public List<string> 系统信息 = new List<string>();
     public Chat chat ;
+    public G_Util gut;
 
 
     public void 战斗播报(string name,int qua, Dictionary<Prop_bascis, int>掉落集合,Dictionary<string,string>经验钱币,string type) {
         string 战斗信息_="";
         chat = NameMgr.chat.GetComponent<Chat>();
+        gut = NameMgr.画布.GetComponent<G_Util>();
         if (type.Equals("死亡"))
             战斗信息_ = "你已被" + "<color=" + bm.返回颜色代码(qua) + ">" + name + "</color>" + "击败!";
         else if (type.Equals("掉落"))
@@ -27,7 +29,7 @@ public class ChatMgr : BaseManager<ChatMgr>
             foreach (string 名字 in 经验钱币.Keys)
             {
                 if (bm.Xstoi(经验钱币[名字]) != 0) {
-                    经验钱币信息 += bm.Xstoi(经验钱币[名字]) + 名字 + ".";
+                    经验钱币信息 += gut.数字增加单位(bm.Xstoi(经验钱币[名字])+"") + 名字 + ".";
                 }
             }
 
@@ -42,7 +44,7 @@ public class ChatMgr : BaseManager<ChatMgr>
         chat = NameMgr.chat.GetComponent<Chat>();
         if (type.Equals("获得道具"))
         {
-            系统信息 = "获得道具:" + "<color=" + bm.返回颜色代码(bm.Xstoi(pb.qua)) + ">" + pb.name + "</color>";
+            系统信息 = "获得道具:" + "<color=" + bm.返回颜色代码(bm.Xstoi(pb.qua)) + ">" + pb.name + "</color>"+" ×"+num;
         }
         else if (type.Equals("失去金钱")) {
             系统信息 = "失去" + num + name;

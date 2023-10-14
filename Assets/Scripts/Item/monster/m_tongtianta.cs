@@ -24,6 +24,10 @@ public class m_tongtianta : MonoBehaviour, I_monster
         普通怪物.Add(3, 普通怪物赋值3);
         普通怪物.Add(4, 普通怪物赋值4);
         普通怪物.Add(5, 普通怪物赋值5);
+        精英怪物.Add(1,精英怪物赋值1);
+        精英怪物.Add(2,精英怪物赋值2);
+        精英怪物.Add(3,精英怪物赋值3);
+        精英怪物.Add(4,精英怪物赋值4);
 
 
 
@@ -37,7 +41,6 @@ public class m_tongtianta : MonoBehaviour, I_monster
     private void Start()
     {
         gut.刷新移动与坐标();
-        gut.生成场景怪物信息方法(this);
         刷新楼层();
     }
 
@@ -47,8 +50,9 @@ public class m_tongtianta : MonoBehaviour, I_monster
         gut.跳转场景(myData.复活城市);
     
     }
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
+        System.Random 随机类 = NameMgr.随机类;
 
         //掉落赋值
         if (int.Parse(层数) > 90)
@@ -57,8 +61,10 @@ public class m_tongtianta : MonoBehaviour, I_monster
             utm.添加通天塔九十层掉落(cb);
         else if (int.Parse(层数) > 30)
             utm.添加通天塔六十层掉落(cb);
-        else
+        else if (int.Parse(层数) > 10)
             utm.添加通天塔三十层掉落(cb);
+        else
+            utm.添加通天塔十层掉落(cb);
 
         if (int.Parse(层数) % 50 == 0)
         {
@@ -66,43 +72,45 @@ public class m_tongtianta : MonoBehaviour, I_monster
         }
         else if (int.Parse(层数) % 10 == 0)
         {
-
+            int 随机数 =  UnityEngine.Random.Range(1, 精英怪物.Count + 1);
+            this.cb = cb;
+            精英怪物[随机数]();
         }
         else {
-            System.Random 随机类 = NameMgr.随机类;
-            int 随机数 = 随机类.Next(1, 普通怪物.Count+1);
+           
+            int 随机数 =  UnityEngine.Random.Range(1, 普通怪物.Count+1);
             this.cb = cb;
             普通怪物[随机数]();
         }
 
 
-        return true;
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
 
     public void 普通怪物赋值1() {
-        utm.怪物名字 = "≮肥遗≯";
-        utm.怪物品质 = 2;
+        utm.怪物名字 = "肥遗";
+        utm.怪物品质 = 3;
         utm.是否主动攻击 = false;
         utm.最低等级 = 5+int.Parse( 层数)*5;
         utm.最高等级 = 5 + int.Parse(层数) * 5;
@@ -130,8 +138,8 @@ public class m_tongtianta : MonoBehaviour, I_monster
 
     public void 普通怪物赋值2()
     {
-        utm.怪物名字 = "≮寓鸟≯";
-        utm.怪物品质 = 2;
+        utm.怪物名字 = "寓鸟";
+        utm.怪物品质 = 3;
         utm.是否主动攻击 = false;
         utm.最低等级 = 5 + int.Parse(层数) * 5;
         utm.最高等级 = 5 + int.Parse(层数) * 5;
@@ -158,8 +166,8 @@ public class m_tongtianta : MonoBehaviour, I_monster
 
     public void 普通怪物赋值3()
     {
-        utm.怪物名字 = "≮闻麟≯";
-        utm.怪物品质 = 2;
+        utm.怪物名字 = "闻麟";
+        utm.怪物品质 = 3;
         utm.是否主动攻击 = false;
         utm.最低等级 = 5 + int.Parse(层数) * 5;
         utm.最高等级 = 5 + int.Parse(层数) * 5;
@@ -186,8 +194,8 @@ public class m_tongtianta : MonoBehaviour, I_monster
 
     public void 普通怪物赋值4()
     {
-        utm.怪物名字 = "≮角马≯";
-        utm.怪物品质 = 2;
+        utm.怪物名字 = "角马";
+        utm.怪物品质 = 3;
         utm.是否主动攻击 = false;
         utm.最低等级 = 5 + int.Parse(层数) * 5;
         utm.最高等级 = 5 + int.Parse(层数) * 5;
@@ -214,8 +222,8 @@ public class m_tongtianta : MonoBehaviour, I_monster
 
     public void 普通怪物赋值5()
     {
-        utm.怪物名字 = "≮犰狳≯";
-        utm.怪物品质 = 2;
+        utm.怪物名字 = "犰狳";
+        utm.怪物品质 = 3;
         utm.是否主动攻击 = false;
         utm.最低等级 = 5 + int.Parse(层数) * 5;
         utm.最高等级 = 5 + int.Parse(层数) * 5;
@@ -228,7 +236,7 @@ public class m_tongtianta : MonoBehaviour, I_monster
         utm.防御力资质 = 0.45f;
         utm.血量资质 = 1.0f;
         utm.成长 = int.Parse(层数);
-        utm.攻击速度 = 1.2f;
+        utm.攻击速度 = 1.0f;
         utm.基础经验值 = 2000 * int.Parse(层数);
         utm.经验值系数 = (int)( utm.成长* utm.成长);
         utm.金币 = 1;
@@ -237,6 +245,106 @@ public class m_tongtianta : MonoBehaviour, I_monster
             cb.技能与粒度.Add("攻击姿态", 0.3f);
         if (!cb.技能与粒度.ContainsKey("防御姿态"))
             cb.技能与粒度.Add("防御姿态", 0.3f);
+    }
+
+    public void 精英怪物赋值1()
+    {
+        utm.怪物名字 = "相柳";
+        utm.怪物品质 = 4;
+        utm.是否主动攻击 = false;
+        utm.最低等级 = 5 + int.Parse(层数) * 5;
+        utm.最高等级 = 5 + int.Parse(层数) * 5;
+        utm.基础攻击力 = 5 * 6 * int.Parse(层数);
+        utm.基础防御力 = 5 * 4 * int.Parse(层数);
+        utm.基础血量 = 5 * 45 * int.Parse(层数);
+        utm.基础暴击率 = 15;
+        utm.基础回血值 = 5 * 4 * int.Parse(层数);
+        utm.攻击力资质 = 1.26f;
+        utm.防御力资质 = 1.06f;
+        utm.血量资质 = 1.24f;
+        utm.成长 = int.Parse(层数);
+        utm.攻击速度 = 1.2f;
+        utm.基础经验值 = 5000 * int.Parse(层数);
+        utm.经验值系数 = (int)(utm.成长 * utm.成长);
+        utm.金币 = 1;
+        cb.技能与粒度.Clear();//赋值前先初始化
+        if (!cb.技能与粒度.ContainsKey("排山倒海"))
+            cb.技能与粒度.Add("排山倒海", 0.2f);
+    }
+
+    public void 精英怪物赋值2()
+    {
+        utm.怪物名字 = "陆吾";
+        utm.怪物品质 = 4;
+        utm.是否主动攻击 = false;
+        utm.最低等级 = 5 + int.Parse(层数) * 5;
+        utm.最高等级 = 5 + int.Parse(层数) * 5;
+        utm.基础攻击力 = 5 * 8 * int.Parse(层数);
+        utm.基础防御力 = 5 * 2 * int.Parse(层数);
+        utm.基础血量 = 5 * 40 * int.Parse(层数);
+        utm.基础暴击率 = 15;
+        utm.基础回血值 = 5 * 4 * int.Parse(层数);
+        utm.攻击力资质 = 1.42f;
+        utm.防御力资质 = 1.00f;
+        utm.血量资质 = 1.16f;
+        utm.成长 = int.Parse(层数);
+        utm.攻击速度 = 1.2f;
+        utm.基础经验值 = 5000 * int.Parse(层数);
+        utm.经验值系数 = (int)(utm.成长 * utm.成长);
+        utm.金币 = 1;
+        cb.技能与粒度.Clear();//赋值前先初始化
+        if (!cb.技能与粒度.ContainsKey("破天刃"))
+            cb.技能与粒度.Add("破天刃", 0.2f);
+    }
+
+    public void 精英怪物赋值3()
+    {
+        utm.怪物名字 = "毕方";
+        utm.怪物品质 = 4;
+        utm.是否主动攻击 = false;
+        utm.最低等级 = 5 + int.Parse(层数) * 5;
+        utm.最高等级 = 5 + int.Parse(层数) * 5;
+        utm.基础攻击力 = 5 * 7 * int.Parse(层数);
+        utm.基础防御力 = 5 * 3 * int.Parse(层数);
+        utm.基础血量 = 5 * 35 * int.Parse(层数);
+        utm.基础暴击率 = 15;
+        utm.基础回血值 = 5 * 4 * int.Parse(层数);
+        utm.攻击力资质 = 1.32f;
+        utm.防御力资质 = 1.08f;
+        utm.血量资质 = 1.12f;
+        utm.成长 = int.Parse(层数);
+        utm.攻击速度 = 1.2f;
+        utm.基础经验值 = 5000 * int.Parse(层数);
+        utm.经验值系数 = (int)(utm.成长 * utm.成长);
+        utm.金币 = 1;
+        cb.技能与粒度.Clear();//赋值前先初始化
+        if (!cb.技能与粒度.ContainsKey("烈焰焚天"))
+            cb.技能与粒度.Add("烈焰焚天", 0.2f);
+    }
+
+    public void 精英怪物赋值4()
+    {
+        utm.怪物名字 = "九婴";
+        utm.怪物品质 = 4;
+        utm.是否主动攻击 = false;
+        utm.最低等级 = 5 + int.Parse(层数) * 5;
+        utm.最高等级 = 5 + int.Parse(层数) * 5;
+        utm.基础攻击力 = 5 * 6 * int.Parse(层数);
+        utm.基础防御力 = 5 * 5 * int.Parse(层数);
+        utm.基础血量 = 5 * 55 * int.Parse(层数);
+        utm.基础暴击率 = 15;
+        utm.基础回血值 = 5 * 6 * int.Parse(层数);
+        utm.攻击力资质 = 1.12f;
+        utm.防御力资质 = 1.18f;
+        utm.血量资质 = 1.32f;
+        utm.成长 = int.Parse(层数);
+        utm.攻击速度 = 1.2f;
+        utm.基础经验值 = 5000 * int.Parse(层数);
+        utm.经验值系数 = (int)(utm.成长 * utm.成长);
+        utm.金币 = 1;
+        cb.技能与粒度.Clear();//赋值前先初始化
+        if (!cb.技能与粒度.ContainsKey("黑水弹"))
+            cb.技能与粒度.Add("黑水弹", 0.2f);
     }
 
 
@@ -272,6 +380,7 @@ public class m_tongtianta : MonoBehaviour, I_monster
         刷新楼层();
         刷新怪物();
         刷新倒计时(倒计时, 3);//初始化一下
+        gut.治疗();
     }
 
     public void 进入下一层() {
@@ -280,22 +389,22 @@ public class m_tongtianta : MonoBehaviour, I_monster
         }
     }
 
-    public bool 怪物6赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物7赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物8赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物9赋值(combat cb)
     {
         throw new NotImplementedException();
     }

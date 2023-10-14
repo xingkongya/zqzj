@@ -24,17 +24,17 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
     private void Start()
     {
 
-        utg.移动与坐标.Add("上", "尸王秘境");
-        utg.移动与坐标.Add("左", "尸王秘境");
-        utg.移动与坐标.Add("下", "尸王秘境");
-        utg.移动与坐标.Add("右", "尸王秘境");
+        //utg.移动与坐标.Add("上", "尸王秘境");
+        //utg.移动与坐标.Add("左", "尸王秘境");
+       //utg.移动与坐标.Add("下", "尸王秘境");
+        //utg.移动与坐标.Add("右", "尸王秘境");
 
         utg.刷新移动与坐标();
         utg.生成场景怪物信息方法(this);
         // 技能与粒度.Clear();
     }
 
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
         utm.怪物名字 = "行尸";
         utm.怪物品质 = 0;
@@ -56,11 +56,11 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
         utm.铜币 = (int)(5 * utm.成长);
         if (!cb.技能与粒度.ContainsKey("獠牙"))
             cb.技能与粒度.Add("獠牙", 0.4f);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return 0;
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
         utm.怪物名字 = "尸妖";
         utm.怪物品质 = 1;
@@ -82,11 +82,11 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
         utm.铜币 = (int)(5 * utm.成长);
         if (!cb.技能与粒度.ContainsKey("獠牙"))
             cb.技能与粒度.Add("獠牙", 0.4f);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return 0;
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
         utm.怪物名字 = "骨观";
         utm.怪物品质 = 2;
@@ -106,16 +106,16 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
         utm.基础经验值 = 2800;
         utm.经验值系数 = 10;
         utm.铜币 = (int)(20 * utm.成长);
-        if (!cb.技能与粒度.ContainsKey("吞噬"))
-            cb.技能与粒度.Add("吞噬", 0.4f);
+        if (!cb.技能与粒度.ContainsKey("吞噬之触"))
+            cb.技能与粒度.Add("吞噬之触", 0.4f);
         if (!cb.技能与粒度.ContainsKey("嗜血"))
             cb.技能与粒度.Add("嗜血", 0.5f);
 
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return 0;
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
         utm.怪物名字 = "✦银甲尸✧";
         utm.怪物品质 = 3;
@@ -140,14 +140,14 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
             cb.技能与粒度.Add("嗜血", 0.4f);
         if (!cb.技能与粒度.ContainsKey("獠牙"))
             cb.技能与粒度.Add("獠牙", 0.4f);
-        if (!cb.技能与粒度.ContainsKey("吞噬"))
-            cb.技能与粒度.Add("吞噬", 0.3f);
+        if (!cb.技能与粒度.ContainsKey("吞噬之触"))
+            cb.技能与粒度.Add("吞噬之触", 0.3f);
 
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return 0;
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
         utm.怪物名字 = "尸王";
         utm.怪物品质 = 4;
@@ -162,14 +162,14 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
         utm.攻击力资质 = 1.1f;
         utm.防御力资质 = 0.8f;
         utm.血量资质 = 1.5f;
-        utm.成长 = 5f;
+        utm.成长 = 3f;
         utm.攻击速度 = 1.5f;
         utm.基础经验值 = 88000;
         utm.经验值系数 = 50;
         utm.铜币 = (int)(50 * utm.成长);
 
-        if (!cb.技能与粒度.ContainsKey("吞噬"))
-            cb.技能与粒度.Add("吞噬", 0.2f);
+        if (!cb.技能与粒度.ContainsKey("吞噬之触"))
+            cb.技能与粒度.Add("吞噬之触", 0.2f);
         if (!cb.技能与粒度.ContainsKey("≮不老长春诀≯"))
             cb.技能与粒度.Add("≮不老长春诀≯", 0.1f);
         if (!cb.技能与粒度.ContainsKey("嗜血"))
@@ -177,26 +177,26 @@ public class m_shiwangmijing : MonoBehaviour, I_monster
         if (!cb.技能与粒度.ContainsKey("磐石"))
             cb.技能与粒度.Add("磐石", 0.2f);
 
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物6赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物7赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物8赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物9赋值(combat cb)
     {
         throw new NotImplementedException();
     }

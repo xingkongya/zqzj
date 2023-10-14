@@ -24,13 +24,13 @@ EditorBuildSettings:
     path: "Assets/Scenes/\u5C71\u6D77/\u5C0F\u6811\u6797.unity"
     guid: 14ceb5b1f647cad498d620be95003685
   - enabled: 1
-    path: "Assets/Scenes/\u5C71\u6D77/\u65E0\u5C3D\u6D77\u5CB8.unity"
+    path: "Assets/Scenes/\u5C71\u6D77/\u5341\u5B57\u5761.unity"
     guid: bc9a43f4b4788324f8f6502f1f07a3eb
   - enabled: 1
-    path: "Assets/Scenes/\u5C71\u6D77/\u6751\u53E3\u897F.unity"
+    path: "Assets/Scenes/\u5C71\u6D77/\u6751\u53E3\u4E1C.unity"
     guid: 77d5a7586195b5c4da621f6bd109f030
   - enabled: 1
-    path: "Assets/Scenes/\u5C71\u6D77/\u788E\u77F3\u6EE9.unity"
+    path: "Assets/Scenes/\u5C71\u6D77/\u4E71\u77F3\u6EE9.unity"
     guid: 93e65c1c57c06b74dbca66e00b73246a
   - enabled: 1
     path: "Assets/Scenes/\u5C71\u6D77/\u5C71\u4E18\u6843\u6797.unity"
@@ -39,7 +39,7 @@ EditorBuildSettings:
     path: "Assets/Scenes/\u5E7B\u754C\u661F\u7A7A.unity"
     guid: da36df8a6442a3842890c9555be5cbf3
   - enabled: 1
-    path: "Assets/Scenes/\u5C71\u6D77/\u8352\u91CE\u8349\u5730.unity"
+    path: "Assets/Scenes/\u5C71\u6D77/\u8352\u539F.unity"
     guid: 1a5c31c4b6491ef4ca90a385b481e0b6
   - enabled: 1
     path: "Assets/Scenes/\u5C71\u6D77/\u5669\u68A6\u4E4B\u68EE.unity"

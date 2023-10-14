@@ -39,8 +39,8 @@ public class SkillEffect : BaseManager<SkillEffect>
         技能名字和其效果.Add("金色闪光", 金色闪光);
         技能名字和其效果.Add("翻江倒海", 翻江倒海);
         技能名字和其效果.Add("排山倒海", 排山倒海);
-        技能名字和其效果.Add("大荒囚天拳(伪)", 大荒囚天拳_伪);
-        技能名字和其效果.Add("夺命三仙剑(伪)", 夺命三仙剑_伪);
+        技能名字和其效果.Add("荒天拳", 荒天拳);
+        技能名字和其效果.Add("陨仙剑", 陨仙剑);
         技能名字和其效果.Add("水甲术", 水甲术);
         技能名字和其效果.Add("嗜血", 嗜血);
         技能名字和其效果.Add("攻击姿态", 攻击姿态);
@@ -48,7 +48,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         技能名字和其效果.Add("急速飞行", 急速飞行);
         技能名字和其效果.Add("獠牙", 獠牙);
         技能名字和其效果.Add("撞击", 撞击);
-        技能名字和其效果.Add("吞噬", 吞噬);
+        技能名字和其效果.Add("吞噬之触", 吞噬之触);
         技能名字和其效果.Add("拍打", 拍打);
         技能名字和其效果.Add("铁砂掌", 铁砂掌);
         技能名字和其效果.Add("鹰爪功", 鹰爪功);
@@ -223,7 +223,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            int 伤害 = (int)(100 + bm.Xstoi(cb.攻击力) * 0.55f);
+            int 伤害 = (int)(50 + bm.Xstoi(cb.战斗攻击力) * 1f);
             gut.恢复血量(cb, 伤害);
         }
        
@@ -250,7 +250,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.5f + 120);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.5f + 120);
                 if (攻击对象[i].activeSelf)
                 {
                     combat mcb = 攻击对象[i].GetComponent<combat>();
@@ -303,8 +303,9 @@ public class SkillEffect : BaseManager<SkillEffect>
             combat mcb = 目标对象.GetComponent<combat>();
             if (mcb != null)
             {
-                float 攻防比 = bm.Xstof(mcb.防御力) / bm.Xstof(cb.攻击力);
+                float 攻防比 = bm.Xstof(mcb.战斗防御力) / bm.Xstof(cb.战斗攻击力);
                 伤害 = (int)(伤害 * (攻防比 < 0.8f ? (1 - 攻防比) : 0.2f));//技能最低打出攻防比*0.2的伤害
+
                 伤害 = 伤害偏移(伤害);
                 if (cb != null)
                 {
@@ -315,8 +316,8 @@ public class SkillEffect : BaseManager<SkillEffect>
     }
 
     public int 伤害偏移(int 伤害) {
-        System.Random 随机类 = new System.Random(Guid.NewGuid().GetHashCode());
-        int 随机比率 = 随机类.Next(900, 1101);
+        
+        int 随机比率 =  UnityEngine.Random.Range(900, 1101);
         伤害 = (int)(伤害 * (随机比率 / 1000f));
         return 伤害;
     }
@@ -343,7 +344,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             int 总伤害 = 0; ;
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.8f + 200);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.6f + 300);
                 总伤害 += 伤害;
                 if (攻击对象[i].activeSelf)
                 {
@@ -391,7 +392,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 2f + 200);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.6f + 200);
                 if (攻击对象[i].activeSelf)
                 {
                     combat mcb = 攻击对象[i].GetComponent<combat>();
@@ -434,7 +435,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.6f + 200);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 2f + 500);
                 if (攻击对象[i].activeSelf)
                 {
                     combat mcb = 攻击对象[i].GetComponent<combat>();
@@ -478,7 +479,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.0f + 500);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 2.0f + 500);
                 if (攻击对象[i].activeSelf)
                 {
                     combat mcb = 攻击对象[i].GetComponent<combat>();
@@ -511,7 +512,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb,"防御力",0.1f,10);
+            gut.提升属性(cb,"防御力",10,10);
             gut.持续恢复血量(cb,bm.Xstoi(cb.等级)*3,5,1);
             gut.生成技能特效_防御(user, 10);
         }
@@ -540,9 +541,9 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "攻击速度", 0.15f, 10);
+            gut.提升属性(cb, "攻击速度", 15, 10);
             gut.持续恢复血量(cb, bm.Xstoi(cb.等级) * 3, 5, 1);
-            gut.生成技能特效_攻击(user, 10);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -554,9 +555,9 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "吸血加成", 0.08f, 10);
-            gut.提升属性(cb, "攻击速度", 0.15f, 10);
-            gut.生成技能特效_攻击(user, 10);
+            gut.提升属性(cb, "吸血加成", 8, 10);
+            gut.提升属性(cb, "攻击速度", 15, 10);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -568,9 +569,9 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "攻击速度", 0.35f, 6);
-            gut.提升属性(cb, "伤害加成", 0.1f, 6);
-            gut.生成技能特效_攻击(user, 6);
+            gut.提升属性(cb, "攻击速度", 35, 6);
+            gut.提升属性(cb, "伤害加成", 10, 6);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -582,10 +583,10 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "攻击速度", 0.2f, 10);
-            gut.提升属性(cb, "伤害加成", 0.05f, 10);
-            gut.提升属性(cb, "暴击率", 0.05f, 10);
-            gut.生成技能特效_攻击(user, 10);
+            gut.提升属性(cb, "攻击速度", 20, 10);
+            gut.提升属性(cb, "伤害加成", 5, 10);
+            gut.提升属性(cb, "暴击率", 5, 10);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -597,10 +598,10 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "攻击速度", 0.4f, 20);
-            gut.提升属性(cb, "攻击力加成", 0.15f, 20);
-            gut.提升属性(cb, "防御力加成", 0.15f, 20);
-            gut.生成技能特效_攻击(user, 20);
+            gut.提升属性(cb, "攻击速度", 40, 20);
+            gut.提升属性(cb, "攻击力加成", 15, 20);
+            gut.提升属性(cb, "防御力加成", 15, 20);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -612,10 +613,10 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.提升属性(cb, "攻击速度", 0.4f, 10);
-            gut.提升属性(cb, "吸血加成", 0.15f, 10);
-            gut.提升属性(cb, "暴击率", 0.1f, 7);
-            gut.生成技能特效_攻击(user, 10);
+            gut.提升属性(cb, "攻击速度", 40, 10);
+            gut.提升属性(cb, "吸血加成", 15, 10);
+            gut.提升属性(cb, "暴击率", 10, 7);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -641,7 +642,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.持续提升属性(cb, "防御力加成", 0.02f, 10,1);
+            gut.持续提升属性(cb, "防御力加成", 4, 10,1);
             gut.生成技能特效_防御(user, 10);
         }
 
@@ -654,8 +655,8 @@ public class SkillEffect : BaseManager<SkillEffect>
         if (user != null)
         {
             combat cb = user.GetComponent<combat>();
-            gut.持续提升属性(cb, "攻击力加成", 0.02f, 10, 1);
-            gut.生成技能特效_攻击(user, 10);
+            gut.持续提升属性(cb, "攻击力加成", 4, 10, 1);
+            gut.生成技能特效_攻击(user);
         }
 
         user = null;
@@ -678,7 +679,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 2f + 150);// 这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.5f + 100);// 这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -707,7 +708,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.8f + 180);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.5f + 100);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -737,7 +738,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 2.0f + 100);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 2.0f + 100);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -766,7 +767,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.6f + 200);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.4f + 100);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -795,7 +796,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.1f + 50);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 0.8f + 30);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -808,7 +809,7 @@ public class SkillEffect : BaseManager<SkillEffect>
     }
 
 
-    public void 夺命三仙剑_伪()
+    public void 陨仙剑()
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         GameObject 攻击对象;
@@ -825,7 +826,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 5.6f + 100);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 3.6f + 1000);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -840,7 +841,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         user = null;
     }
 
-    public void 大荒囚天拳_伪()
+    public void 荒天拳()
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         List<GameObject> 攻击对象;
@@ -856,7 +857,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
             for (int i = 0; i < 攻击对象.Count; i++)
             {
-                int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 2.0f + 100);
+                int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 2.5f + 1000);
                 if (攻击对象[i].activeSelf)
                 {
                     combat mcb = 攻击对象[i].GetComponent<combat>();
@@ -900,7 +901,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.5f + 150);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.1f + 50);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -912,7 +913,7 @@ public class SkillEffect : BaseManager<SkillEffect>
         user = null;
     }
 
-    public void 吞噬()
+    public void 吞噬之触()
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         GameObject 攻击对象;
@@ -929,7 +930,7 @@ public class SkillEffect : BaseManager<SkillEffect>
             else
                 攻击对象 = GameObject.Find(cb.目标名字);
 
-            int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 1.8f + 180);//这里改参数
+            int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.7f + 300);//这里改参数
             combat mcb = 攻击对象.GetComponent<combat>();
             if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                 mcb.开启战斗();
@@ -965,7 +966,7 @@ public class SkillEffect : BaseManager<SkillEffect>
 
                     if (攻击对象 != null)
                     {
-                        int 伤害 = (int)(bm.Xstoi(cb.攻击力) * 2.5f + 100);//这里改参数
+                        int 伤害 = (int)(bm.Xstoi(cb.战斗攻击力) * 1.8f + 80);//这里改参数
                         combat mcb = 攻击对象.GetComponent<combat>();
                         if (mcb != null && (mcb.gameObject.CompareTag("怪物") || mcb.gameObject.CompareTag("boss")))
                             mcb.开启战斗();

@@ -37,7 +37,7 @@ public class jq_huangshadi : MonoBehaviour
         int 打招呼 = PlayerPrefs.GetInt("与父亲打招呼");
         int 问孵化 = PlayerPrefs.GetInt("问孵化");
         int 父亲给的路 = PlayerPrefs.GetInt("父亲给的路");
-        Debug.Log(打招呼+"___"+问孵化+"___"+父亲给的路);
+        //Debug.Log(打招呼+"___"+问孵化+"___"+父亲给的路);
         if (打招呼 == 0)
             父亲选择项(父亲选项);
         else if (打招呼 == 1)
@@ -65,6 +65,7 @@ public class jq_huangshadi : MonoBehaviour
         role_Data myData = io.GetInstance().load();
         if (!myData.记录.ContainsKey("拿小鸡蛋")) {
             EventCenter.GetInstance().AddEventListener("对话结束", 获得小鸡蛋);
+            EvenMgr.GetInstance().存档移除事件("获得宠物");
         }
         ut.生成对话框(str, 1, 0.08f, "与父亲打招呼");
         if (!父亲选项.ContainsKey("询问孵化")) {
@@ -85,6 +86,7 @@ public class jq_huangshadi : MonoBehaviour
         ut.生成获得框("签名纸", 1);
         pm.获取物品("签名纸", 1);
         ut.存档记录("签名纸条", "1");
+        EvenMgr.GetInstance().存档添加事件("开启职业", "无限");
     }
 
     public void 父亲对话()

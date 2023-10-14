@@ -31,7 +31,7 @@ public class move_hp : MonoBehaviour
             文本.fontSize = 35;
             GameObject 伤害图标 = gameObject.transform.Find("Image").gameObject;
             伤害图标.gameObject.SetActive(true);
-            Sprite 暴击图标 = Resources.Load<Sprite>("图标/暴击图标");
+            Sprite 暴击图标 = Resources.Load<Sprite>("图标/暴击2图标");
             伤害图标.GetComponent<Image>().sprite = 暴击图标;
             ColorUtility.TryParseHtmlString("#FA7C10", out nowColor);
             伤害图标.GetComponent<Image>().color = nowColor;
@@ -57,7 +57,7 @@ public class move_hp : MonoBehaviour
     void Update()
     {
         //变大效果
-        gameObject.transform.localScale += new Vector3(Time.deltaTime * 2, Time.deltaTime * 2, 0);
+        gameObject.transform.localScale += new Vector3(Time.deltaTime * 1.5f, Time.deltaTime * 1.5f, 0);
 
         //移动效果
         timer += Time.deltaTime;

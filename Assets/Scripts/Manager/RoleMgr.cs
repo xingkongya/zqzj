@@ -27,6 +27,7 @@ public class RoleMgr : BaseManager<RoleMgr>
                     myData.等级 = bm.Xitos(bm.Xstoi(myData.等级) + 1);
                     当前经验 -= 所需经验值;
                     所需经验值 = 经验表(bm.Xstoi(myData.等级));
+                    myData = 获得技能点(myData);
                 }
             }     
         }
@@ -34,6 +35,56 @@ public class RoleMgr : BaseManager<RoleMgr>
         io.GetInstance().save(myData);
         return isUP;
     }
+
+
+    private role_Data 获得技能点(role_Data myData) {
+        if (bm.Xstoi(myData.等级) % 10 == 0)
+        {
+            if (myData.天赋["职业"].ContainsKey("高级技能点"))
+            {
+                myData.天赋["职业"]["高级技能点"] = bm.Xitos(bm.Xstoi(myData.天赋["职业"]["高级技能点"]) + 1);
+            }
+            else
+            {
+                myData.天赋["职业"].Add("高级技能点", bm.Xitos(1));
+            }
+        }
+        if (myData.天赋["职业"].ContainsKey("基础技能点"))
+        {
+            myData.天赋["职业"]["基础技能点"] = bm.Xitos(bm.Xstoi(myData.天赋["职业"]["基础技能点"]) + 1);
+        }
+        else
+        {
+            myData.天赋["职业"].Add("基础技能点", bm.Xitos(1));
+        }
+        return myData;
+    }
+
+    public void 重置技能点()
+    {
+        role_Data myData = io_.load();
+        if (myData.天赋["职业"].ContainsKey("高级技能点"))
+        {
+            myData.天赋["职业"]["高级技能点"] = bm.Xitos(bm.Xstoi(myData.等级) /10);
+        }
+        else
+        {
+            myData.天赋["职业"].Add("高级技能点", bm.Xitos(bm.Xstoi(myData.等级) / 10));
+        }
+
+        if (myData.天赋["职业"].ContainsKey("基础技能点"))
+        {
+            myData.天赋["职业"]["基础技能点"] = bm.Xitos(bm.Xstoi(myData.等级) -1 );
+        }
+        else
+        {
+            myData.天赋["职业"].Add("基础技能点", bm.Xitos(bm.Xstoi(myData.等级) - 1));
+        }
+        myData.被动技能["职业"].Clear();
+        io_.save(myData);
+
+    }
+
 
 
     public void 经验池结算(long 经验值)

@@ -25,30 +25,57 @@ public class basicMgr : BaseManager<basicMgr>
     public Dictionary<string, string> 返回空的战斗属性()
     {
         Dictionary<string, string> 属性 = new Dictionary<string, string>();
-        属性.Add("攻击力", Xor("0"));
-        属性.Add("防御力", Xor("0"));
-        属性.Add("血量", Xor("0"));
-        属性.Add("回血值", Xor("0"));
-        属性.Add("攻击力加成", Xor("0"));
-        属性.Add("防御力加成", Xor("0"));
-        属性.Add("血量加成", Xor("0"));
-        属性.Add("回血值加成", Xor("0"));
-        属性.Add("移动速度", Xor("0"));
-        属性.Add("攻击速度", Xor("0"));
-        属性.Add("暴击率", Xor("0"));
-        属性.Add("暴伤加成", Xor("0"));
-        属性.Add("固定伤害", Xor("0"));
-        属性.Add("固定减伤", Xor("0"));
-        属性.Add("伤害加成", Xor("0"));
-        属性.Add("伤害减免", Xor("0"));
-        属性.Add("固定吸血", Xor("0"));
-        属性.Add("吸血加成", Xor("0"));
-        属性.Add("金钱加成", Xor("0"));
-        属性.Add("经验加成", Xor("0"));
-        属性.Add("稀有怪概率", Xor("0"));
-        属性.Add("爆率", Xor("0"));
+        属性.Add("攻击力", Xitos(0));
+        属性.Add("防御力", Xitos(0));
+        属性.Add("血量", Xitos(0));
+        属性.Add("回血值", Xitos(0));
+        属性.Add("攻击力加成", Xitos(0));
+        属性.Add("防御力加成", Xitos(0));
+        属性.Add("血量加成", Xitos(0));
+        属性.Add("回血值加成", Xitos(0));
+        属性.Add("移动速度", Xitos(0));
+        属性.Add("攻击速度", Xitos(0));
+        属性.Add("暴击率", Xitos(0));
+        属性.Add("暴伤加成", Xitos(0));
+        属性.Add("固定伤害", Xitos(0));
+        属性.Add("固定减伤", Xitos(0));
+        属性.Add("伤害加成", Xitos(0));
+        属性.Add("伤害减免", Xitos(0));
+        属性.Add("固定吸血", Xitos(0));
+        属性.Add("吸血加成", Xitos(0));
+        属性.Add("金钱加成", Xitos(0));
+        属性.Add("经验加成", Xitos(0));
+        属性.Add("稀有怪概率", Xitos(0));
+        属性.Add("爆率", Xitos(0));
 
         return 属性;
+    }
+
+
+    public string 字符串字典返回(Dictionary<string, string> 字典, string Key)
+    {
+        if (字典.ContainsKey(Key))
+        {
+           return  字典[Key];
+        }
+        else
+        {
+            Debug.Log("字典未找到该键");
+            return "";
+        }
+    }
+
+
+    public Dictionary<string,string> 字符串字典自适应添加键值对(Dictionary<string,string> 字典,string Key,String Value) {
+        if (字典.ContainsKey(Key))
+        {
+            字典[Key] = Value;
+        }
+        else {
+            字典.Add(Key,Value);
+        }
+
+        return 字典;
     }
 
 
@@ -85,6 +112,13 @@ public class basicMgr : BaseManager<basicMgr>
 
 
         return nowColor;
+    }
+
+
+    public void 改变颜色(Image img,string 颜色代码) {
+        Color nowColor;
+        ColorUtility.TryParseHtmlString("#"+颜色代码, out nowColor);
+        img.color = nowColor;
     }
 
 
@@ -210,55 +244,71 @@ public class basicMgr : BaseManager<basicMgr>
         }
     }
 
+
+    /// <summary>
+    /// 加载ab包
+    /// </summary>
+    /// <param name="prefabsName"></param>
+    /// <param name="action"></param>
+    /// <param name="参数集"></param>
+    /// <returns></returns>
+    public IEnumerator LoadAB(string abName) {
+
+        string strABPath = AppContentPath + abName;
+
+        /*UnityWebRequest request;
+        string strABPath = AppContentPath + abName;
+        if (Application.platform == RuntimePlatform.Android)//是安卓
+        {
+            request = UnityWebRequestAssetBundle.GetAssetBundle(abName);
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.ConnectionError)//request.isHttpError)
+            {
+                Debug.LogError(GetType() + "/ERROR/" + request.error);
+            }
+            else
+            {
+                    AssetBundle ab = (request.downloadHandler as DownloadHandlerAssetBundle).assetBundle;
+                    加载集.Add(abName, ab);
+            }
+        }
+        else
+        {//不是安卓
+                AssetBundle bundle = AssetBundle.LoadFromFile(strABPath);
+                加载集.Add(abName, bundle);
+        }*/
+
+        AssetBundle bundle = AssetBundle.LoadFromFile(strABPath);
+        加载集.Add(abName, bundle);
+        yield break;
+
+
+
+    }
+
+
+
     /// <summary>
     /// 加载AB包预设资源方法
     /// </summary>
     /// <param name="prefabsName">AB预设的名称</param>
     /// <returns>返回加载到的AB包资源预设物体</returns>
     public IEnumerator LoadABPrefabs(string prefabsName, UnityAction<GameObject, Dictionary<int, object>> action, Dictionary<int, object> 参数集)
-    {
-        UnityWebRequest request;
-        string strABPath = AppContentPath + prefabsName;
-        if (Application.platform == RuntimePlatform.Android)//是安卓
-        {
-            request = UnityWebRequestAssetBundle.GetAssetBundle(strABPath);
-            yield return request.SendWebRequest();
-            if (request.isHttpError)
-            {
-                Debug.LogError(GetType() + "/ERROR/" + request.error);
-            }
-            else
-            {
-                if (加载集.ContainsKey(prefabsName))//判断是不是第一次加载
-                    对象 = 加载集[prefabsName].LoadAsset(prefabsName) as GameObject;
-                else
-                {
-                    AssetBundle ab = (request.downloadHandler as DownloadHandlerAssetBundle).assetBundle;
-                    对象 = ab.LoadAsset(prefabsName) as GameObject;
-                    加载集.Add(prefabsName, ab);
-                }
-                action(对象, 参数集);
-            }
-        }
-        else
-        {//不是安卓
-            if (加载集.ContainsKey(prefabsName))//判断是不是第一次加载
-                对象 = 加载集[prefabsName].LoadAsset(prefabsName) as GameObject;
-            else
-            {
-                AssetBundle bundle = AssetBundle.LoadFromFile(strABPath);
-                对象 = bundle.LoadAsset(prefabsName) as GameObject;
-                加载集.Add(prefabsName, bundle);
-            }
-            action(对象, 参数集);
-
-        }
+    {         
+       对象 = 加载集["ui"].LoadAsset(prefabsName) as GameObject;
+        action(对象, 参数集);
+        
         if (!NameMgr.对象池.ContainsKey(对象.name))
         {
             NameMgr.对象池.Add(对象.name, 对象);
         }
         isOver = true;
+        yield break;
     }
+
+
+
+
 
     public Vector3 GetScreenPoint(Vector3 v3)
     {
@@ -324,7 +374,7 @@ public class basicMgr : BaseManager<basicMgr>
 
         Sprite output_sprite = (Sprite)sprites[num];
 
-        Debug.Log(output_sprite.name);
+        //Debug.Log(output_sprite.name);
 
         return output_sprite;
     }
@@ -339,14 +389,14 @@ public class basicMgr : BaseManager<basicMgr>
     /// <param name="pos"></param>
     /// <param name="time"></param>
     /// <returns></returns>
-    public IEnumerator MoveTo(Transform tr, Vector3 pos, float time)
+    public IEnumerator MoveTo(Transform tr, Vector3 pos, float 用时)
     {
         float t = 0;
         Vector3 startPos = tr.position;
         while (true)
         {
             t += Time.deltaTime;
-            float a = t / time;
+            float a = t / 用时;
             if (tr == null)
                 yield break;
             tr.position = Vector3.Lerp(startPos, pos, a);
@@ -356,6 +406,9 @@ public class basicMgr : BaseManager<basicMgr>
         }
         GameObject.Destroy(tr.gameObject);
     }
+
+
+   
 
 
     public Vector3 世界坐标转屏幕坐标(Vector3 坐标)
@@ -452,6 +505,43 @@ public class basicMgr : BaseManager<basicMgr>
         }
     }
 
+
+    public long Xstol(string input)//经验专用
+    {
+        if (input == null || input.Equals(""))
+        {
+            Debug.Log("传入空数据");
+            return 0;
+        }
+        long result;
+        if (long.TryParse(Xor(input), out result))
+        {
+            return result;
+        }
+        else
+        {
+            float r2;
+            if (float.TryParse(Xor(input), out r2))//判断是不是浮点数
+            {
+                return (int)r2;
+            }
+            else
+            {
+                int r3;
+                if (int.TryParse(Xor(Xor(input)), out r3))//判断是不是传递来的是明文
+                {
+                    Debug.Log("注意!这个是明文!!->" + input);
+                    return r3;
+                }
+                else
+                {
+                    Debug.Log("错误!错误!数据遭修改!!->" + input);
+                    return 0;
+                }
+            }
+        }
+    }
+
     public float Xstof(string input)
     {
         if (input == null || input.Equals(""))
@@ -493,12 +583,16 @@ public class basicMgr : BaseManager<basicMgr>
 
     public Equipment 装备加密(Equipment eq)
     {
-        eq.qua = Xor(eq.qua);
+        eq.min_qua = Xor(eq.min_qua);
+        eq.qua = eq.min_qua;
         eq.xing = Xor(eq.xing);
-        eq.lessgrade = Xor(eq.lessgrade);
+        eq.min_grade = Xor(eq.min_grade);
+        eq.lessgrade = eq.min_grade;
         eq.price = Xstoi(eq.qua) < 4 ? Xitos(Xstoi(eq.lessgrade) * (Xstoi(eq.qua) + 1) * (Xstoi(eq.qua) + 1)) : Xitos(Xstoi(eq.lessgrade) * (Xstoi(eq.qua) + 1) * (Xstoi(eq.qua) + 1) * 5);
-        eq.num = Xor(eq.num);
-        eq.atk = Xor(eq.atk);
+        eq.max_qua = Xor(eq.max_qua);
+        eq.max_grade = Xor(eq.max_grade);
+        eq.next_num = Xor(eq.next_num);
+        /*eq.atk = Xor(eq.atk);
         eq.def = Xor(eq.def);
         eq.hp = Xor(eq.hp);
         eq.hpr = Xor(eq.hpr);
@@ -517,7 +611,7 @@ public class basicMgr : BaseManager<basicMgr>
         eq.vam = Xor(eq.vam);
         eq.vam_p = Xor(eq.vam_p);
         eq.mon_p = Xor(eq.mon_p);
-        eq.exp_p = Xor(eq.exp_p);
+        eq.exp_p = Xor(eq.exp_p);*/
         return eq;
     }
 

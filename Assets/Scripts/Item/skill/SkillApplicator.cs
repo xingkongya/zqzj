@@ -10,7 +10,7 @@ public class SkillApplicator : BaseManager<SkillApplicator>
     private PropMgr pm = PropMgr.GetInstance();
     private SkillEffect se = SkillEffect.GetInstance();
     public Dictionary<string, Action> 技能名称及其效果 = SkillEffect.GetInstance().加载技能效果();
-    public Dictionary<string, Action> 道具名称及其效果 = PropEffect.GetInstance().加载道具效果();
+    public Dictionary<string, Action<int>> 道具名称及其效果 = PropEffect.GetInstance().加载道具效果();
     private G_Util gut = NameMgr.画布.GetComponent<G_Util>();
     private basicMgr bm = basicMgr.GetInstance();
 
@@ -42,6 +42,19 @@ public class SkillApplicator : BaseManager<SkillApplicator>
     }
 
 
+    public void 触发攻击后被动()
+    {
+        role_Data myData = io_.load();
+        gut = NameMgr.画布.GetComponent<G_Util>();
+        List<string> 职业被动 = myData.被动技能["职业"];
+        Dictionary<string, Action> 天赋表 = TianFuMgr.GetInstance().加载天赋表();
+        foreach (string tfName in 职业被动) {
+            天赋表[tfName]();
+        }
+       
+    }
+
+
     public void 使用CD道具()
     {
         role_Data myData = io_.load();
@@ -55,7 +68,7 @@ public class SkillApplicator : BaseManager<SkillApplicator>
                 if (pb.icon.Equals("暗器") && gut.现有怪物集合.Count == 0)//场景有怪物才能用暗器
                     return;
                 CD集合.Add("CD道具", bm.Xstof(pb.cd));
-                道具名称及其效果["CD道具-" + 道具名]();
+                道具名称及其效果["CD道具-" + 道具名](1);
                 gut.刷新背包CD道具UI(道具名);
             }
         }

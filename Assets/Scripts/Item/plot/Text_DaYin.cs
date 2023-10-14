@@ -80,4 +80,10 @@ public class Text_DaYin : MonoBehaviour
         }
 
     }
+
+    public void 强制关闭对话框()
+    {
+        GameObject 对话框 = GameObject.Find("对话框(Clone)");
+        Destroy(对话框);
+    }
 }

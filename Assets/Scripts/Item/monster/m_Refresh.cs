@@ -7,7 +7,7 @@ public class m_Refresh : MonoBehaviour
 {
     public bool 是否会刷新 = true;
     public bool isRefresh=false;
-    public float 刷新时间 = 5.0f;
+    public float 刷新时间;
     public float 刷新计时器;
     private GameObject monster;
     private SkillApplicator sa;
@@ -28,10 +28,10 @@ public class m_Refresh : MonoBehaviour
             刷新时间 = 2.0f;
             刷新计时器 = 刷新时间;
         }
-        else if (monster.CompareTag("boss"))
+        else if (monster.CompareTag("boss") || monster.CompareTag("倒计时"))
         {
-            M_name = monster.name;
-            if (sa.CD集合.ContainsKey(M_name))
+            M_name = monster.GetComponent<combat>().怪物名字;
+            if (M_name!=null&&sa.CD集合.ContainsKey(M_name))
             {
                 刷新计时器 = sa.CD集合[M_name];
                 monster.SetActive(false);
@@ -41,7 +41,10 @@ public class m_Refresh : MonoBehaviour
             }
         }
         else
+        {
+            刷新时间 = 3.0f;
             刷新计时器 = 刷新时间;
+        }
     }
 
     // Update is called once per frame
@@ -61,7 +64,7 @@ public class m_Refresh : MonoBehaviour
                         cb.建筑初始化();
                     else if (monster.tag == "怪物")
                         cb.怪物初始化();
-                    else if (monster.tag == "boss")
+                    else if (monster.tag == "boss"|| monster.tag == "倒计时")
                     {
                         cb.掉落集合.Clear();
                         cb.怪物初始化();

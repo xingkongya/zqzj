@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Random = System.Random;
 
 
 // <summary>
@@ -87,7 +87,6 @@ public class G_Util : MonoBehaviour
     public Dictionary<string, GameObject> 现有怪物集合 = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> 现有角色集合 = new Dictionary<string, GameObject>();
     private combat cb;
-    private Random 随机类 = new Random();
     private basicMgr bm;
     private DataMgr dm;
     private PropMgr pm;
@@ -102,13 +101,12 @@ public class G_Util : MonoBehaviour
     private EventCenter em;
     private combat rcb;
     private AsyncOperation async;
-    public Dictionary<string, Action> 道具效果表;
+    public Dictionary<string, Action<int>> 道具效果表;
     public Dictionary<string, UnityAction> 场景任务表;
     public List<string> 时间线程名字;
     public List<string> 运行中的时间线程 = new List<string>();
     public Dictionary<string, string> 移动与坐标 = new Dictionary<string, string>();
     public Dictionary<string, GameObject> 实例化对象池 = new Dictionary<string, GameObject>();
-
 
     private void Awake()
     {
@@ -147,7 +145,7 @@ public class G_Util : MonoBehaviour
 
         运行中的时间线程.Clear();
         sa.CD集合 = 储存_字符串转换为单精度(myData.CD);
-        CheckClientTimeScale(0);
+        CheckClientTimeScale(1);
 
     }
 
@@ -336,31 +334,36 @@ public class G_Util : MonoBehaviour
 
 
 
-    public string 使用道具(string 道具名称)
+    public string 使用道具(string 道具名称,int 使用数量)
     {
         pe.返回状态 = "";
         if (!道具效果表.ContainsKey(道具名称))//检查道具表里是否绑定了委托
             return "未绑定效果,请联系作者";
         else
-            道具效果表[道具名称]();//使用道具
+            道具效果表[道具名称](使用数量);//使用道具
+        /* GameObject 物品项 = GameObject.Find(道具名称);
+         if (物品项 != null)
+         {
+             Text 数量 = 物品项.transform.Find("数量").GetComponent<Text>();
+             int num = int.Parse(数量.text);
+             num=num-使用数量;
+             if (num == 0)
+             {
+                 GameObject bag = NameMgr.背包;
+                 if (bag != null)
+                     bag.GetComponent<Bag>().初始化背包();
+             }
+             else if (num < 0)
+                 num = 0;
+             数量.text = num + "";
+         }*/
+
+        if (DataMgr.GetInstance().本地对象.ContainsKey("背包")) {
+            DataMgr.GetInstance().本地对象["背包"].GetComponent<Bag>().初始化背包();
+        }
         if (!pe.返回状态.Equals("")) //检测使用成败,如果失败接受失败原因字符串
             return pe.返回状态;
-        GameObject 物品项 = GameObject.Find(道具名称);
-        if (物品项 != null)
-        {
-            Text 数量 = 物品项.transform.Find("数量").GetComponent<Text>();
-            int num = int.Parse(数量.text);
-            num--;
-            if (num == 0)
-            {
-                GameObject bag = NameMgr.背包;
-                if (bag != null)
-                    bag.GetComponent<Bag>().初始化背包();
-            }
-            else if (num < 0)
-                num = 0;
-            数量.text = num + "";
-        }
+
         return "使用成功";
     }
 
@@ -414,6 +417,8 @@ public class G_Util : MonoBehaviour
         {
             Destroy(对话框_last);
         }
+        语速 -= 0.03f;
+
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
         参数集.Add(0, talk);
         参数集.Add(1, index);
@@ -430,7 +435,7 @@ public class G_Util : MonoBehaviour
         GameObject 对话框 = GameObject.Instantiate(对象) as GameObject;
         对话框.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
         对话框.transform.localPosition = new Vector2(0, 100);//设置生成位置
-        对话框.GetComponent<RectTransform>().sizeDelta = new Vector2(726, 352);//recttransform必不可少的属性(半知半解)
+        对话框.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);//recttransform必不可少的属性(半知半解)
         对话框.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
         string talk = 参数集[0] as string;
         int index = (int)参数集[1];
@@ -461,6 +466,7 @@ public class G_Util : MonoBehaviour
         else
         {
             父物体.transform.Find("气泡_位置").gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            父物体.transform.Find("气泡_位置").gameObject.transform.GetChild(0).gameObject.transform.Find("Text").GetComponent<Text>().text = str;//同步气泡内容
         }
     }
 
@@ -492,10 +498,14 @@ public class G_Util : MonoBehaviour
                 图标.sprite = Resources.Load("图标/材料图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("道具"))
                 图标.sprite = Resources.Load("图标/道具图标", typeof(Sprite)) as Sprite;
+            else if (物品.icon.Equals("兽皮"))
+                图标.sprite = Resources.Load("图标/兽皮图标", typeof(Sprite)) as Sprite;
+            else if (物品.icon.Equals("兽骨"))
+                图标.sprite = Resources.Load("图标/兽骨图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("宠物蛋"))
                 图标.sprite = Resources.Load("图标/宠物蛋图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("神兽蛋"))
-                图标.sprite = Resources.Load("图标/神兽蛋图标", typeof(Sprite)) as Sprite;
+                图标.sprite = Resources.Load("图标/宠物蛋图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("技能书"))
                 图标.sprite = Resources.Load("图标/技能书图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("钥匙"))
@@ -504,6 +514,10 @@ public class G_Util : MonoBehaviour
                 图标.sprite = Resources.Load("图标/进化材料图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("礼包"))
                 图标.sprite = Resources.Load("图标/礼包图标", typeof(Sprite)) as Sprite;
+            else if (物品.icon.Equals("礼盒"))
+                图标.sprite = Resources.Load("图标/礼盒图标", typeof(Sprite)) as Sprite;
+            else if (物品.icon.Equals("宝箱"))
+                图标.sprite = Resources.Load("图标/宝箱图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("仙晶卡"))
                 图标.sprite = Resources.Load("图标/仙晶卡图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("精华"))
@@ -511,12 +525,17 @@ public class G_Util : MonoBehaviour
                 图标.sprite = Resources.Load("图标/精华图标", typeof(Sprite)) as Sprite;
                 图标.color = bm.转换颜色(bm.Xstoi(物品.qua));
             }
+            else if (物品.icon.Equals("晶矿"))
+            {
+                图标.sprite = Resources.Load("图标/晶矿图标", typeof(Sprite)) as Sprite;
+                图标.color = bm.转换颜色(bm.Xstoi(物品.qua));
+            }
             else if (物品.icon.Equals("空间结晶"))
                 图标.sprite = Resources.Load("图标/空间结晶图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("血药"))
                 图标.sprite = Resources.Load("图标/血药图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("暗器"))
-                图标.sprite = Resources.Load("图标/暗器图标", typeof(Sprite)) as Sprite;
+                图标.sprite = Resources.Load("图标/暗器图标1", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("钱币"))
                 图标.sprite = Resources.Load("图标/钱币图标", typeof(Sprite)) as Sprite;
             else if (物品.icon.Equals("药水"))
@@ -663,10 +682,23 @@ public class G_Util : MonoBehaviour
     }
 
 
+    public void 隐藏杂项()
+    {
+        //关闭选项框
+        GameObject[] 选项框 = GameObject.FindGameObjectsWithTag("杂项");
+        if (选项框.Length != 0)
+        {
+            for (int i = 0; i < 选项框.Length; i++)
+            {
+                选项框[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+
     public bool 概率(int 分子, int 分母)
     {
-        Random 随机类 = new Random(Guid.NewGuid().GetHashCode());
-        int 随机数 = 随机类.Next(1, 分母 + 1);
+        int 随机数 = UnityEngine.Random.Range(1, 分母 + 1);
         if (随机数 <= 分子)
             return true;
         else return false;
@@ -679,8 +711,7 @@ public class G_Util : MonoBehaviour
     /// <param name="礼包内容与概率"></param>
     /// <returns></returns>
     public string 概率_礼包(Dictionary<string,int>礼包内容与概率,string 保底) {
-        Random 随机类 = NameMgr.随机类;
-        int 随机数 = 随机类.Next(1, 10000 + 1);
+        int 随机数 = UnityEngine.Random.Range(1, 10000 + 1);
         int index = 0;
         foreach (string name in 礼包内容与概率.Keys) {
             index += 礼包内容与概率[name];
@@ -820,7 +851,8 @@ public class G_Util : MonoBehaviour
                 SceneManager.LoadScene("幻界星空");
         }
         else {
-            生成对话框("通关仙路副本后解锁!",0,0.08f,"点击幻界");
+            //生成对话框("通关仙路副本后解锁!",0,0.08f,"点击幻界");
+            敬请期待();
         }
     }
 
@@ -830,6 +862,22 @@ public class G_Util : MonoBehaviour
         combat cbData = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
         myData.剩余血量 = cbData.剩余血量;
         io_.save(myData);
+    }
+
+
+    public void 移动(string ScenceName)
+    {
+        GameObject 地图 = DataMgr.GetInstance().本地对象["UI"].transform.Find("战斗页").transform.Find("地图").gameObject;
+        if (地图.activeSelf)
+            地图.SetActive(false);
+        if (AdressMgr.GetInstance().检测战斗力是否达标(ScenceName))
+        {
+            跳转场景(ScenceName);
+        }
+        else {
+            生成对话框("至少需要"+AdressMgr.地图表[ScenceName]+"点战斗力才能进入该地图.",0,0,"进图失败");       
+        }
+
     }
 
 
@@ -989,10 +1037,37 @@ public class G_Util : MonoBehaviour
             父物体 = 父物体.transform.Find("图片").gameObject;
         }
         伤害_.transform.SetParent(父物体.transform, false);//第二个参数可以不用定义许多RectTransform属性
+        //伤害_.GetComponent<RectTransform>().sizeDelta = new Vector2(240, 100);//recttransform必不可少的属性(半知半解)
         伤害_.transform.localPosition = new Vector3(0, 0, 0);//设置生成位置
-        伤害_.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);//设置生成的大小
-        伤害_.transform.GetComponent<Text>().text = 伤害 + "";
+        伤害_.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        伤害_.transform.GetComponent<Text>().text = 数字增加单位(伤害 + "");
         伤害_.name = type;
+    }
+
+    public string 数字增加单位(string 数字) {
+
+        if (数字.IndexOf("万") != -1 || 数字.IndexOf("亿") != -1)
+        {
+            if (数字.IndexOf("万") != -1) {
+                数字.Replace("万", "");
+                if (float.Parse(数字) / 10000f >= 1) {
+                    数字 = (float.Parse(数字) / 10000).ToString("0.00") + "亿";
+                }
+            }
+        }
+        else {
+            if (float.Parse(数字) / 100000000 >= 1)
+            {
+                数字 = (float.Parse(数字) / 100000000).ToString("0.00") + "亿";
+            }
+            else if (float.Parse(数字) / 10000 >= 1)
+            {
+                数字 = (float.Parse(数字) / 10000).ToString("0.00") + "万";
+            }
+        }
+
+        return 数字;
+
     }
 
 
@@ -1007,8 +1082,30 @@ public class G_Util : MonoBehaviour
         Text 战斗力 = UI.transform.Find("战斗页/state/zdl_bg/zdl_Text").GetComponent<Text>();
         Text 等级 = UI.transform.Find("战斗页/state/grade_bg/grade_Text").GetComponent<Text>();
         cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>(); //加载猪脚的战斗脚本
-        战斗力.text = (int)(bm.Xstoi(cb.攻击力) * 0.5f * ((bm.Xstof(cb.暴击率) / 100.0f) + 1) * (1.5f / bm.Xstof(cb.攻击速度_)) * bm.Xstof(cb.暴伤加成) * bm.Xstof(cb.伤害加成) * (1.0 + bm.Xstof(cb.伤害减免)) * (1.0 + bm.Xstof(cb.吸血加成)) + bm.Xstoi(cb.防御力) * 0.5f + bm.Xstoi(cb.血量) * 0.05f + bm.Xstoi(cb.回血值) * 0.05f + bm.Xstoi(cb.固定伤害) * 0.5f + bm.Xstoi(cb.固定减伤) * 0.5f + bm.Xstoi(cb.固定吸血) * 1f) + "";//战斗力基数:攻击*1,防御*0.5,血量*0.08
+        战斗力.text = 返回主角战斗力();
         等级.text = bm.Xor(cb.等级);
+
+    }
+
+
+    public string 返回主角战斗力() {
+        cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>(); //加载猪脚的战斗脚本
+        double 四维战斗力 = bm.Xstoi(cb.攻击力) * 0.5f * (1.0 + bm.Xstof(cb.攻击力加成) / 100f) + bm.Xstoi(cb.防御力) * 0.5f * (1.0 + bm.Xstof(cb.防御力加成) / 100f) + bm.Xstoi(cb.血量) * 0.05f * (1.0 + bm.Xstof(cb.血量加成) / 100f) + bm.Xstoi(cb.回血值) * 0.05f * (1.0 + bm.Xstof(cb.回血值加成) / 100f);//战斗力基数:攻击*0.5,防御*0.5,血量*0.05
+        double 攻击附加战斗力 = bm.Xstoi(cb.攻击力)*0.2f * (1.0 + bm.Xstof(cb.伤害加成)) * (1.0 + bm.Xstof(cb.吸血加成)) * ((bm.Xstof(cb.暴击率) / 100.0f) > 1 ? 1 : (bm.Xstof(cb.暴击率) / 100.0f) + 1) * (1.5f / bm.Xstof(cb.攻击速度_)) * (bm.Xstof(cb.暴伤加成) - 0.5f);
+        double 防御附加战斗力 = bm.Xstoi(cb.防御力) * 0.2f * (1.0 + bm.Xstof(cb.伤害减免));
+        double 附加真实战斗力 = bm.Xstoi(cb.固定伤害) * 0.75f + bm.Xstoi(cb.固定减伤) * 0.75f + bm.Xstoi(cb.固定吸血) * 1f;
+        return 数字增加单位((int)(四维战斗力 +攻击附加战斗力+防御附加战斗力+ 附加真实战斗力) + "");
+
+    }
+
+    public int 返回主角战斗力_无单位()
+    {
+        cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>(); //加载猪脚的战斗脚本
+        double 四维战斗力 = bm.Xstoi(cb.攻击力) * 0.5f * (1.0 + bm.Xstof(cb.攻击力加成) / 100f) + bm.Xstoi(cb.防御力) * 0.5f * (1.0 + bm.Xstof(cb.防御力加成) / 100f) + bm.Xstoi(cb.血量) * 0.05f * (1.0 + bm.Xstof(cb.血量加成) / 100f) + bm.Xstoi(cb.回血值) * 0.05f * (1.0 + bm.Xstof(cb.回血值加成) / 100f);//战斗力基数:攻击*0.5,防御*0.5,血量*0.05
+        double 攻击附加战斗力 = bm.Xstoi(cb.攻击力) * 0.2f * (1.0 + bm.Xstof(cb.伤害加成)) * (1.0 + bm.Xstof(cb.吸血加成)) * ((bm.Xstof(cb.暴击率) / 100.0f) > 1 ? 1 : (bm.Xstof(cb.暴击率) / 100.0f) + 1) * (1.5f / bm.Xstof(cb.攻击速度_)) * (bm.Xstof(cb.暴伤加成) - 0.5f);
+        double 防御附加战斗力 = bm.Xstoi(cb.防御力) * 0.2f * (1.0 + bm.Xstof(cb.伤害减免));
+        double 附加真实战斗力 = bm.Xstoi(cb.固定伤害) * 0.75f + bm.Xstoi(cb.固定减伤) * 0.75f + bm.Xstoi(cb.固定吸血) * 1f;
+        return (int)(四维战斗力 + 攻击附加战斗力 + 防御附加战斗力 + 附加真实战斗力);
 
     }
 
@@ -1145,9 +1242,8 @@ public class G_Util : MonoBehaviour
         float 时间 = (float)参数集[3];
 
 
-        Random 随机类 = new Random(Guid.NewGuid().GetHashCode());
-        int x轴偏移 = 随机类.Next(-120, 120);
-        int y轴偏移 = 随机类.Next(-80, 80);
+        int x轴偏移 =  UnityEngine.Random.Range(-120, 120);
+        int y轴偏移 =  UnityEngine.Random.Range(-80, 80);
         //实例化气泡(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 光球 = GameObject.Instantiate(对象) as GameObject;
         光球.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
@@ -1183,6 +1279,7 @@ public class G_Util : MonoBehaviour
         GameObject 父物体 = NameMgr.画布;
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 背包 = GameObject.Instantiate(对象) as GameObject;
+        DataMgr.GetInstance().本地对象的添加("背包", 背包);
         背包.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
         背包.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);//recttransform必不可少的属性(半知半解)
         背包.transform.localPosition = new Vector2(0, 0);//设置生成位置
@@ -1209,6 +1306,7 @@ public class G_Util : MonoBehaviour
         参数集.Add(2, 数量);
         StartCoroutine(bm.LoadABPrefabs("物品项", 实例化物品项, 参数集));
     }
+
 
     private void 实例化物品项(GameObject 对象, Dictionary<int, object> 参数集)
     {
@@ -1243,6 +1341,69 @@ public class G_Util : MonoBehaviour
 
     }
 
+    public void 生成装备项(int num, string UID,role_Data MyData)
+    {
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(0, num);
+        参数集.Add(1, UID);
+        参数集.Add(2, MyData);
+        StartCoroutine(bm.LoadABPrefabs("物品项", 实例化装备项, 参数集));
+    }
+
+    private void 实例化装备项(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        role_Data myData = 参数集[2] as role_Data;
+        int num = (int)参数集[0];
+        string UID = 参数集[1] +"";
+        Equipment 装备 = myData.装备背包[UID];
+
+        GameObject 父物体 = GameObject.Find("Bag_Content");
+
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 装备项 = GameObject.Instantiate(对象) as GameObject;
+        装备项.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
+        装备项.GetComponent<RectTransform>().sizeDelta = new Vector2(570, 80);//recttransform必不可少的属性(半知半解)
+        装备项.transform.localPosition = new Vector2(285, -80 * num + 40);//设置生成位置
+        装备项.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        装备项.name = UID;
+        Text 名字文本 = 装备项.transform.Find("名字").GetComponent<Text>();
+        名字文本.text = 装备.name;
+        名字文本.color = bm.转换颜色(bm.Xstoi(装备.qua));
+        Text 强化等级 = 名字文本.gameObject.transform.Find("等级").GetComponent<Text>();  
+            if (bm.Xstoi(装备.lv) != 0)
+            {
+                强化等级.gameObject.SetActive(true);
+                强化等级.text = "+" + bm.Xstoi(装备.lv);
+            }
+            else
+            {
+                强化等级.gameObject.SetActive(false);
+            }
+        强化等级.color = bm.转换颜色(bm.Xstoi(装备.qua));
+        Text 等级文本 = 装备项.transform.Find("数量").GetComponent<Text>();
+        等级文本.text =bm.Xstoi( 装备.lessgrade)+"";
+        if (bm.Xstoi(myData.等级) >= bm.Xstoi(装备.lessgrade))
+        {
+            等级文本.color = bm.转换颜色(1);
+        }
+        else {
+            等级文本.color = bm.转换颜色(5);
+        }
+        Image 图标 = 装备项.transform.Find("图标").GetComponent<Image>();
+        初始化图标(图标, 装备);
+        Image 锁图标 = 装备项.transform.Find("锁").GetComponent<Image>();
+        if (装备.islock.Equals("0"))
+            锁图标.sprite = Resources.Load("图标/开锁图标", typeof(Sprite)) as Sprite;
+        else
+            锁图标.sprite = Resources.Load("图标/关锁图标", typeof(Sprite)) as Sprite;
+
+        Bag_PropOption bpo = 装备项.GetComponent<Bag_PropOption>();
+        bpo.名字 = 装备.name;
+        bpo.UID = UID;
+    }
+
+
+
     public void 生成获得框(String 物品名,int 数量)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
@@ -1276,6 +1437,25 @@ public class G_Util : MonoBehaviour
         获得框.transform.SetAsLastSibling();
     }
 
+
+    public void 生成事件框()
+    {
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        StartCoroutine(bm.LoadABPrefabs("事件框", 实例化事件框, 参数集));
+    }
+
+    private void 实例化事件框(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        GameObject 父物体 = NameMgr.画布;
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 事件框 = GameObject.Instantiate(对象) as GameObject;
+        事件框.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
+        事件框.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 200);//recttransform必不可少的属性(半知半解)
+        事件框.transform.localPosition = new Vector2(0, 400);//设置生成位置
+        事件框.transform.localScale = new Vector3(1f, 1f, 1f);//设置生成的大小
+        事件框.transform.SetAsLastSibling();
+    }
+
     public void 生成获得提示(List<Prop_bascis> 物品集合, string type)
     {
         //移动端传list<T> T为引用数据会丢失数据,需要泛型类来存储数据
@@ -1300,6 +1480,17 @@ public class G_Util : MonoBehaviour
             父物体 = NameMgr.背包.gameObject;
         else
             父物体 = GameObject.Find("物品栏").gameObject;
+
+
+        StartCoroutine(获得提示移动(对象, 父物体, 1.2f, 物品集合));
+
+       
+
+    }
+
+
+    public IEnumerator 获得提示移动(GameObject 对象,GameObject 父物体, float 用时,List<Prop_bascis> 物品集合)
+    {
         int i = 0;
         foreach (Prop_bascis 物品信息 in 物品集合)
         {
@@ -1307,16 +1498,19 @@ public class G_Util : MonoBehaviour
             GameObject 获得提示 = GameObject.Instantiate(对象) as GameObject;
             获得提示.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
             获得提示.GetComponent<RectTransform>().sizeDelta = new Vector2(250, 62);//recttransform必不可少的属性(半知半解)
-            获得提示.transform.localPosition = new Vector2(0, -175 + i * 62);//设置生成位置
+            获得提示.transform.localPosition = new Vector2(0, -100);//设置生成位置
             获得提示.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
             Text 文本 = 获得提示.transform.Find("物品名").GetComponent<Text>();
             文本.text = 物品信息.name;
             文本.color = bm.转换颜色(bm.Xstoi(物品信息.qua));
             获得提示.transform.SetAsLastSibling();
             i++; //物品计数
-            StartCoroutine(bm.MoveTo(获得提示.transform, 父物体.transform.position + new Vector3(0, 18, 0), (float)(2.0f - 0.1 * i)));
+            StartCoroutine(bm.MoveTo(获得提示.transform, 父物体.transform.position + new Vector3(0, 30, 0), 用时));
+            yield return new WaitForSeconds(0.2f);
+
         }
 
+        
     }
 
     public void 自动战斗()
@@ -1401,10 +1595,11 @@ public class G_Util : MonoBehaviour
             }
         }
 
-        if (bm.Xstof(cb.攻击速度_) > 0.5f)
+        /*if (bm.Xstof(cb.攻击速度_) > 0.5f)
             cb.timer = bm.Xstof(cb.攻击速度_);
         else
-            cb.timer = 0.5f;//攻击间隔最低为0.5f
+            cb.timer = 0.5f;//攻击间隔最低为0.5f*/
+        cb.timer = bm.Xstof(cb.攻击速度_);
     }
 
 
@@ -1416,7 +1611,7 @@ public class G_Util : MonoBehaviour
     }
 
     public void 随机攻击怪物(combat cb) {
-        int 随机数 = 随机类.Next(0, cb.仇恨列表.Count);
+        int 随机数 =  UnityEngine.Random.Range(0, cb.仇恨列表.Count);
         List<string> names = new List<string>();
         foreach (string name in cb.仇恨列表.Keys)
         {
@@ -1507,6 +1702,14 @@ public class G_Util : MonoBehaviour
         角色面板.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
         角色面板.transform.SetAsLastSibling();
         面板属性刷新(角色面板);//信息填充-属性
+        if (DataMgr.GetInstance().本地对象.ContainsKey("属性面板"))
+        {
+            DataMgr.GetInstance().本地对象["属性面板"] = 角色面板;
+        }
+        else
+        {
+            DataMgr.GetInstance().本地对象.Add("属性面板", 角色面板);
+        }
     }
 
     public void 面板属性刷新(GameObject 角色面板)
@@ -1523,17 +1726,21 @@ public class G_Util : MonoBehaviour
         Text 固定吸血 = 角色面板.transform.Find("bg/尾部/属性展示/固定吸血/Text").GetComponent<Text>();
         Text 吸血加成 = 角色面板.transform.Find("bg/尾部/属性展示/百分比吸血/Text").GetComponent<Text>();
         Text 伤害加成 = 角色面板.transform.Find("bg/尾部/属性展示/伤害加成/Text").GetComponent<Text>();
+        Text 固定伤害 = 角色面板.transform.Find("bg/尾部/属性展示/固定伤害/Text").GetComponent<Text>();
+        Text 固定减伤 = 角色面板.transform.Find("bg/尾部/属性展示/固定减伤/Text").GetComponent<Text>();
         Text 伤害减免 = 角色面板.transform.Find("bg/尾部/属性展示/伤害减免/Text").GetComponent<Text>();
         Text 金钱爆率 = 角色面板.transform.Find("bg/尾部/属性展示/金钱爆率/Text").GetComponent<Text>();
         Text 经验爆率 = 角色面板.transform.Find("bg/尾部/属性展示/经验爆率/Text").GetComponent<Text>();
         Text 现有套装 = 角色面板.transform.Find("bg/中部/装备页/套装显示/生效的套装").GetComponent<Text>();
         Text 经验值 = 角色面板.transform.Find("bg/头部/经验/经验值").GetComponent<Text>();
+        Text 战斗力 = 角色面板.transform.Find("bg/头部/战斗力/战斗力").GetComponent<Text>();
         Text 名字 = 角色面板.transform.Find("bg/头部/名字/name").GetComponent<Text>();
 
 
 
         role_Data myData = io_.load();
-        经验值.text = bm.Xstoi(myData.当前经验) + "<color=black>" + " / " + RoleMgr.GetInstance().经验表(bm.Xstoi(myData.等级)) + "</color>";
+        经验值.text = 数字增加单位(bm.Xstol(myData.当前经验)+"") + "<color=black>" + " / " + 数字增加单位(RoleMgr.GetInstance().经验表(bm.Xstoi(myData.等级))+"") + "</color>";
+        战斗力.text = 返回主角战斗力();
         名字.text = myData.名字;
         string Str_suit = "";
         foreach (string 套装名 in PropMgr.GetInstance().装备套装信息.Keys)
@@ -1560,20 +1767,23 @@ public class G_Util : MonoBehaviour
         if (!gameObject.CompareTag("幻界") && 人物 != null)
         {
             cb = 人物.GetComponent<combat>(); //加载猪脚的战斗脚本
+            cb.人物属性刷新();
             等级.text = bm.Xstoi(cb.等级) + " <color=blue>  / " + bm.Xstoi(myData.限制等级) + "</color>";
             灵根.text = bm.Xstoi(myData.灵根) + "";
-            攻击力.text = bm.Xstoi(cb.攻击力) + "";
-            防御力.text = bm.Xstoi(cb.防御力) + "";
-            生命值.text = bm.Xstoi(cb.血量) + "";
-            回血值.text = bm.Xstoi(cb.回血值) + "";
-            攻击速度.text = Math.Round(bm.Xstof(cb.攻击速度_), 2) + "s";//按照四舍五入的国际标准 + "";       
+            攻击力.text = 数字增加单位(bm.Xstoi(cb.攻击力) + "");
+            防御力.text = 数字增加单位(bm.Xstoi(cb.防御力) + "");
+            生命值.text = 数字增加单位(bm.Xstoi(cb.血量) + "");
+            回血值.text = 数字增加单位(bm.Xstoi(cb.回血值) + "");
+            攻击速度.text = Math.Round(1f/bm.Xstof(cb.攻击速度_), 2)+"" ;//按照四舍五入的国际标准 + "";       
             暴击率.text = bm.Xstoi(cb.暴击率) + "%";
-            固定吸血.text = bm.Xstoi(cb.固定吸血) + "";
-            吸血加成.text = bm.Xstof(cb.吸血加成) * 100 + "%";
+            固定吸血.text = 数字增加单位(bm.Xstoi(cb.固定吸血) + "");
+            吸血加成.text =  bm.Xstof(cb.吸血加成) * 100 + "%";
             伤害加成.text = (bm.Xstof(cb.伤害加成) - 1) * 100 + "%";
             伤害减免.text = bm.Xstof(cb.伤害减免) * 100 + "%";
             金钱爆率.text = bm.Xstof(cb.金钱加成) * 100 + "%";
             经验爆率.text = bm.Xstof(cb.经验加成) * 100 + "%";
+            固定伤害.text = 数字增加单位(bm.Xstoi(cb.固定伤害) + "");
+            固定减伤.text = 数字增加单位(bm.Xstoi(cb.固定减伤) + "");
         }
 
     }
@@ -1605,21 +1815,40 @@ public class G_Util : MonoBehaviour
     {
         if (GameObject.FindGameObjectWithTag("选中"))//有选中目标
         {
-            string name = GameObject.FindGameObjectWithTag("选中").transform.Find("名字").GetComponent<Text>().text;
-            Prop_bascis 物品 = pm.检索物品(name);
-            if (物品.type.Equals("3"))
+            GameObject 选中项 = GameObject.FindGameObjectWithTag("选中");
+            string 键 = 选中项.name;
+            if (PropMgr.材料表.ContainsKey(键))//物品为道具
             {
-                Equipment 查看的装备 = (Equipment)物品;
-                role_Data myData = io_.load();
-                if (myData.装备槽[查看的装备.place] != null)
+                Prop_bascis 物品 = pm.检索物品(选中项.transform.Find("名字").GetComponent<Text>().text);
+                生成物品信息(物品, 0, 键);
+            }
+            else if (PropMgr.装备表.ContainsKey(键)) {//物品为打造装备的名字
+                myData = io_.load();
+                Equipment 装备 =(Equipment) pm.检索物品(选中项.transform.Find("名字").GetComponent<Text>().text);
+                if (myData.装备槽[装备.place] != null)
                 {
-                    Equipment 比对的装备 = (Equipment)pm.检索物品(myData.装备槽[查看的装备.place].name);
-                    生成物品信息(比对的装备, 1);
-                    生成物品信息(物品, 2);
+                    Equipment 比对的装备 = myData.装备槽[装备.place];
+                    生成物品信息(比对的装备, 1, 装备.place);
+                    生成物品信息(装备, 2, 键);
                     return;
                 }
+                生成物品信息(装备, 0, 键);
             }
-            生成物品信息(物品, 0);
+            else//物品为背包里的装备
+            {
+                myData = io_.load();
+                Equipment 装备 = myData.装备背包[选中项.name];
+                if (myData.装备槽[装备.place] != null)
+                {
+                    Equipment 比对的装备 = myData.装备槽[装备.place];
+                    生成物品信息(比对的装备, 1, 装备.place);
+                    生成物品信息(装备, 2, 键);
+                    return;
+                }
+                生成物品信息(装备, 0, 键);
+            }
+           
+            
         }
         else  //无选中,生成警告框
             生成警告框("未选中");
@@ -1702,11 +1931,12 @@ public class G_Util : MonoBehaviour
     }
 
 
-    public void 生成物品信息(Prop_bascis 物品, int 状态)
+    public void 生成物品信息(Prop_bascis 物品, int 状态,string 键)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
         参数集.Add(0, 物品);
         参数集.Add(1, 状态);
+        参数集.Add(2, 键);
         StartCoroutine(bm.LoadABPrefabs("物品信息", 实例化物品信息, 参数集));
     }
 
@@ -1714,11 +1944,255 @@ public class G_Util : MonoBehaviour
     {
         Prop_bascis 物品 = 参数集[0] as Prop_bascis;
         int 状态 = (int)参数集[1];
+        string 键 = 参数集[2] + "";
         GameObject 父物体 = NameMgr.画布;
 
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 信息框 = GameObject.Instantiate(对象) as GameObject;
         信息框.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
+        信息框.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);//recttransform必不可少的属性(半知半解)
+        if (状态 == 0)
+        {
+            信息框.transform.localPosition = new Vector2(0, 0);//设置生成位置
+            if (PropMgr.GetInstance().主属性表.ContainsKey(键)) {
+                信息框.transform.Find("主面板/边框/遮罩面板").gameObject.transform.Find("已装备遮罩").gameObject.SetActive(true);
+            }
+        }
+        else if (状态 == 1)
+        {
+            信息框.transform.localPosition = new Vector2(-230, 0);//设置生成位置
+            信息框.transform.Find("主面板/边框/遮罩面板").gameObject.transform.Find("已装备遮罩").gameObject.SetActive(true);
+        }
+        else if (状态 == 2)
+            信息框.transform.localPosition = new Vector2(230, 0);//设置生成位置
+        信息框.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        信息框.transform.SetAsLastSibling();
+
+        //绑定点击事件
+        bm.Banding(信息框.transform.Find("bt_Panel").gameObject, 关闭杂项);
+
+
+        信息框.GetComponent<EquipmentDate>().Key = 键;
+
+        //信息填充-名字及其颜色
+        GameObject 基本属性 = 信息框.transform.Find("主面板/边框/基本属性").gameObject;
+        Text name = 基本属性.transform.Find("名字/名字文本").GetComponent<Text>();
+        //文本集合.Add(name);
+        name.text = 物品.name;
+        name.color = bm.转换颜色(bm.Xstoi(物品.qua));
+
+        //贴图
+        Image 图标 = 基本属性.transform.Find("图标").GetComponent<Image>();
+        初始化图标(图标, 物品);
+
+        //星级
+        /* Text xing = 信息框.transform.Find("主面板/panel_up/Xing/Text").GetComponent<Text>();
+         xing.text = bm.Xor(物品.xing);
+         //是否绑定/可以交易
+         Text bang = 信息框.transform.Find("主面板/panel_up/Bang").GetComponent<Text>();
+         if (物品.isbang.Equals("0"))
+         {
+             bang.text = "可交易";
+             bang.color = bm.转换颜色(1);
+         }
+         else
+         {
+             bang.text = "不可交易";
+             bang.color = bm.转换颜色(5);
+         }*/
+        //最低使用等级
+        Text lv = 基本属性.transform.Find("最低等级/最低等级文本").GetComponent<Text>();
+        //文本集合.Add(lv);
+        lv.text ="Lv:1";
+
+        //装备面板和道具面板
+        GameObject 装备面板= 信息框.transform.Find("主面板/边框/装备面板").gameObject;
+        GameObject 道具面板= 信息框.transform.Find("主面板/边框/道具面板").gameObject;
+
+        if (物品.type.Equals("3"))//物品是装备
+        {
+            装备面板.SetActive(true);
+            道具面板.SetActive(false);
+            Equipment 装备 = (Equipment)物品;
+            Text 强化等级 = 基本属性.transform.Find("强化等级/强化等级文本").GetComponent<Text>();
+            if (bm.Xstoi(装备.lv) != 0)
+            {
+                强化等级.transform.parent.gameObject.SetActive(true);
+                强化等级.text = "+" + bm.Xstoi(装备.lv);
+            }
+            else {
+                强化等级.transform.parent.gameObject.SetActive(false);
+            }
+            强化等级.color = bm.转换颜色(bm.Xstoi(物品.qua));
+            lv.text = "Lv:" + bm.Xor(装备.lessgrade);
+            if (bm.Xstoi(装备.lessgrade) > bm.Xstoi(myData.等级))
+            {
+                Color nowColor;
+                ColorUtility.TryParseHtmlString("#DD3737", out nowColor);
+                lv.color = nowColor;
+            }
+            //显示各种属性
+            Text 主属性文本 = 装备面板.transform.Find("主属性值/主属性值文本").GetComponent<Text>();
+            //文本集合.Add(主属性文本);
+            if (bm.Xstoi(装备.lv) < int.Parse(PropMgr.GetInstance().颜色等级上限[bm.Xstoi(装备.qua) + ""]))
+            {
+
+                主属性文本.text = PropMgr.GetInstance().主属性表[装备.place] + bm.Xstoi(装备.head_attribute_num) + "<color=green>  (可强化)</color>";
+            }
+            else {
+                主属性文本.text = PropMgr.GetInstance().主属性表[装备.place] + bm.Xstoi(装备.head_attribute_num) + "<color=red>  (已满级)</color>";
+            }
+            GameObject 副属性 = 装备面板.transform.Find("副属性值/副属性值文本").gameObject;
+            //副属性
+            if (装备.next_attribute != null && !装备.next_attribute.Equals(""))
+            {
+                副属性.transform.parent.gameObject.SetActive(true);
+                Text 副属性文本 = 副属性.GetComponent<Text>();
+                //文本集合.Add(副属性文本);
+                副属性文本.text = 装备.next_attribute + bm.Xstoi(装备.next_num);
+            }
+            else {
+                副属性.transform.parent.gameObject.SetActive(false);
+            }
+
+            GameObject 额外属性 = 装备面板.transform.Find("额外属性值/额外属性值文本").gameObject;
+            //额外属性
+            if (装备.extar_attribute != null && 装备.extar_attribute.Count > 0)
+            {
+                额外属性.transform.parent.gameObject.SetActive(true);
+                Text 额外属性文本 = 额外属性.GetComponent<Text>();
+                if (!PropMgr.装备表.ContainsKey(键)) {//已有装备
+                    额外属性文本.text = "";
+                    int index = 0;
+                    //文本集合.Add(额外属性文本);
+                    foreach (string 属性名 in 装备.extar_attribute.Keys)
+                    {
+                        if (index == 0)
+                        {
+                            额外属性文本.text += 属性名 + bm.Xstoi(装备.extar_attribute[属性名]);
+                        }
+                        else
+                        {
+                            额外属性文本.text += "\n" + 属性名 + bm.Xstoi(装备.extar_attribute[属性名]);
+                        }
+                        index++;
+                    }
+                }
+                else { 
+                    额外属性文本.text = "随机生成"+ 装备.extar_attribute.Count+"条额外属性";
+                }
+            }
+            else {
+                额外属性.transform.parent.gameObject.SetActive(false);
+            }
+
+
+            if (!装备.tao.Equals(""))//显示套装信息
+            {
+                装备面板.transform.Find("套装").gameObject.SetActive(true);
+                装备面板.transform.Find("套装基本信息").gameObject.SetActive(true);
+                装备面板.transform.Find("套装属性信息").gameObject.SetActive(true);
+                Text 套装名字文本 = 装备面板.transform.Find("套装基本信息/套装基本信息文本").GetComponent<Text>();
+                //文本集合.Add(套装名字文本);
+                套装名字文本.gameObject.SetActive(true);
+                Text 套装属性文本 = 装备面板.transform.Find("套装属性信息/套装属性信息文本").GetComponent<Text>();
+                //文本集合.Add(套装属性文本);
+                套装属性文本.gameObject.SetActive(true);
+                //信息填写
+                suit_Data suData = PropMgr.套装表[装备.tao];
+                /*信息框.transform.Find("额外面板/套装_name").GetComponent<Text>().text = "<" + suData.s_name + ">";
+                信息框.transform.Find("额外面板/套装_num").GetComponent<Text>().text = "(" + suData.s_index + "/" + suData.s_total + ")";*/
+                套装名字文本.text = "<" + suData.s_name + "> " + "(" + suData.s_total + "/" + suData.s_index + ")";
+                string 效果文字 = 返回套装效果的文字描述(suData);
+                /*信息框.transform.Find("额外面板/效果").GetComponent<Text>().text = 效果文字;
+                int 文字大小 = 80;
+                if (int.Parse(suData.s_total) > 2)
+                    文字大小 = 80 - (int.Parse(suData.s_total) - 2) * 3;
+                信息框.transform.Find("额外面板/效果").GetComponent<Text>().fontSize = 文字大小;*/
+                套装属性文本.text = 效果文字;
+            }
+            else {
+                装备面板.transform.Find("套装").gameObject.SetActive(false);
+                装备面板.transform.Find("套装基本信息").gameObject.SetActive(false);
+                装备面板.transform.Find("套装属性信息").gameObject.SetActive(false);
+            }
+            //显示按钮并绑定事件
+            GameObject 各种按钮 = 装备面板.transform.Find("按钮").gameObject;
+            if (!PropMgr.装备表.ContainsKey(键))
+            {
+                GameObject 穿戴按钮 = 各种按钮.transform.Find("穿戴").gameObject;
+                if (PropMgr.GetInstance().主属性表.ContainsKey(键)) {
+                    穿戴按钮.transform.Find("穿戴/穿戴文本").GetComponent<Text>().text = "卸下";
+                }
+                各种按钮.SetActive(true);
+
+            }
+            else {
+                各种按钮.SetActive(false);
+            }
+
+        }
+        //物品为道具
+        else
+        {
+            装备面板.SetActive(false);
+            道具面板.SetActive(true);
+            //效果/属性
+            Text fun = 道具面板.transform.Find("道具效果/道具效果文本").GetComponent<Text>();
+            //文本集合.Add(fun);
+            if (物品.type.Equals("1") && 物品.fun.Equals(""))
+                fun.text = "材料/收集品\n" + "出售单价为" + bm.Xstoi(物品.price);
+            else if (物品.type.Equals("2"))
+                fun.text = "使用效果:" + 物品.fun;     
+            else
+            {
+                fun.text = 物品.fun;
+            }
+        }
+        /*
+         Dictionary<string, string> 装备属性 = pm.提取装备属性(装备);
+            string 属性文本 = "";
+            foreach (string 属性词条 in 装备属性.Keys)
+            {
+                属性文本 += 属性词条 + bm.Xstoi(装备属性[属性词条]) + "\n";
+            }
+            fun.text = 属性文本;
+         */
+
+
+
+        //描述
+        if (物品.comment != null && !物品.comment.Equals(""))
+        {
+            Text comment = 信息框.transform.Find("主面板/边框/简介/简介文本").GetComponent<Text>();
+            //文本集合.Add(comment);
+            comment.text = 物品.comment;
+        }
+        // Debug.Log(物品.comment+物品.name);
+
+        
+
+        //手动绑定材质
+        /*for (int i = 0; i < 文本集合.Count; i++)
+        {
+            文本集合[i].fontSharedMaterial = new Material(Shader.Find("TextMeshPro/Bitmap"));
+            文本集合[i].font = (TMP_FontAsset)Resources.Load<TMP_FontAsset>("Font/SanJi SDF");
+            
+        }*/
+    }
+
+
+
+
+
+    public  void 生成物品信息2(Prop_bascis 物品, int 状态)
+    {
+      
+        GameObject 父物体 = NameMgr.画布;
+
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 信息框 = Resources.Load<GameObject>("部件/物品信息");
+        //信息框.transform.SetParent(父物体.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
         信息框.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);//recttransform必不可少的属性(半知半解)
         if (状态 == 0)
             信息框.transform.localPosition = new Vector2(0, 0);//设置生成位置
@@ -1735,79 +2209,153 @@ public class G_Util : MonoBehaviour
         //绑定点击事件
         bm.Banding(信息框.transform.Find("bt_Panel").gameObject, 关闭杂项);
 
+
+
+        List<TMP_Text> 文本集合 = new List<TMP_Text>();
+
         //信息填充-名字及其颜色
-        Text name = 信息框.transform.Find("主面板/panel_up/Name").GetComponent<Text>();
+        GameObject 基本属性 = 信息框.transform.Find("主面板/边框/基本属性").gameObject;
+        TMP_Text name = 基本属性.transform.Find("名字").GetComponent<TMP_Text>();
+        //文本集合.Add(name);
         name.text = 物品.name;
         name.color = bm.转换颜色(bm.Xstoi(物品.qua));
+
+        //贴图
+        Image 图标 = 基本属性.transform.Find("图标").GetComponent<Image>();
+        初始化图标(图标, 物品);
+
         //星级
-        Text xing = 信息框.transform.Find("主面板/panel_up/Xing/Text").GetComponent<Text>();
-        xing.text = bm.Xor(物品.xing);
-        //是否绑定/可以交易
-        Text bang = 信息框.transform.Find("主面板/panel_up/Bang").GetComponent<Text>();
-        if (物品.isbang.Equals("0"))
-        {
-            bang.text = "可交易";
-            bang.color = bm.转换颜色(1);
-        }
-        else
-        {
-            bang.text = "不可交易";
-            bang.color = bm.转换颜色(5);
-        }
+        /* Text xing = 信息框.transform.Find("主面板/panel_up/Xing/Text").GetComponent<Text>();
+         xing.text = bm.Xor(物品.xing);
+         //是否绑定/可以交易
+         Text bang = 信息框.transform.Find("主面板/panel_up/Bang").GetComponent<Text>();
+         if (物品.isbang.Equals("0"))
+         {
+             bang.text = "可交易";
+             bang.color = bm.转换颜色(1);
+         }
+         else
+         {
+             bang.text = "不可交易";
+             bang.color = bm.转换颜色(5);
+         }*/
         //最低使用等级
-        Text lv = 信息框.transform.Find("主面板/panel_up/等级/num").GetComponent<Text>();
+        TMP_Text lv = 基本属性.transform.Find("最低等级").GetComponent<TMP_Text>();
+        //文本集合.Add(lv);
+        lv.text = "Lv: 1";
+
+        //装备面板和道具面板
+        GameObject 装备面板 = 信息框.transform.Find("主面板/边框/装备面板").gameObject;
+        GameObject 道具面板 = 信息框.transform.Find("主面板/边框/道具面板").gameObject;
+
         if (物品.type.Equals("3"))//物品是装备
         {
+            装备面板.SetActive(true);
+            道具面板.SetActive(false);
             Equipment 装备 = (Equipment)物品;
-            if (bm.Xstoi(装备.lessgrade) > bm.Xstoi(myData.等级)) {
+            lv.text = "Lv: " + bm.Xor(装备.lessgrade);
+            if (bm.Xstoi(装备.lessgrade) > bm.Xstoi(myData.等级))
+            {
                 Color nowColor;
                 ColorUtility.TryParseHtmlString("#DD3737", out nowColor);
                 lv.color = nowColor;
             }
+            //显示各种属性
+            TMP_Text 主属性文本 = 装备面板.transform.Find("主属性值").GetComponent<TMP_Text>();
+            //文本集合.Add(主属性文本);
+            主属性文本.text = PropMgr.GetInstance().主属性表[装备.place] + bm.Xstoi(装备.head_attribute_num);//待补
+            //副属性
+            if (装备.next_attribute != null && !装备.next_attribute.Equals(""))
+            {
+                GameObject 副属性 = 装备面板.transform.Find("副属性值").gameObject;
+                副属性.SetActive(true);
+                TMP_Text 副属性文本 = 副属性.GetComponent<TMP_Text>();
+                //文本集合.Add(副属性文本);
+                副属性文本.text = 装备.next_attribute + bm.Xstoi(装备.next_num);
+            }
+            //额外属性
+            if (装备.extar_attribute != null && 装备.extar_attribute.Count > 0)
+            {
+                GameObject 额外属性 = 装备面板.transform.Find("额外属性值").gameObject;
+                额外属性.SetActive(true);
+                TMP_Text 额外属性文本 = 额外属性.GetComponent<TMP_Text>();
+                //文本集合.Add(额外属性文本);
+                foreach (string 属性名 in 装备.extar_attribute.Keys)
+                {
+                    额外属性文本.text += "\n" + 属性名 + bm.Xstoi(装备.extar_attribute[属性名]);
+                }
+            }
+
+
             if (!装备.tao.Equals(""))//显示套装信息
             {
-                信息框.transform.Find("额外面板").gameObject.SetActive(true);
+                装备面板.transform.Find("套装").gameObject.SetActive(true);
+                TMP_Text 套装名字文本 = 装备面板.transform.Find("套装基本信息").GetComponent<TMP_Text>();
+                //文本集合.Add(套装名字文本);
+                套装名字文本.gameObject.SetActive(true);
+                TMP_Text 套装属性文本 = 装备面板.transform.Find("套装").GetComponent<TMP_Text>();
+                //文本集合.Add(套装属性文本);
+                套装属性文本.gameObject.SetActive(true);
                 //信息填写
                 suit_Data suData = PropMgr.套装表[装备.tao];
-                信息框.transform.Find("额外面板/套装_name").GetComponent<Text>().text = "<" + suData.s_name + ">";
-                信息框.transform.Find("额外面板/套装_num").GetComponent<Text>().text = "(" + suData.s_index + "/" + suData.s_total + ")";
+                /*信息框.transform.Find("额外面板/套装_name").GetComponent<Text>().text = "<" + suData.s_name + ">";
+                信息框.transform.Find("额外面板/套装_num").GetComponent<Text>().text = "(" + suData.s_index + "/" + suData.s_total + ")";*/
+                套装名字文本.text = "<" + suData.s_name + "> " + "(" + suData.s_total + "/" + suData.s_index + ")";
                 string 效果文字 = 返回套装效果的文字描述(suData);
-                信息框.transform.Find("额外面板/效果").GetComponent<Text>().text = 效果文字;
+                /*信息框.transform.Find("额外面板/效果").GetComponent<Text>().text = 效果文字;
                 int 文字大小 = 80;
                 if (int.Parse(suData.s_total) > 2)
-                    文字大小 = 80 - (int.Parse(suData.s_total) - 2) * 5;
-                信息框.transform.Find("额外面板/效果").GetComponent<Text>().fontSize = 文字大小;
+                    文字大小 = 80 - (int.Parse(suData.s_total) - 2) * 3;
+                信息框.transform.Find("额外面板/效果").GetComponent<Text>().fontSize = 文字大小;*/
+                套装属性文本.text = 效果文字;
             }
-            lv.text = bm.Xor(装备.lessgrade);
+            //显示按钮并绑定事件
+            GameObject 各种按钮 = 装备面板.transform.Find("按钮").gameObject;
+            各种按钮.SetActive(true);
+
+            //手动绑定材质
+            for (int i = 0; i < 文本集合.Count; i++)
+            {
+                文本集合[i].fontSharedMaterial = (Material)Resources.Load<Material>("材质球/TMP默认材质");
+            }
+
+
         }
+        //物品为道具
         else
-            lv.text = "1";//道具和材料默认等级为1
-                          //描述
-        Text comment = 信息框.transform.Find("主面板/panel_con/comment").GetComponent<Text>();
-        comment.text = 物品.comment;
-        // Debug.Log(物品.comment+物品.name);
-        //效果/属性
-        Text fun = 信息框.transform.Find("主面板/panel_con/Panel/效果").GetComponent<Text>();
-        if (!物品.type.Equals("3") && 物品.icon.Equals("精华"))
-            fun.text = 物品.fun;
-        else if (物品.type.Equals("1"))
-            fun.text = "材料/收集品\n" + "出售单价为" + bm.Xstoi(物品.price);
-        else if (物品.type.Equals("2"))
-            fun.text = "使用效果 : " + 物品.fun;
-        else if (物品.type.Equals("3"))
         {
-            Equipment 装备 = (Equipment)物品;
-            Dictionary<string, string> 装备属性 = pm.提取装备属性(装备);
+            装备面板.SetActive(false);
+            道具面板.SetActive(true);
+            //效果/属性
+            TMP_Text fun = 道具面板.transform.Find("道具效果").GetComponent<TMP_Text>();
+            if (物品.type.Equals("1") && 物品.fun.Equals(""))
+                fun.text = "材料/收集品\n" + "出售单价为" + bm.Xstoi(物品.price);
+            else if (物品.type.Equals("2"))
+                fun.text = "使用效果 : " + 物品.fun;
+            else
+            {
+                fun.text = 物品.fun;
+            }
+        }
+        /*
+         Dictionary<string, string> 装备属性 = pm.提取装备属性(装备);
             string 属性文本 = "";
             foreach (string 属性词条 in 装备属性.Keys)
             {
-                属性文本 += 属性词条 + 装备属性[属性词条] + "\n";
+                属性文本 += 属性词条 + bm.Xstoi(装备属性[属性词条]) + "\n";
             }
             fun.text = 属性文本;
+         */
+
+
+        //描述
+        if (物品.comment != null && !物品.comment.Equals(""))
+        {
+            TMP_Text comment = 信息框.transform.Find("主面板/边框/简介").GetComponent<TMP_Text>();
+            comment.text = 物品.comment;
         }
-        //贴图
-        Image 图标 = 信息框.transform.Find("主面板/panel_up/IMG").GetComponent<Image>();
-        初始化图标(图标, 物品);
+        // Debug.Log(物品.comment+物品.name);
+
 
     }
 
@@ -1827,9 +2375,9 @@ public class G_Util : MonoBehaviour
             if (int.Parse(suData.s_index) >= i)
                 效果 += "<color=green>" + i + "件套 :  " + 文字条目[i] + "</color>\n";
             else if (i == int.Parse(suData.s_total))
-                效果 += "<color=gray>" + i + "件套 :  " + 文字条目[i] + "</color>";
+                效果 += "<color=#848484>" + i + "件套 :  " + 文字条目[i] + "</color>";
             else
-                效果 += "<color=gray>" + i + "件套 :  " + 文字条目[i] + "</color>\n";
+                效果 += "<color=#848484>" + i + "件套 :  " + 文字条目[i] + "</color>\n";
         }
 
         return 效果;
@@ -1859,6 +2407,46 @@ public class G_Util : MonoBehaviour
         Ini_PropPanel ipp = 道具购买界面.GetComponent<Ini_PropPanel>();
         ipp.enabled = true;
         ipp.ini_building(道具列表);
+    }
+
+
+
+
+    public void 生成商城界面(string str_index)
+    {
+        关闭杂项();
+        GameObject 对话框 = GameObject.Find("对话框(Clone)");
+        if (对话框 != null)
+            删除对象(对话框);
+        GameObject 商城界面 = gameObject.transform.Find("道具界面(Clone)").gameObject;
+        商城界面.SetActive(true);
+        Ini_BuyProp ibp = 商城界面.GetComponent<Ini_BuyProp>();
+        ibp.enabled = true;
+        ibp.ini_building(str_index);
+    }
+
+    public void 初始化铜币商城()
+    {
+        Dictionary<string, Dictionary<string,int>> 道具表 = new Dictionary<string, Dictionary<string, int>>();
+        生成商城界面("铜币商城");
+    }
+
+
+    public void 初始化金币商城()
+    {
+        生成商城界面("金币商城");
+    }
+
+
+    public void 初始化仙晶商城()
+    {
+        生成商城界面("仙晶商城");
+    }
+
+
+    public void 初始化黑钻商城()
+    {
+        生成商城界面("黑钻商城");
     }
 
     public void 生成装备打造界面(List<int> 打造图鉴等级)
@@ -1900,6 +2488,55 @@ public class G_Util : MonoBehaviour
     }
 
 
+    public void 生成强化界面(string 键)
+    {
+        关闭杂项();
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(0, 键);
+        StartCoroutine(bm.LoadABPrefabs("强化界面", 实例化强化界面, 参数集));
+    }
+    private void 实例化强化界面(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        string 键 = 参数集[0] + "";
+
+        GameObject 父物体 = NameMgr.画布;
+
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 强化界面 = GameObject.Instantiate(对象) as GameObject;
+        强化界面.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
+        强化界面.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 850);//recttransform必不可少的属性(半知半解)
+        强化界面.transform.localPosition = new Vector2(0, 150);//设置生成位置
+        强化界面.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        强化界面.transform.SetAsLastSibling();
+
+        强化界面.GetComponent<EQU_Intensify>().Key = 键;
+    }
+
+    public void 生成合成界面(string 键)
+    {
+        关闭杂项();
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(0, 键);
+        StartCoroutine(bm.LoadABPrefabs("合成界面", 实例化合成界面, 参数集));
+    }
+    private void 实例化合成界面(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        string 键 = 参数集[0] + "";
+
+        GameObject 父物体 = NameMgr.画布;
+
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 合成界面 = GameObject.Instantiate(对象) as GameObject;
+        合成界面.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
+        合成界面.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 850);//recttransform必不可少的属性(半知半解)
+        合成界面.transform.localPosition = new Vector2(0, 150);//设置生成位置
+        合成界面.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        合成界面.transform.SetAsLastSibling();
+
+        合成界面.GetComponent<HeCheng>().Key = 键;
+    }
+
+
     public void 生成设置界面()
     {
         Transform 设置界面 = gameObject.transform.Find("设置(Clone)");
@@ -1931,7 +2568,7 @@ public class G_Util : MonoBehaviour
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 设置界面 = GameObject.Instantiate(对象) as GameObject;
         设置界面.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
-        设置界面.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 1000);//recttransform必不可少的属性(半知半解)
+        设置界面.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 600);//recttransform必不可少的属性(半知半解)
         设置界面.transform.localPosition = new Vector2(0, 0);//设置生成位置
         设置界面.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
         设置界面.transform.SetAsLastSibling();
@@ -1967,7 +2604,7 @@ public class G_Util : MonoBehaviour
         打造信息.transform.SetAsLastSibling();
 
         //信息填充
-        打造信息.name = "打造_" + 装备.name;
+        打造信息.name = 装备.name;
         DazaoItem dz = 打造信息.GetComponent<DazaoItem>();
         dz.需求材料 = 需求材料;
         Image 图标 = 打造信息.transform.Find("Image").GetComponent<Image>();
@@ -1993,11 +2630,23 @@ public class G_Util : MonoBehaviour
         int i = 0;
         foreach (string s in 需求材料.Keys)
         {
+            Dictionary<string, int> 当前材料 = new Dictionary<string, int>();
+            当前材料.Add(s, 需求材料[s]);
             i++;
             if (i == 需求材料.Count)
-                str += s + "X" + 需求材料[s];
+            {
+                if (pm.检测物品是否满足(当前材料))
+                    str += s + "X" + 需求材料[s] + "(✔)";
+                else
+                    str += "<color=red>" + s + "X" + 需求材料[s] + "(✗)</color>";
+            }
             else
-                str += s + "X" + 需求材料[s] + ",  ";
+            {
+                if (pm.检测物品是否满足(当前材料))
+                    str += s + "X" + 需求材料[s] + "(✔) ,";
+                else
+                    str += "<color=red>" + s + "X" + 需求材料[s] + "(✗)</color> ,";
+            }
         }
         打造信息.transform.Find("Text").GetComponent<Text>().text = str;
 
@@ -2073,7 +2722,7 @@ public class G_Util : MonoBehaviour
         参数集.Add(4, 钱币);
         参数集.Add(5, 总条数);
         参数集.Add(6, 购买数量);
-        父物体.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(680, 270 * (总条数 / 4 + 1) - 30);//展开
+        父物体.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(680, 290 * (总条数 / 4 + 1) - 30);//展开
         StartCoroutine(bm.LoadABPrefabs("道具购买项", 实例化道具购买项, 参数集));
     }
 
@@ -2089,9 +2738,9 @@ public class G_Util : MonoBehaviour
 
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 道具购买项 = GameObject.Instantiate(对象) as GameObject;
-        道具购买项.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
+        道具购买项.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性 
         道具购买项.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 240);//recttransform必不可少的属性(半知半解)
-        道具购买项.transform.localPosition = new Vector2(-340 + 75 * (index % 4 + 1) + index % 4 * 85, (((总条数 / 4 + 1) * 270 - 30) / 2) - 120 * (index / 4 + 1) - 150 * (index / 4));//设置生成位置
+        道具购买项.transform.localPosition = new Vector2(-340 + 75 * (index % 4 + 1) + index % 4 * 85, (((总条数 / 4 + 1) * 290 - 30) / 2) - 140 * (index / 4 + 1) - 150 * (index / 4));//设置生成位置
         //Debug.Log("第" + (index + 1) + "个的位置是:X->" + 道具购买项.transform.localPosition.x + "---Y->" + 道具购买项.transform.localPosition.y);
         道具购买项.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
         道具购买项.transform.SetAsLastSibling();
@@ -2113,7 +2762,7 @@ public class G_Util : MonoBehaviour
         }
         Text 价格文本 = 道具购买项.transform.Find("价格/Text").GetComponent<Text>();
         价格文本.text = money + "";
-
+         
         BuyPropItem bpi = 道具购买项.GetComponent<BuyPropItem>();
         bpi.index = index;
         bpi.总条数 = 总条数;
@@ -2158,7 +2807,7 @@ public class G_Util : MonoBehaviour
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 技能项 = GameObject.Instantiate(对象) as GameObject;
         技能项.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
-        技能项.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 700);//recttransform必不可少的属性(半知半解)
+        技能项.GetComponent<RectTransform>().sizeDelta = new Vector2(700, 900);//recttransform必不可少的属性(半知半解)
         技能项.transform.localPosition = new Vector2(0, 200);//设置生成位置
         技能项.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
         技能项.transform.SetAsLastSibling();
@@ -2361,7 +3010,8 @@ public class G_Util : MonoBehaviour
             cb_role.剩余血量 = cb_role.血量;
 
             ChatMgr.GetInstance().系统播报(new Prop_bascis(), "", bm.Xstoi(myData.等级), "升级");
-            生成升级特效();
+            GameObject 父物体= DataMgr.GetInstance().本地对象["主角"].transform.parent.gameObject;
+            生成升级特效(父物体,"1");
             刷新战斗力UI(UI);
         }
         NameMgr.画布.GetComponent<G_Util>().myData = myData;
@@ -2402,25 +3052,39 @@ public class G_Util : MonoBehaviour
             Text 铜币 = UI.transform.Find("战斗页/money/tong/num_tong").GetComponent<Text>();
             Text 金币 = UI.transform.Find("战斗页/money/jin/num_jin").GetComponent<Text>();
             Text 仙晶 = UI.transform.Find("战斗页/money/zuan/num_zuan").GetComponent<Text>();
+            Text 临时_铜币 = 铜币.transform.Find("num").GetComponent<Text>();
+            Text 临时_金币 = 金币.transform.Find("num").GetComponent<Text>();
+            Text 临时_仙晶 = 仙晶.transform.Find("num").GetComponent<Text>();
             foreach (string 货币名 in myData.金钱.Keys)
             {
                 if (货币名.Equals("铜币"))
-                    铜币.text = bm.Xor(myData.金钱["铜币"]);
+                {
+                    铜币.text = 数字增加单位(bm.Xor(myData.金钱["铜币"]));
+                    临时_铜币.text = bm.Xor(myData.金钱["铜币"]);
+                }
                 else if (货币名.Equals("金币"))
-                    金币.text = bm.Xor(myData.金钱["金币"]);
+                {
+                    金币.text = 数字增加单位(bm.Xor(myData.金钱["金币"]));
+                    临时_金币.text = bm.Xor(myData.金钱["金币"]);
+                }
                 else if (货币名.Equals("仙晶"))
-                    仙晶.text = bm.Xor(myData.金钱["仙晶"]);
+                {
+                    仙晶.text = 数字增加单位(bm.Xor(myData.金钱["仙晶"]));
+                    临时_仙晶.text = bm.Xor(myData.金钱["仙晶"]);
+                }
             }
         }
     }
 
 
-    public void 刷新金钱UI_不进行IO(GameObject UI,Dictionary<string,int>钱币)
+    public void 临时刷新金钱UI(GameObject UI,Dictionary<string,int>钱币)
     {
         Text 铜币 = UI.transform.Find("战斗页/money/tong/num_tong").GetComponent<Text>();
         Text 金币 = UI.transform.Find("战斗页/money/jin/num_jin").GetComponent<Text>();
         Text 仙晶 = UI.transform.Find("战斗页/money/zuan/num_zuan").GetComponent<Text>();
-
+        Text 临时_铜币 = 铜币.transform.Find("num").GetComponent<Text>();
+        Text 临时_金币 = 金币.transform.Find("num").GetComponent<Text>();
+        Text 临时_仙晶 = 仙晶.transform.Find("num").GetComponent<Text>();
 
         //临时数据存储
         foreach (string 货币名 in 钱币.Keys) {
@@ -2434,11 +3098,11 @@ public class G_Util : MonoBehaviour
             }
 
             if (货币名.Equals("铜币"))
-                铜币.text = int.Parse(铜币.text) + 钱币[货币名] + "";
+                铜币.text = 数字增加单位(int.Parse(临时_铜币.text) + 钱币[货币名]+"");
             else if (货币名.Equals("金币"))
-                金币.text = int.Parse(金币.text) + 钱币[货币名] + "";
+                金币.text = 数字增加单位(int.Parse(临时_金币.text) + 钱币[货币名] + "");
             else if (货币名.Equals("仙晶"))
-                仙晶.text = int.Parse(仙晶.text) + 钱币[货币名] + "";
+                仙晶.text = 数字增加单位(int.Parse(临时_仙晶.text) + 钱币[货币名] + "");
         }
 
     }
@@ -2460,15 +3124,17 @@ public class G_Util : MonoBehaviour
         套装流光.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
         套装流光.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);//recttransform必不可少的属性(半知半解)
         套装流光.transform.localPosition = new Vector2(-40.5f, 38.9f);//设置生成位置
-        套装流光.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        套装流光.transform.localScale = new Vector3(3f, 3f, 1);//设置生成的大小
         套装流光.transform.SetAsLastSibling();
 
         //绑定材质
         TrailRenderer trd = 套装流光.GetComponent<TrailRenderer>();
         trd.startColor = 颜色;
         trd.endColor = 颜色;
-        Material 流光材质 = (Material)Resources.Load<Material>("材质球/普通光线");
-        trd.material = 流光材质;
+        /*Material 流光材质 = (Material)Resources.Load<Material>("材质球/普通光线");
+        trd.materials[0] = 流光材质;
+        Material 默认粒子效果 = (Material)Resources.Load<Material>("材质球/默认材质");
+        trd.materials[1] = 默认粒子效果;*/
 
         //绑定动画
         套装流光.AddComponent<Animator>();
@@ -2590,6 +3256,39 @@ public class G_Util : MonoBehaviour
     }
 
 
+    public void 生成地址(GameObject 父物体,int index,string 地名)
+    {
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(1, 父物体);
+        参数集.Add(2, index);
+        参数集.Add(3, 地名);
+        StartCoroutine(bm.LoadABPrefabs("地址", 实例化地址, 参数集));
+    }
+    private void 实例化地址(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        GameObject 父物体 = 参数集[1] as GameObject;
+        int index = (int)参数集[2];
+        string 地名 = 参数集[3] + "";
+
+
+        //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 地址 = GameObject.Instantiate(对象) as GameObject;
+        地址.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
+        地址.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);//recttransform必不可少的属性(半知半解)
+        地址.transform.localPosition = new Vector3(父物体.transform.localPosition.x / 2 + (260*((index%3==0?3: index % 3)-1) +130), 父物体.transform.localPosition.y/2-((160*(index%3==0? index / 3-1 : index/3))+80), 0);//设置生成位置
+        地址.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        地址.transform.SetAsLastSibling();
+
+        Text 地址文本 = 地址.transform.Find("Text").GetComponent<Text>();
+        地址文本.text = 地名;
+        地址.name = 地名;
+        if (!AdressMgr.GetInstance().检测战斗力是否达标(地名)) {
+            地址文本.color = bm.转换颜色(5);
+        }
+
+    }
+
+
     public void 生成技能特效_三剑(GameObject 父物体)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
@@ -2676,7 +3375,7 @@ public class G_Util : MonoBehaviour
         //唤醒音频源
         /*AudioSource 音频源 = 技能特效.GetComponent<AudioSource>();
         音频源.enabled = true;*/
-        技能特效.GetComponent<Transform>().localRotation = Quaternion.Euler(0f, 0f, 90f);
+        //技能特效.GetComponent<Transform>().localRotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(70, 111));
         StartCoroutine(延时销毁自己(技能特效, 0.2f));
     }
 
@@ -2696,12 +3395,20 @@ public class G_Util : MonoBehaviour
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 天赋框 = GameObject.Instantiate(对象) as GameObject;
         天赋框.transform.SetParent(父物体.transform.parent, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
-        天赋框.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 330);//recttransform必不可少的属性(半知半解)
-        天赋框.transform.localPosition = new Vector3(0, 0, 0);//设置生成位置
+        天赋框.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);//recttransform必不可少的属性(半知半解)
+        天赋框.transform.localPosition = new Vector3(0, 200, 0);//设置生成位置
         天赋框.transform.localScale = new Vector3(1, 1, 1);//设置生成的大小
         天赋框.transform.SetAsLastSibling();
 
-        天赋框.GetComponent<TianFuPanel>().刷新天赋信息(tf);
+
+        if (tf.comment.Equals("核心")) {
+            天赋框.transform.Find("button").gameObject.SetActive(false);
+        }
+
+        TianFuPanel tfp= 天赋框.GetComponent<TianFuPanel>();
+        tfp.tf = tf;
+        tfp.TFName = tf.name;
+        tfp.刷新天赋信息(tf);
         GameObject Panel = 天赋框.transform.Find("Panel").gameObject;
         bm.Banding(Panel,关闭杂项);
     }
@@ -2741,17 +3448,15 @@ public class G_Util : MonoBehaviour
     }
 
 
-    public void 生成技能特效_攻击(GameObject 父物体, int 持续时间)
+    public void 生成技能特效_攻击(GameObject 父物体)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
         参数集.Add(1, 父物体);
-        参数集.Add(2, 持续时间);
         StartCoroutine(bm.LoadABPrefabs("攻击特效", 实例化技能特效_攻击, 参数集));
     }
     private void 实例化技能特效_攻击(GameObject 对象, Dictionary<int, object> 参数集)
     {
         GameObject 父物体 = 参数集[1] as GameObject;
-        int 持续时间 = (int)参数集[2];
 
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 技能特效 = GameObject.Instantiate(对象) as GameObject;
@@ -2771,8 +3476,24 @@ public class G_Util : MonoBehaviour
         技能特效.transform.SetAsLastSibling();
 
 
-        StartCoroutine(延时销毁自己(技能特效, 持续时间));
+        StartCoroutine(放大渐隐协程(技能特效));
     }
+
+
+
+    public IEnumerator 放大渐隐协程(GameObject 对象)
+    {
+        float 透明值 = 255;
+        while (透明值 > 0) {
+            透明值 -= 20f;
+            对象.GetComponent<Image>().color= bm.改变透明度(对象, 透明值);
+            对象.transform.localScale += new Vector3(0.06f,0.06f,0.06f);
+            yield return new WaitForSeconds(0.05f);
+        }
+        Destroy(对象);
+        yield break;
+    }
+
 
 
     public void 启动延时方法(UnityAction 方法, float 延时时间)
@@ -2827,6 +3548,64 @@ public class G_Util : MonoBehaviour
      }
 
 
+
+
+
+
+    public void 获得buff(combat cb,string buff名字,BuffData buff)
+    {
+        if (cb.buff栏.ContainsKey(buff名字))
+        {
+            //buff可以叠加,刷新属性和时间
+            if (buff.是否可以叠加 == true&& cb.buff栏[buff名字].层数< cb.buff栏[buff名字].最大层数)
+            {
+                cb.buff栏[buff名字].层数 += 1;
+                cb.buff栏[buff名字].持续时间 = buff.持续时间;
+                cb.buff栏[buff名字].buff提升的属性值 += buff.buff提升的属性值;
+
+                //Debug.Log("叠加一层buff,当前层数:" + cb.buff栏[buff名字].层数 + "...当前提升属性:" + cb.buff栏[buff名字].buff提升的属性值);
+                //额外增加属性
+                属性变化方法(cb, buff.buff提升的属性名, buff.buff提升的属性值);
+            }
+            //buff不能叠加,刷新时间
+            else
+            {
+                cb.buff栏[buff名字].持续时间 = buff.持续时间;
+                //Debug.Log("刷新时间");
+            }
+        }
+        else {
+            cb.buff栏.Add(buff名字, buff);
+            //启动属性协程
+            提升buff属性(cb,buff名字);
+            Debug.Log("开启buff:"+ buff名字);
+        }
+    }
+
+    public void 提升buff属性(combat cb, string buff名字)
+    {
+        StartCoroutine(提升buff属性携程(cb, buff名字));
+    }
+
+    public IEnumerator 提升buff属性携程(combat cb, string buff名字)
+    {
+        //Debug.Log("提升属性:"+ cb.buff栏[buff名字].buff提升的属性名+"---"+  cb.buff栏[buff名字].buff提升的属性值);
+        属性变化方法(cb, cb.buff栏[buff名字].buff提升的属性名, cb.buff栏[buff名字].buff提升的属性值);
+
+        while (cb.buff栏[buff名字].持续时间 > 0) {
+            cb.buff栏[buff名字].持续时间 -= 0.5f;
+            yield return new WaitForSeconds(0.5f);
+        }
+        属性变化方法(cb, cb.buff栏[buff名字].buff提升的属性名,  cb.buff栏[buff名字].buff提升的属性值 * (-1));
+        //Debug.Log("最后提升的属性:" + cb.buff栏[buff名字].buff提升的属性名 + "---" + cb.buff栏[buff名字].buff提升的属性值+"剩余:"+bm.Xstof(cb.临时属性["攻击速度"]));
+        //Debug.Log("剩余:"+bm.Xstof(cb.临时属性["攻击速度"]));
+        cb.buff栏.Remove(buff名字);
+        //yield break;
+    }
+
+
+
+
     /// <summary>
     /// 一段时间只有一次提升/例如提升50%的攻击力,持续10秒
     /// </summary>
@@ -2846,41 +3625,153 @@ public class G_Util : MonoBehaviour
     }
 
     private void 属性变化方法(combat cb, string 属性名, float 提升幅度) {
-        if (属性名.Equals("攻击力")) 
-            cb.临时属性["攻击力"] = bm.Xitos(bm.Xstoi(cb.临时属性["攻击力"]) + (int)提升幅度);
-        else if(属性名.Equals("防御力"))
-            cb.临时属性["防御力"] = bm.Xitos(bm.Xstoi(cb.临时属性["防御力"]) + (int)提升幅度);
+        if (属性名.Equals("攻击力"))
+            cb.临时属性["攻击力"] = bm.Xftos(bm.Xstof(cb.临时属性["攻击力"]) + (float)提升幅度);
+        else if (属性名.Equals("防御力"))
+            cb.临时属性["防御力"] = bm.Xftos(bm.Xstof(cb.临时属性["防御力"]) + (float)提升幅度);
         else if (属性名.Equals("血量"))
-            cb.临时属性["血量"] = bm.Xitos(bm.Xstoi(cb.临时属性["血量"]) + (int)提升幅度);
+            cb.临时属性["血量"] = bm.Xftos(bm.Xstof(cb.临时属性["血量"]) + (float)提升幅度);
         else if (属性名.Equals("回血值"))
-            cb.临时属性["回血值"] = bm.Xitos(bm.Xstoi(cb.临时属性["回血值"]) + (int)提升幅度);
+            cb.临时属性["回血值"] = bm.Xftos(bm.Xstof(cb.临时属性["回血值"]) + (float)提升幅度);
         else if (属性名.Equals("暴击率"))
-            cb.临时属性["暴击率"] = bm.Xitos(bm.Xstoi(cb.临时属性["暴击率"]) + (int)(提升幅度*100));
+            cb.临时属性["暴击率"] = bm.Xftos(bm.Xstof(cb.临时属性["暴击率"]) + (float)(提升幅度));
         else if (属性名.Equals("暴伤加成"))
-            cb.临时属性["暴伤加成"] = bm.Xitos(bm.Xstoi(cb.临时属性["暴伤加成"]) + (int)(提升幅度 * 100));
+            cb.临时属性["暴伤加成"] = bm.Xftos(bm.Xstof(cb.临时属性["暴伤加成"]) + (float)(提升幅度));
         else if (属性名.Equals("攻击速度"))
-            cb.临时属性["攻击速度"] = bm.Xitos(bm.Xstoi(cb.临时属性["攻击速度"]) +(int)(提升幅度*100));
+        {
+            cb.临时属性["攻击速度"] = bm.Xftos(bm.Xstof(cb.临时属性["攻击速度"]) + (float)(提升幅度));
+        }
         else if (属性名.Equals("移动速度"))
-            cb.临时属性["移动速度"] = bm.Xitos(bm.Xstoi(cb.临时属性["移动速度"]) + (int)提升幅度);
+            cb.临时属性["移动速度"] = bm.Xftos(bm.Xstof(cb.临时属性["移动速度"]) + (float)提升幅度);
         else if (属性名.Equals("固定伤害"))
-            cb.临时属性["固定伤害"] = bm.Xitos(bm.Xstoi(cb.临时属性["固定伤害"]) + (int)提升幅度);
+            cb.临时属性["固定伤害"] = bm.Xftos(bm.Xstof(cb.临时属性["固定伤害"]) + (float)提升幅度);
         else if (属性名.Equals("固定减伤"))
-            cb.临时属性["固定减伤"] = bm.Xitos(bm.Xstoi(cb.临时属性["固定减伤"]) + (int)提升幅度);
+            cb.临时属性["固定减伤"] = bm.Xftos(bm.Xstof(cb.临时属性["固定减伤"]) + (float)提升幅度);
         else if (属性名.Equals("伤害加成"))
-            cb.临时属性["伤害加成"] = bm.Xitos(bm.Xstoi(cb.临时属性["伤害加成"]) + (int)(提升幅度 * 100));
+            cb.临时属性["伤害加成"] = bm.Xftos(bm.Xstof(cb.临时属性["伤害加成"]) + (float)(提升幅度));
         else if (属性名.Equals("伤害减免"))
-            cb.临时属性["伤害减免"] = bm.Xitos(bm.Xstoi(cb.临时属性["伤害加成"]) + (int)(提升幅度 * 100));
+            cb.临时属性["伤害减免"] = bm.Xftos(bm.Xstof(cb.临时属性["伤害加成"]) + (float)(提升幅度));
         else if (属性名.Equals("固定吸血"))
-            cb.临时属性["固定吸血"] = bm.Xitos(bm.Xstoi(cb.临时属性["固定吸血"]) + (int)提升幅度);
+            cb.临时属性["固定吸血"] = bm.Xftos(bm.Xstof(cb.临时属性["固定吸血"]) + (float)提升幅度);
         else if (属性名.Equals("吸血加成"))
-            cb.临时属性["吸血加成"] = bm.Xitos(bm.Xstoi(cb.临时属性["吸血加成"]) + (int)(提升幅度 * 100));
+            cb.临时属性["吸血加成"] = bm.Xftos(bm.Xstof(cb.临时属性["吸血加成"]) + (float)(提升幅度));
 
-        dm.加载额外属性(cb);
+
+        dm.加载临时属性(cb);
+        //死亡删除所有buff所以不需要触发
+        if (cb!=null&&cb.gameObject.activeSelf)
+        {
+            生成显示buff_逻辑层(cb, 属性名, 提升幅度);
+        }
     }
 
+
+
+    public void 生成显示buff_逻辑层(combat cb, string 属性名, float 提升幅度) {
+
+        if (cb.buff显示栏.ContainsKey(属性名))
+        {
+            //属性值归零,删除buff图标后进行排序
+            if (bm.Xstoi(cb.临时属性[属性名]) == 0)
+            {
+                cb.buff显示栏[属性名].SetActive(false);
+                cb.buff显示栏.Remove(属性名);
+                StartCoroutine(生成显示buff_视图层(cb));
+                Debug.Log("删除方法:" + 属性名);
+                return;
+            }
+            else {
+                int 显示值 = int.Parse(cb.buff显示栏[属性名].transform.Find("数值").GetComponent<Text>().text);
+                //属性值大于999,显示值为99时,不做改变
+                if (bm.Xstoi(cb.临时属性[属性名]) >= 999 && 显示值 == 999)
+                {
+                    return;
+                }
+                else {
+                    StartCoroutine( 改变显示buff_视图层(cb,cb.buff显示栏[属性名], bm.Xstoi(cb.临时属性[属性名])));
+                    //cb.buff显示栏[属性名].transform.Find("数值").GetComponent<Text>().text = "222";
+                    //Debug.Log("改变方法:"+属性名+ bm.Xstoi(cb.临时属性[属性名]));
+
+                }
+            }
+           
+        }
+        else {
+            //排序
+            StartCoroutine(生成显示buff_视图层(cb));
+            //Debug.Log("增加方法:" + 属性名);
+        }
+       
+
+    }
+
+    public IEnumerator 改变显示buff_视图层(combat cb,GameObject buff,int 值) {
+        if (值 > 999)
+            值 = 999;
+        //后续添加改变颜色
+        buff.transform.Find("数值").GetComponent<Text>().text = 值 + "";
+        yield break;
+
+    }
+
+
+    public IEnumerator 生成显示buff_视图层(combat cb)
+    {
+        GameObject buff = Resources.Load<GameObject>("预制体/Buff");
+        int index = 0;
+        foreach (string 属性名字 in cb.临时属性.Keys)
+        {
+            //判断是否为0,0不需要考虑
+            if (bm.Xstoi(cb.临时属性[属性名字]) != 0)
+            {
+                if (!cb.buff显示栏.ContainsKey(属性名字)) {
+                    //实例化
+                    GameObject buff实例化 = GameObject.Instantiate(buff) as GameObject;
+                    Sprite img = Resources.Load<Sprite>("Buff/" + 属性名字 + "buff");
+                    if (img == null)
+                    {
+                        img = Resources.Load<Sprite>("Buff/四维buff");
+                    }
+                    buff实例化.GetComponent<Image>().sprite = img;
+                    buff实例化.transform.SetParent(cb.gameObject.transform.Find("buff栏"), false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
+                    buff实例化.GetComponent<RectTransform>().sizeDelta = new Vector2(25, 30);//recttransform必不可少的属性(半知半解)
+                    buff实例化.transform.localPosition = new Vector2(index * 25 - 75, 0);//设置生成位置
+                    buff实例化.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+                    buff实例化.transform.Find("数值").GetComponent<Text>().text = bm.Xstoi(cb.临时属性[属性名字]) + "";
+
+
+                    //判断是否添加了buff
+                    if (!cb.buff显示栏.ContainsKey(属性名字))
+                    {
+                        cb.buff显示栏.Add(属性名字, buff实例化);
+                    }
+                    else
+                    {
+                        cb.buff显示栏[属性名字] = buff实例化;
+                    }
+                }
+                else {
+                    StartCoroutine(改变显示buff_视图层(cb,cb.buff显示栏[属性名字], bm.Xstoi(cb.临时属性[属性名字])));
+                }
+                index++;
+            }
+            else
+            {
+                if (cb.buff显示栏.ContainsKey(属性名字))
+                {
+                    cb.buff显示栏.Remove(属性名字);
+                    continue;
+                }
+            }
+        }
+        yield break;
+    }
+
+
+
     public void 恢复血量(combat cb, int 单次恢复量) {
-        if (cb.CompareTag("boss"))
-            单次恢复量 *= 3;
+        /*if (cb.CompareTag("boss"))
+            单次恢复量 *= 3;*/
         if (cb != null)
         {
             cb.剩余血量 = bm.Xor(bm.Xstoi(cb.剩余血量) + 单次恢复量 + "");
@@ -2890,8 +3781,8 @@ public class G_Util : MonoBehaviour
 
     public void 持续恢复血量(combat cb, int 单次恢复量, int 总恢复次数, float 时间粒度)
     {
-        if (cb.CompareTag("boss"))
-            单次恢复量 *= 2;
+        /*if (cb.CompareTag("boss"))
+            单次恢复量 *= 2;*/
         StartCoroutine(持续恢复血量携程(cb, 单次恢复量, 总恢复次数, 时间粒度));
     }
 
@@ -3125,6 +4016,7 @@ public class G_Util : MonoBehaviour
     public void 生成场景任务框(string 标题, string 描述, string 物品名, int 物品数量, string 奖品名, string 隐藏后物品的名字)
     {
         关闭杂项();
+        强制关闭对话框();
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
         参数集.Add(0, 标题);
         参数集.Add(1, 描述);
@@ -3184,9 +4076,20 @@ public class G_Util : MonoBehaviour
             bm.Banding(确定按钮, 场景任务表[标题]);
         }
 
-        场景任务框.transform.Find("award/award_prop").GetComponent<Text>().text = 奖品名;
+        Text 奖品文本 = 场景任务框.transform.Find("award/award_prop").GetComponent<Text>();
+        奖品文本.text = 奖品名;
+        奖品文本.color = bm.转换颜色(bm.Xstoi( pm.检索物品(奖品名).qua));
 
+    }
 
+    public void 强制关闭对话框()
+    {
+        GameObject 对话框 = GameObject.Find("对话框(Clone)");
+        if (对话框 != null)
+        {
+            Text_DaYin tdy = 对话框.GetComponent<Text_DaYin>();
+            tdy.强制关闭对话框();
+        }
     }
 
 
@@ -3250,27 +4153,27 @@ public class G_Util : MonoBehaviour
         int All = 0;
         combat cb = NameMgr.cb;
 
-        if (mon.怪物1赋值(cb))
+        if (mon.怪物1赋值(cb)!=0)
             All++;
-        if (mon.怪物2赋值(cb))
+        if (mon.怪物2赋值(cb) != 0)
             All++;
-        if (mon.怪物3赋值(cb))
+        if (mon.怪物3赋值(cb) != 0)
             All++;
-        if (mon.怪物4赋值(cb))
+        if (mon.怪物4赋值(cb) != 0)
             All++;
-        if (mon.怪物5赋值(cb))
+        if (mon.怪物5赋值(cb) != 0)
             All++;
 
 
-        if (mon.怪物1赋值(cb))
+        if (mon.怪物1赋值(cb) != 0)
             生成场景怪物信息(index++, All, 1);
-        if (mon.怪物2赋值(cb))
+        if (mon.怪物2赋值(cb) != 0)
             生成场景怪物信息(index++, All, 2);
-        if (mon.怪物3赋值(cb))
+        if (mon.怪物3赋值(cb) != 0)
             生成场景怪物信息(index++, All, 3);
-        if (mon.怪物4赋值(cb))
+        if (mon.怪物4赋值(cb) != 0)
             生成场景怪物信息(index++, All, 4);
-        if (mon.怪物5赋值(cb))
+        if (mon.怪物5赋值(cb) != 0)
             生成场景怪物信息(index++, All, 5);
     }
 
@@ -3346,20 +4249,28 @@ public class G_Util : MonoBehaviour
         PetItem item = 宠物项.GetComponent<PetItem>();
         item.宠物 = 宠物;
         item.UID = UID;
+        myData = io_.load();
+        if (myData.出战宠物UID!=null&&myData.出战宠物UID.Equals(UID))
+            宠物项.transform.Find("出战显示").gameObject.SetActive(true);
+        else
+            宠物项.transform.Find("出战显示").gameObject.SetActive(false);
     }
 
 
 
 
-    public void 生成升级特效()
+    public void 生成升级特效(GameObject 父物体,string index)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(0, 父物体);
+        参数集.Add(1,index);
         StartCoroutine(bm.LoadABPrefabs("升级特效", 实例化升级特效, 参数集));
 
     }
     private void 实例化升级特效(GameObject 对象, Dictionary<int, object> 参数集)
     {
-        GameObject 父物体 = DataMgr.GetInstance().本地对象["主角"].transform.parent.gameObject;
+        GameObject 父物体 = 参数集[0] as GameObject;
+        string index = 参数集[1] + "";
 
 
         //实例化(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
@@ -3368,6 +4279,16 @@ public class G_Util : MonoBehaviour
         升级特效.transform.SetParent(父物体.transform, false);//设置父物体, 第二个参数可以不用定义许多RectTransform属性
         升级特效.transform.localPosition = new Vector3(0, -50, 0);//设置生成位置
         升级特效.transform.localScale = new Vector3(60, 60, 60);//设置生成的大小
+
+        //1为战斗页用的升级特效,2为状态页用的
+        if (index.Equals("2")) {
+            升级特效.transform.localPosition = new Vector3(0, -120, 0);//设置生成位置
+            升级特效.transform.localScale = new Vector3(90, 90, 90);//设置生成的大小
+            foreach (Renderer 子渲染器 in 升级特效.transform.GetComponentsInChildren<Renderer>()) {
+                子渲染器.sortingOrder = 30;
+            }
+        }
+        升级特效.transform.SetAsLastSibling();
 
 
         //绑定材质
@@ -3383,6 +4304,7 @@ public class G_Util : MonoBehaviour
         升级特效.transform.Find("Spiral_02.1/particle glow master").GetComponent<ParticleSystemRenderer>().material = 粒子材质;
         升级特效.transform.Find("Spiral_02.1/particle glow master/particle glow slave birth trail").GetComponent<ParticleSystemRenderer>().material = 粒子材质;
         升级特效.transform.Find("Spiral_02.1/particle glow master/particle glow slave birth spark").GetComponent<ParticleSystemRenderer>().material = 粒子材质;
+
     }
 
     public void 加载宠物()
@@ -3479,7 +4401,7 @@ public class G_Util : MonoBehaviour
         if (物品.icon.Equals("血药"))
             图标.sprite = Resources.Load("图标/血药图标", typeof(Sprite)) as Sprite;
         else if (物品.icon.Equals("暗器"))
-            图标.sprite = Resources.Load("图标/暗器图标", typeof(Sprite)) as Sprite;
+            图标.sprite = Resources.Load("图标/暗器图标1", typeof(Sprite)) as Sprite;
         道具图标.transform.parent.Find("数量").GetComponent<Text>().text = bm.Xstoi(物品.num) + "";
     }
 
@@ -3512,12 +4434,26 @@ public class G_Util : MonoBehaviour
         cb.扣血行为(目标, "暗器", 伤害);
     }
 
-    public void 生成活动项(GameObject 父物体, string name,int index)
+
+    public void 被动技能伤害(int 伤害)
+    {
+        cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
+        GameObject 目标;
+        if (cb.目标名字.Equals(""))
+            目标 = mmgr.随意寻找一个目标("怪物");
+        else
+            目标 = GameObject.Find(cb.目标名字);
+        cb.扣血行为(目标, "暗器", 伤害);
+        生成技能特效_单体(目标);
+    }
+
+    public void 生成活动项(GameObject 父物体, string name,int index,string type)
     {
         Dictionary<int, object> 参数集 = new Dictionary<int, object>();
         参数集.Add(0, 父物体);
         参数集.Add(1, name);
         参数集.Add(2, index);
+        参数集.Add(3, type);
         StartCoroutine(bm.LoadABPrefabs("活动项", 实例化活动项, 参数集));
 
     }
@@ -3527,6 +4463,7 @@ public class G_Util : MonoBehaviour
         GameObject 父物体 = 参数集[0] as GameObject;
         string name = 参数集[1] as string;
         int index = (int)参数集[2];
+        string type= 参数集[3]+"";
         float 宽度 = 父物体.GetComponent<RectTransform>().sizeDelta.x;
         //实例化角色(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
         GameObject 活动项 = GameObject.Instantiate(对象) as GameObject;
@@ -3540,11 +4477,25 @@ public class G_Util : MonoBehaviour
         Sprite 图标 = Resources.Load<Sprite>("活动/" + name + "图标");
         if (图标 == null)
         {
-            图标 = Resources.Load<Sprite>("活动/默认活动图标");
+            if (type.Equals("事件"))
+            {
+                图标 = Resources.Load<Sprite>("图标/警告图标");
+            }
+            else
+            {
+                图标 = Resources.Load<Sprite>("活动/默认活动图标");
+            }
         }
         活动项.transform.Find("图标").GetComponent<Image>().sprite = 图标;
-        Activities at = GameObject.Find("活动界面").GetComponent<Activities>();
-        bm.Banding(活动项, at.点击活动图标);
+        if (type.Equals("活动"))
+        {
+            Activities at = GameObject.Find("活动界面").GetComponent<Activities>();
+            bm.Banding(活动项, at.点击活动图标);
+        }
+        else if (type.Equals("事件")) {
+            Event_UI eu = GameObject.Find("事件界面").GetComponent<Event_UI>();
+            bm.Banding(活动项, eu.点击事件图标);
+        }
 
     }
 
@@ -3576,6 +4527,49 @@ public class G_Util : MonoBehaviour
 
     }
 
+
+    public void 生成拉条(string 物品名称,string UID ,int 单价,int 最大数量,string 货币,string 类型)
+    {
+        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
+        参数集.Add(0, 物品名称);
+        参数集.Add(1, 单价);
+        参数集.Add(2, 最大数量);
+        参数集.Add(3, 货币);
+        参数集.Add(4, 类型);
+        参数集.Add(5, UID);
+        StartCoroutine(bm.LoadABPrefabs("拉条", 实例化拉条, 参数集));
+
+    }
+
+    private void 实例化拉条(GameObject 对象, Dictionary<int, object> 参数集)
+    {
+        string 物品名称 = 参数集[0] + "";
+        string UID = 参数集[5] + "";
+        int 单价 = int.Parse(参数集[1] + "");
+        int 最大数量 = int.Parse( 参数集[2] + "");
+        string 货币= 参数集[3] + "";
+        string 类型= 参数集[4] + "";
+
+        //实例化角色(可优化...find步骤可换成从缓存中查找).记得按分辨率的不同调整缩放
+        GameObject 拉条 = GameObject.Instantiate(对象) as GameObject;
+        拉条.transform.SetParent(NameMgr.画布.transform, false);//将画布设置为父物体, 第二个参数可以不用定义许多RectTransform属性
+        拉条.GetComponent<RectTransform>().sizeDelta = new Vector2(450, 300);//recttransform必不可少的属性(半知半解)
+        拉条.transform.localPosition = new Vector2(0, 0);//设置生成位置
+        拉条.transform.localScale = new Vector3(1f, 1f, 1);//设置生成的大小
+        拉条.transform.SetAsLastSibling();
+
+        Latiao lt = 拉条.GetComponent<Latiao>();
+        lt.物品名称 = 物品名称;
+        lt.UID = UID;
+        lt.单价 = 单价;
+        lt.最大数量 = 最大数量;
+        lt.货币 = 货币;
+        lt.类型 = 类型;
+
+    }
+
+
+
     private void 触发引导事件中心() {
         实例化对象池["引导"].gameObject.SetActive(false);
         em.EventTrigger("引导" );
@@ -3583,6 +4577,13 @@ public class G_Util : MonoBehaviour
         em.EventTrigger("生成引导");
         em.ClearEventListener("生成引导");
     }
+
+
+    public void 关闭对话框() {
+        NewPlay np = NewPlay.GetInstance();
+        np.关闭对话框();
+    }
+
 
 
     public void 生成提示(string 名字, Sprite 立绘,string 内容)

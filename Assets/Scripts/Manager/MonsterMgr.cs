@@ -195,7 +195,7 @@ public class MonsterMgr : BaseManager<MonsterMgr>
             }
 
             System.Random 随机类 = new System.Random();
-            int 随机数 = 随机类.Next(0, gut.现有怪物集合.Count);
+            int 随机数 =  UnityEngine.Random.Range(0, gut.现有怪物集合.Count);
             GameObject ms = 敌人集合[敌人名字集合[随机数]];
             return ms;
         }

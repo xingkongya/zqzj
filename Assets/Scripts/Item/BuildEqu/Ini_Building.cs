@@ -27,11 +27,11 @@ public class Ini_Building : MonoBehaviour
         bm.Banding(gameObject.transform.Find("Panel/装备页/Button/首页").gameObject, 首页);
         bm.Banding(gameObject.transform.Find("Panel/装备页/Button/尾页").gameObject, 尾页);
         装备等级表.Add(1, new List<string>() { "木剑", "破布衣", "破布帽", "破布鞋", "犬牙面具", "狗皮大衣" });//改了这里还要改打造表的主键
-        装备等级表.Add(10, new List<string>() { "匕首", "皮甲", "皮帽", "皮靴" });
-        装备等级表.Add(20, new List<string>() { "藤弓", "藤甲", "藤冠", "藤鞋","桃木履","桃花冠" });
-        装备等级表.Add(30, new List<string>() { "精铁剑", "精铁甲", "精铁冠", "精铁鞋", "蛟鳞▪剑", "蛟鳞▪甲" , "蛟蛇▪角", "蛟蛇▪尾" });
-        装备等级表.Add(40, new List<string>() { "古铜剑", "古铜甲", "古铜帽", "古铜鞋" });
-        装备等级表.Add(50, new List<string>() { "钛钢剑", "钛钢甲", "钛钢帽", "钛钢鞋" });
+        //装备等级表.Add(10, new List<string>() { "匕首", "皮甲", "皮帽", "皮靴" });
+        //装备等级表.Add(20, new List<string>() { "藤弓", "藤甲", "藤冠", "藤鞋","桃木履","桃花冠" });
+        装备等级表.Add(30, new List<string>() { "蛟鳞▪剑", "蛟鳞▪甲" , "蛟蛇▪角", "蛟蛇▪尾" });
+        //装备等级表.Add(40, new List<string>() { "古铜剑", "古铜甲", "古铜帽", "古铜鞋" });
+        装备等级表.Add(50, new List<string>() { "精铁剑", "精铁甲", "精铁冠", "精铁鞋" });
 
         Dictionary<string, int> 一级白装材料 = new Dictionary<string, int>() { { "木材", 1 } };
         装备打造表.Add("木剑", 一级白装材料);
@@ -51,27 +51,27 @@ public class Ini_Building : MonoBehaviour
         装备打造表.Add("藤甲", 二十级白装材料);
         装备打造表.Add("藤冠", 二十级白装材料);
         装备打造表.Add("藤鞋", 二十级白装材料);
-        装备打造表.Add("桃木履", 二十级蓝装材料);
-        装备打造表.Add("桃花冠", 二十级蓝装材料);
-        Dictionary<string, int> 三十级绿装材料 = new Dictionary<string, int>() { { "木材", 4 } , { "兽皮", 1 }, { "兽骨", 1 } };
-        装备打造表.Add("精铁剑", 三十级绿装材料);
-        装备打造表.Add("精铁甲", 三十级绿装材料);
-        装备打造表.Add("精铁冠", 三十级绿装材料);
-        装备打造表.Add("精铁鞋", 三十级绿装材料);
-        Dictionary<string, int> 蛟鳞_剑 = new Dictionary<string, int>() { { "蛟鳞剑", 1 }, { "蛟血", 3 } };
-        Dictionary<string, int> 蛟鳞_甲 = new Dictionary<string, int>() { { "蛟鳞甲", 1 }, { "蛟血", 3 } };
-        Dictionary<string, int> 蛟鳞_首 = new Dictionary<string, int>() { { "蛟蛇角", 1 }, { "蛟血", 3 } };
-        Dictionary<string, int> 蛟鳞_尾 = new Dictionary<string, int>() { { "蛟蛇尾", 1 }, { "蛟血", 3 } };
+        //装备打造表.Add("桃木履", 二十级蓝装材料);
+        //装备打造表.Add("桃花冠", 二十级蓝装材料);
+        Dictionary<string, int> 三十级绿装材料 = new Dictionary<string, int>() {  { "兽皮", 1 }, { "兽骨", 1 } };
+        //装备打造表.Add("精铁剑", 三十级绿装材料);
+        //装备打造表.Add("精铁甲", 三十级绿装材料);
+        //装备打造表.Add("精铁冠", 三十级绿装材料);
+        //装备打造表.Add("精铁鞋", 三十级绿装材料);
+        Dictionary<string, int> 蛟鳞_剑 = new Dictionary<string, int>() { { "蛟鳞剑", 1 }, { "蛟血", 2 } };
+        Dictionary<string, int> 蛟鳞_甲 = new Dictionary<string, int>() { { "蛟鳞甲", 1 }, { "蛟血", 2 } };
+        Dictionary<string, int> 蛟鳞_首 = new Dictionary<string, int>() { { "蛟蛇角", 1 }, { "蛟血", 2 } };
+        Dictionary<string, int> 蛟鳞_尾 = new Dictionary<string, int>() { { "蛟蛇尾", 1 }, { "蛟血", 2 } };
         装备打造表.Add("蛟鳞▪剑", 蛟鳞_剑);
         装备打造表.Add("蛟鳞▪甲", 蛟鳞_甲);
         装备打造表.Add("蛟蛇▪角", 蛟鳞_首);
         装备打造表.Add("蛟蛇▪尾", 蛟鳞_尾);
-        Dictionary<string, int> 四十级绿装材料 = new Dictionary<string, int>() { { "木材", 5 }, { "兽皮", 2 }, { "兽骨", 2 } };
+        Dictionary<string, int> 四十级绿装材料 = new Dictionary<string, int>() {  { "兽皮", 2 }, { "兽骨", 2 } };
         装备打造表.Add("古铜剑", 四十级绿装材料);
         装备打造表.Add("古铜甲", 四十级绿装材料);
         装备打造表.Add("古铜帽", 四十级绿装材料);
         装备打造表.Add("古铜鞋", 四十级绿装材料);
-        Dictionary<string, int> 五十级绿装材料 = new Dictionary<string, int>() { { "木材", 6 }, { "兽皮", 3 }, { "兽骨", 3 } };
+        Dictionary<string, int> 五十级绿装材料 = new Dictionary<string, int>() {  { "兽皮", 3 }, { "兽骨", 3 } };
         装备打造表.Add("钛钢剑", 五十级绿装材料);
         装备打造表.Add("钛钢甲", 五十级绿装材料);
         装备打造表.Add("钛钢帽", 五十级绿装材料);
@@ -129,7 +129,7 @@ public class Ini_Building : MonoBehaviour
             }
             Equipment 装备 = (Equipment)pm.检索物品(装备名字);
             gut.生成获得框(装备.name,1);
-            pm.获取物品(装备名字,1);
+            pm.获取物品(装备);
         }
         else
             gut.生成警告框("材料不足");

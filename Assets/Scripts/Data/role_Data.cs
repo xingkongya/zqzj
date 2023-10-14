@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +39,8 @@ public class role_Data : AllBasic
     public Dictionary<string, string> CD;
     public Dictionary<string, Equipment> 装备槽;
     public Dictionary<string, string> 技能槽;
+    public Dictionary<string, string> 事件表;
+    public Dictionary<string, List<string>> 被动技能;
     public List< Pet_Data> 宠物栏;
     public Dictionary<string, Prop_bascis> 材料背包; //Prop_bascis是物品的基类
     public Dictionary<string, Equipment> 装备背包; //Prop_bascis是物品的基类
@@ -51,12 +54,12 @@ public class role_Data : AllBasic
         名字 = "王大牛";
         灵根 =bm.Xor( "1");
         等级 = bm.Xor("1");
-        限制等级 = bm.Xor("100");
+        限制等级 = bm.Xor("50");
         当前经验 = bm.Xor("0");
-        攻击力 = bm.Xor("5");
-        防御力 = bm.Xor("1");
-        血量 = bm.Xor("45");
-        剩余血量 = bm.Xor("45");
+        攻击力 = bm.Xor("10");
+        防御力 = bm.Xor("2");
+        血量 = bm.Xor("80");
+        剩余血量 = bm.Xor("80");
         回血值 = bm.Xor("5");
         暴击率 = bm.Xor("0.0");
         固定伤害 = bm.Xor("0");
@@ -76,7 +79,8 @@ public class role_Data : AllBasic
         金钱.Add("金币", bm.Xor("0"));
         金钱.Add("仙晶", bm.Xor("0"));
         金钱.Add("积分", bm.Xor("0"));
-        金钱.Add("点券", bm.Xor("0"));
+        金钱.Add("广告币", bm.Xor("0"));
+        金钱.Add("黑钻", bm.Xor("0"));
         记录 = new Dictionary<string, string>();
         记录.Add("背景音乐", "50");
         记录.Add("游戏音效", "50");
@@ -96,6 +100,8 @@ public class role_Data : AllBasic
         技能槽.Add("2", "");
         技能槽.Add("3", "");
         技能槽.Add("4", "");
+        被动技能 = new Dictionary<string, List<string>>();
+        被动技能.Add("职业", new List<string>());
         宠物栏 = new List<Pet_Data>();
         材料背包 = new Dictionary<string, Prop_bascis>();
         装备背包 = new Dictionary<string, Equipment>();
@@ -103,10 +109,12 @@ public class role_Data : AllBasic
         CD = new Dictionary<string, string>();
         列表型记录 = new Dictionary<string, Dictionary<string, List<string>>>();
         列表型记录.Add("战斗设置", new Dictionary<string, List<string>>() { { "战斗设置", new List<string>() } });
+        列表型记录.Add("出售设置", new Dictionary<string, List<string>>() { { "类型", new List<string>() }, { "颜色", new List<string>() } });
         拓展 = new Dictionary<string, Dictionary<string, string>>();
         树形记录 = new Dictionary<string, Dictionary<string, string>>();
         树形记录.Add("每日记录", new Dictionary<string, string>());
         天赋 = new Dictionary<string, Dictionary<string, string>>() { { "职业", new Dictionary<string, string>() },{"天赋",new Dictionary<string, string>() } };
+        事件表=new Dictionary<string, string>();
     }
 
 

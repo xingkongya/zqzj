@@ -18,48 +18,49 @@ public class m_wujihaian : MonoBehaviour, I_monster
 
     private void Start()
     {
-        utg.移动与坐标.Add("左", "小树林");
-        utg.移动与坐标.Add("上", "碎石滩");
+        utg.移动与坐标.Add("左", "荒原");
+        utg.移动与坐标.Add("右", "乱石滩");
+        utg.移动与坐标.Add("下", "山丘桃林");
         utg.刷新移动与坐标();
         utg.生成场景怪物信息方法(this);
 
         // utm.技能与粒度.Clear();
     }
 
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
         utm.怪物名字 = "虾兵";
         utm.怪物品质 = 0;
         utm.是否主动攻击 = false;
         utm.最低等级 = 20;
         utm.最高等级 = 25;
-        utm.基础攻击力 = 40;
+        utm.基础攻击力 = 28;
         utm.基础防御力 = 0;
-        utm.基础血量 = 220;
+        utm.基础血量 = 100;
         utm.基础暴击率 = 0;
         utm.基础回血值 = 8;
         utm.攻击力资质 = 0.4f;
         utm.防御力资质 = 0f;
-        utm.血量资质 = 0.45f;
+        utm.血量资质 = 0.4f;
         utm.成长 = 1f;
         utm.攻击速度 = 1.5f;
         utm.基础经验值 = 120;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
         utm.怪物名字 = "蟹将";
         utm.怪物品质 = 0;
         utm.是否主动攻击 = false;
         utm.最低等级 = 20;
         utm.最高等级 = 25;
-        utm.基础攻击力 = 38;
+        utm.基础攻击力 = 25;
         utm.基础防御力 = 0;
-        utm.基础血量 = 260;
+        utm.基础血量 = 120;
         utm.基础暴击率 = 0;
         utm.基础回血值 = 12;
         utm.攻击力资质 = 0.3f;
@@ -70,63 +71,61 @@ public class m_wujihaian : MonoBehaviour, I_monster
         utm.基础经验值 = 126;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
         utm.怪物名字 = "鱼人";
         utm.怪物品质 = 2;
         utm.是否主动攻击 = false;
         utm.最低等级 = 20;
         utm.最高等级 = 25;
-        utm.基础攻击力 = 65;
-        utm.基础防御力 = 20;
-        utm.基础血量 = 420;
+        utm.基础攻击力 = 40;
+        utm.基础防御力 = 22;
+        utm.基础血量 = 320;
         utm.基础暴击率 = 5;
         utm.基础回血值 = 18;
-        utm.攻击力资质 = 0.7f;
+        utm.攻击力资质 = 0.6f;
         utm.防御力资质 = 0f;
-        utm.血量资质 = 0.7f;
+        utm.血量资质 = 0.6f;
         utm.成长 = 1f;
-        utm.攻击速度 = 1.6f;
+        utm.攻击速度 = 1.5f;
         utm.基础经验值 = 280;
         utm.经验值系数 = 5;
         utm.铜币 = (int)(20 * utm.成长);
-        utm.添加掉落(utg.概率(1, 10), cb.掉落集合, "鱼人心",1);
-        utm.添加基础掉落(cb, 3);
-        utm.掉落信息.Add("鱼人心");
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级, 3);
+        utm.添加掉落(utg.概率(1, 5), cb.掉落集合, "鱼人心",1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
         utm.怪物名字 = "鲛人";
         utm.怪物品质 = 2;
         utm.是否主动攻击 = false;
         utm.最低等级 = 20;
         utm.最高等级 = 25;
-        utm.基础攻击力 = 60;
-        utm.基础防御力 = 22;
-        utm.基础血量 = 430;
+        utm.基础攻击力 = 45;
+        utm.基础防御力 = 16;
+        utm.基础血量 = 300;
         utm.基础暴击率 = 0;
         utm.基础回血值 = 10;
-        utm.攻击力资质 = 0.7f;
+        utm.攻击力资质 = 0.65f;
         utm.防御力资质 = 0f;
-        utm.血量资质 = 0.8f;
+        utm.血量资质 = 0.55f;
         utm.成长 = 1f;
-        utm.攻击速度 = 1.4f;
+        utm.攻击速度 = 1.3f;
         utm.基础经验值 = 280;
         utm.经验值系数 = 5;
         utm.铜币 = (int)(20 * utm.成长);
-        utm.添加掉落(utg.概率(1, 10), cb.掉落集合, "鲛人泪",1);
-        utm.添加基础掉落(cb, 3);
-        utm.掉落信息.Add("鲛人泪");
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级, 3);
+        utm.添加掉落(utg.概率(1, 5), cb.掉落集合, "鲛人泪",1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
         utm.怪物名字 = "碧水蟒";
         utm.怪物品质 = 3;
@@ -138,36 +137,35 @@ public class m_wujihaian : MonoBehaviour, I_monster
         utm.基础血量 = 900;
         utm.基础暴击率 = 10;
         utm.基础回血值 = 50;
-        utm.攻击力资质 = 0.9f;
-        utm.防御力资质 = 0.6f;
-        utm.血量资质 = 1.1f;
+        utm.攻击力资质 = 0.8f;
+        utm.防御力资质 = 0.45f;
+        utm.血量资质 = 0.7f;
         utm.成长 = 1f;
         utm.攻击速度 = 1.8f;
         utm.基础经验值 = 1200;
         utm.经验值系数 = 20;
         utm.铜币 = (int)(50 * utm.成长);
-        utm.添加掉落(utg.概率(1, 8), cb.掉落集合, "青磷石",1);
-        utm.添加基础掉落(cb, 4);
-        utm.掉落信息.Add("青磷石");
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级, 4);
+        utm.添加掉落(utg.概率(1, 3), cb.掉落集合, "青磷石",1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物6赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }
 
-    public bool 怪物7赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物8赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物9赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }

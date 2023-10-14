@@ -28,7 +28,7 @@ public class m_yuntaizhidian : MonoBehaviour, I_monster
         // 技能与粒度.Clear();
     }
 
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
         utm.怪物名字 = "云雀";
         utm.怪物品质 = 0;
@@ -48,11 +48,11 @@ public class m_yuntaizhidian : MonoBehaviour, I_monster
         utm.基础经验值 = 5800;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+        return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
         utm.怪物名字 = "花妖";
         utm.怪物品质 = 0;
@@ -72,11 +72,11 @@ public class m_yuntaizhidian : MonoBehaviour, I_monster
         utm.基础经验值 = 6000;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+        return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
         utm.怪物名字 = "变异迷幻菇";
         utm.怪物品质 = 1;
@@ -96,36 +96,36 @@ public class m_yuntaizhidian : MonoBehaviour, I_monster
         utm.基础经验值 = 5200;
         utm.经验值系数 = 5;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+        return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
-        return false;
+       return 0;
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
-        return false;
+       return 0;
     }
 
-    public bool 怪物6赋值(combat cb)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool 怪物7赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物8赋值(combat cb)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int 怪物9赋值(combat cb)
     {
         throw new NotImplementedException();
     }

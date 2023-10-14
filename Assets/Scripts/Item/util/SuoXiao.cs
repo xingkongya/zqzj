@@ -11,6 +11,8 @@ public class SuoXiao : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!gameObject.CompareTag("boss"))
+            speed = 2.4f;
         
     }
 

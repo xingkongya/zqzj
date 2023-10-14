@@ -29,6 +29,11 @@ public class Panel_Eqm : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        装备栏生成流光();
+    }
+
     public void 点击装备框()
     {
         gut.关闭杂项();
@@ -59,9 +64,10 @@ public class Panel_Eqm : MonoBehaviour
     public void 查看装备()
     {
         gut.关闭杂项();
-        string name = gameObject.transform.Find("Text").GetComponent<Text>().text;
-        Equipment 装备 = (Equipment)pm.检索物品(name);
-        gut.生成物品信息(装备, 0);
+        role_Data myData = io_.load();
+        string name = gameObject.name;
+        Equipment 装备 = myData.装备槽[name];
+        gut.生成物品信息(装备, 0,name);
     }
 
     private void 卸下装备()
@@ -80,10 +86,10 @@ public class Panel_Eqm : MonoBehaviour
                 //写入数据
                 Role_Panel rp = gameObject.transform.parent.parent.parent.parent.parent.gameObject.GetComponent<Role_Panel>();
                 role_Data myData = io_.load();
-                string 装备名 = myData.装备槽[gameObject.name].name;
+                Equipment 装备 = myData.装备槽[gameObject.name];
                 myData.装备槽[gameObject.name] = null;
                 io_.save(myData);
-                pm.获取物品(装备名, 1);
+                pm.获取物品(装备);
                 cb = 人物.GetComponent<combat>();
                 if (cb != null && !NameMgr.画布.CompareTag("幻界"))
                     cb.人物属性刷新();
@@ -109,7 +115,15 @@ public class Panel_Eqm : MonoBehaviour
     {
         PropMgr pm = PropMgr.GetInstance();
         Dictionary<string, int> 套装信息 = pm.装备套装信息;
-        string 装备名 = gameObject.transform.Find("Text").GetComponent<Text>().text;
+        string 装备名_str = gameObject.transform.Find("Text").GetComponent<Text>().text;
+        string 装备名;
+        if (装备名_str.IndexOf("+") != -1)
+        {
+            装备名 = 装备名_str.Split('+')[0];
+        }
+        else {
+            装备名 = 装备名_str;
+        }
         Equipment 装备 = pm.检索物品(装备名) as Equipment;
         if (装备 != null && !装备.tao.Equals(""))
         {
@@ -121,7 +135,7 @@ public class Panel_Eqm : MonoBehaviour
             else if (bm.Xstoi(装备.qua) == 3)
                 ColorUtility.TryParseHtmlString("#FF00DF", out nowColor);//紫色
             else if (bm.Xstoi(装备.qua) == 4)
-                ColorUtility.TryParseHtmlString("#FFB700", out nowColor);//金色
+                ColorUtility.TryParseHtmlString("#FDE61E", out nowColor);//金色
             else if (bm.Xstoi(装备.qua) == 5)
                 ColorUtility.TryParseHtmlString("#FF0000", out nowColor);//红色
 

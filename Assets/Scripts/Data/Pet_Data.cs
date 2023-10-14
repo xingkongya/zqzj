@@ -15,6 +15,7 @@ public class Pet_Data : AllBasic
     public string max_cc;
     public string icon;
     public string state;
+    public string next;
     public string ini_atk;
     public string ini_def;
     public string ini_hp;

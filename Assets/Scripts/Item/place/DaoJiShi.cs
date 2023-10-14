@@ -28,6 +28,8 @@ public class DaoJiShi : MonoBehaviour
         if (sa.CD集合.ContainsKey(boss名字)) {
             刷新计时 = sa.CD集合[boss名字];
             时间文本.text = (int)刷新计时 + "s";
+          
         }
     }
+
 }

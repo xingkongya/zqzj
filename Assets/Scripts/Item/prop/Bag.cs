@@ -65,8 +65,7 @@ public class Bag : MonoBehaviour
             foreach (string str in myData.装备背包.Keys)
             {
                 n++;
-                Equipment 装备 = myData.装备背包[str];
-                utg.生成物品项(n, 装备, bm.Xstoi(装备.num));
+                utg.生成装备项(n, str,myData);
             }
 
         }
@@ -80,10 +79,10 @@ public class Bag : MonoBehaviour
         //检索一键出售设置
         role_Data myData = io_.load();
         if (!myData.列表型记录.ContainsKey("出售设置"))
-            myData.列表型记录.Add("出售设置", new Dictionary<string, List<string>>() { { "星级", new List<string>() }, { "颜色", new List<string>() } });
+            myData.列表型记录.Add("出售设置", new Dictionary<string, List<string>>() { { "类型", new List<string>() }, { "颜色", new List<string>() } });
 
         Dictionary<string, List<string>> 出售设置 = myData.列表型记录["出售设置"];
-        foreach (string xing in 出售设置["星级"])
+        foreach (string xing in 出售设置["类型"])
         {
             gameObject.transform.Find("Panel/界面/一键出售界面/框架/" + xing + "/Button/打勾").gameObject.SetActive(true);
         }
@@ -93,7 +92,7 @@ public class Bag : MonoBehaviour
         }
         io_.save(myData);
 
-        刷新出售设置标题();
+        //刷新出售设置标题();
     }
 
 
@@ -107,9 +106,10 @@ public class Bag : MonoBehaviour
             //装备标签透明
             装备标签.GetComponent<Image>().color = bm.改变透明度(装备标签, 100);
             装备标签.transform.Find("Text").GetComponent<Text>().color = bm.改变透明度(装备标签.transform.Find("Text").gameObject, 120);
+            gameObject.transform.Find("Panel/head/数量").GetComponent<Text>().text = "数量";
             isEquipment = false;
             初始化背包();
-            刷新出售设置标题();
+            //刷新出售设置标题();
         }
 
     }
@@ -132,24 +132,27 @@ public class Bag : MonoBehaviour
             //装备标签不透明
             装备标签.GetComponent<Image>().color = bm.改变透明度(装备标签, 255);
             装备标签.transform.Find("Text").GetComponent<Text>().color = bm.改变透明度(装备标签.transform.Find("Text").gameObject, 255);
+            gameObject.transform.Find("Panel/head/数量").GetComponent<Text>().text = "等级";
             isEquipment = true;
             初始化背包();
-            刷新出售设置标题();
+            //刷新出售设置标题();
         }
     }
 
     public void 出售() {
         role_Data myData = io_.load();
-        if (GameObject.FindGameObjectWithTag("选中") == null) {
+        GameObject 选中项 = GameObject.FindGameObjectWithTag("选中");
+        if ( 选中项== null) {
             utg.生成警告框("未选中");
+            return;
         }
-        string 物品名 = GameObject.FindGameObjectWithTag("选中").gameObject.transform.Find("名字").GetComponent<Text>().text;
+        string 物品名 = 选中项.gameObject.transform.Find("名字").GetComponent<Text>().text;
         Prop_bascis pb = pm.检索物品(物品名);
         int 数量;
-        if (pb.type.Equals("3"))
+        if (PropMgr.装备表.ContainsKey(物品名))
         {
-            数量 = bm.Xstoi(myData.装备背包[物品名].num);
-            if (myData.装备背包[物品名].islock.Equals("1"))
+            数量 = 1;
+            if (myData.装备背包[选中项.name].islock.Equals("1"))
             {
                 utg.生成警告框("已锁定");
                 return;
@@ -164,11 +167,15 @@ public class Bag : MonoBehaviour
                 return;
             }
         }
+        /*
         int money = 数量 * bm.Xstoi(pb.price);
         utg.生成获得框("铜币", money);
         utg.加金钱(new Dictionary<string, int>() { { "铜币", money } });
         pm.失去物品(物品名,数量);
         初始化背包();
+         */
+        utg.生成拉条(物品名,选中项.name,bm.Xstoi(pb.price), 数量, "铜币", "出售");
+
     }
 
 
@@ -176,13 +183,13 @@ public class Bag : MonoBehaviour
         gameObject.transform.Find("Panel/界面/一键出售界面").gameObject.SetActive(false);//隐藏出售界面
         role_Data myData = io_.load();
         Dictionary<string, List<string>> 出售设置 = myData.列表型记录["出售设置"];
-        List<int> xing = new List<int>();
+        //List<int> xing = new List<int>();
         List<int> color = new List<int>();
-        if (出售设置["星级"].Count == 0 || 出售设置["颜色"].Count == 0)//有未设置完整的,不执行方法
+        if ( 出售设置["颜色"].Count == 0)//有未设置完整的,不执行方法
             return;
         else
         {
-            foreach (string 星级 in 出售设置["星级"]) {
+            /*foreach (string 星级 in 出售设置["星级"]) {
                 if (星级.Equals("一星"))
                     xing.Add(1);
                 else if(星级.Equals("二星"))
@@ -193,7 +200,7 @@ public class Bag : MonoBehaviour
                     xing.Add(4);
                 else if (星级.Equals("五星"))
                     xing.Add(5);
-            }
+            }*/
 
             foreach (string 颜色 in 出售设置["颜色"])
             {
@@ -211,29 +218,26 @@ public class Bag : MonoBehaviour
         }
 
         int type;
-        List<string> 物品名列表 = new List<string>();
         int money = 0;
         if (isEquipment)
         {
-            type = 3;
-            Dictionary<string, Equipment> 背包列表 = myData.装备背包;
-            foreach (string 物品名 in 背包列表.Keys)
-            {
-                物品名列表.Add(物品名);
-            }
+            Dictionary<int, string> 品质与晶矿 = new Dictionary<int, string>() { { 0, "灰色晶矿" }, { 1, "绿色晶矿" }, { 2, "蓝色晶矿" }, { 3, "紫色晶矿" }, { 4, "橙色晶矿" } };
+            Dictionary<string, Equipment> 装备列表;
+            装备列表 = myData.装备背包;
 
-            for (int i = 0; i < 物品名列表.Count; i++)
+            foreach (string 装备键 in 装备列表.Keys)
             {
-                Prop_bascis pb = pm.检索物品(物品名列表[i]);
-                if (xing.Contains(bm.Xstoi(pb.xing)) && color.Contains(bm.Xstoi(pb.qua)) && int.Parse(pb.type) == type&&背包列表[物品名列表[i]].islock.Equals("0"))
+                Equipment 装备 = 装备列表[装备键];
+                if ( color.Contains(bm.Xstoi(装备.qua))&& 装备.islock.Equals("0"))
                 {
-                    money += bm.Xstoi(pb.price) * bm.Xstoi(背包列表[物品名列表[i]].num);
-                    pm.失去物品(物品名列表[i], bm.Xstoi(背包列表[物品名列表[i]].num));
+                    pm.获取物品(品质与晶矿[bm.Xstoi(装备.qua)],1);
+                    pm.失去物品(装备键,1);
                 }
             }
         }
         else
         {
+           List<string> 物品名列表 = new List<string>();
             type = 1;
             Dictionary<string, Prop_bascis> 背包列表 = myData.材料背包;
             foreach (string 物品名 in 背包列表.Keys)
@@ -244,7 +248,7 @@ public class Bag : MonoBehaviour
             for (int i = 0; i < 物品名列表.Count; i++)
             {
                 Prop_bascis pb = pm.检索物品(物品名列表[i]);
-                if (xing.Contains(bm.Xstoi(pb.xing)) && color.Contains(bm.Xstoi(pb.qua)) && int.Parse(pb.type) == type && 背包列表[物品名列表[i]].islock.Equals("0"))
+                if ( color.Contains(bm.Xstoi(pb.qua)) && int.Parse(pb.type) == type && 背包列表[物品名列表[i]].islock.Equals("0"))
                 {
                     money += bm.Xstoi(pb.price) * bm.Xstoi(背包列表[物品名列表[i]].num);
                     pm.失去物品(物品名列表[i], bm.Xstoi(背包列表[物品名列表[i]].num));
@@ -255,6 +259,75 @@ public class Bag : MonoBehaviour
        
         utg.加金钱(new Dictionary<string, int>() { { "铜币", money } });
         utg.生成获得框("铜币", money);
+        初始化背包();
+    }
+
+
+    public void 一键出售装备()
+    {
+        gameObject.transform.Find("Panel/界面/一键出售界面").gameObject.SetActive(false);//隐藏出售界面
+        role_Data myData = io_.load();
+        Dictionary<string, List<string>> 出售设置 = myData.列表型记录["出售设置"];
+        List<int> color = new List<int>();
+        if (出售设置["颜色"].Count == 0)//有未设置完整的,不执行方法
+            return;
+        else
+        {
+            foreach (string 颜色 in 出售设置["颜色"])
+            {
+                if (颜色.Equals("白色"))
+                    color.Add(0);
+                else if (颜色.Equals("绿色"))
+                    color.Add(1);
+                else if (颜色.Equals("蓝色"))
+                    color.Add(2);
+                else if (颜色.Equals("紫色"))
+                    color.Add(3);
+                else if (颜色.Equals("金色"))
+                    color.Add(4);
+            }
+        }
+
+        /*int type;
+        List<string> 键名列表 = new List<string>();
+        int money = 0;
+            type = 3;
+            Dictionary<string, Equipment> 背包列表 = myData.装备背包;
+            foreach (string 物品名 in 背包列表.Keys)
+            {
+            键名列表.Add(物品名);
+            }
+
+            for (int i = 0; i < 键名列表.Count; i++)
+            {
+            Equipment pb = myData.装备背包[键名列表[i]];
+                if (color.Contains(bm.Xstoi(pb.qua)) && int.Parse(pb.type) == type && 背包列表[键名列表[i]].islock.Equals("0"))
+                {
+                money += bm.Xstoi(pb.price);
+                    pm.失去装备(键名列表[i]);
+                }
+            }
+      
+
+
+        utg.加金钱(new Dictionary<string, int>() { { "铜币", money } });
+        utg.生成获得框("铜币", money);*/
+        Dictionary<int, string> 品质与晶矿 = new Dictionary<int, string>() { { 0, "灰色晶矿" }, { 1, "绿色晶矿" }, { 2, "蓝色晶矿" }, { 3, "紫色晶矿" }, { 4, "橙色晶矿" } };
+        Dictionary<string, Equipment> 装备列表;
+        装备列表 = myData.装备背包;
+
+        int num = 0;
+        foreach (string 装备键 in 装备列表.Keys)
+        {
+            Equipment 装备 = 装备列表[装备键];
+            if (color.Contains(bm.Xstoi(装备.qua)) && 装备.islock.Equals("0"))
+            {
+                num++;
+                pm.获取物品(品质与晶矿[bm.Xstoi(装备.qua)], 1);
+                pm.失去装备(装备键);
+            }
+        }
+        utg.生成获得框("晶矿", num); 
         初始化背包();
     }
 

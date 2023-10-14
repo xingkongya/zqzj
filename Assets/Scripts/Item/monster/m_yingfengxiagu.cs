@@ -80,7 +80,8 @@ public class m_yingfengxiagu : MonoBehaviour,I_monster
     private void 书生选择项()
     {
         Dictionary<string, UnityAction> 选项信息 = new Dictionary<string, UnityAction>();
-        选项信息.Add("结伴同游去临海", utg.敬请期待);
+        选项信息.Add("奇闻趣事", 书生剧情1);
+        选项信息.Add("闲聊", 书生剧情0);
         GameObject 渡桥 = GameObject.Find("书生");
         utg.生成选项框(选项信息, 渡桥);
     }
@@ -128,6 +129,20 @@ public class m_yingfengxiagu : MonoBehaviour,I_monster
     }
 
 
+    private void 书生剧情0()
+    {
+        utg.关闭杂项();
+        string str = "吾自幼体弱多病,常遇厄难,不过坚信善恶有报,故常常行善积德,救助动物.终是否极泰来......\n几年前有幸遇到吾妻,美丽贤惠,通情达理.与之喜结连理,如今更是运势好转,百病不侵,无灾无厄!";
+        utg.生成对话框(str, 0, 0.09f, "书生闲聊");
+    }
+
+    private void 书生剧情1()
+    {
+        utg.关闭杂项();
+        string str = "某夜赶路回家,路过渭南县.县令设宴招待吾,遂命仆从们先行赶路.酒过三巡,辞别县令.天色昏黑不见五指,不知归途,迷糊走了三四里后在林中遇到一寺庙,久唤无人应,周围也是荒凉模样,此时风大雪急.门外踌躇良久,竟是听到呼吸声...咳咳,我娘子叫我回去吃饭了,后面下次再说.";
+        utg.生成对话框(str, 0, 0.09f, "书生怪话");
+    }
+
 
     private void 武痴气泡()
     {      
@@ -135,21 +150,21 @@ public class m_yingfengxiagu : MonoBehaviour,I_monster
         utg.生成气泡(str, 武痴);
     }
 
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
         utm.怪物名字 = "武痴";
         utm.怪物品质 = 3;
         utm.是否主动攻击 = true;
         utm.最低等级 = 50;
         utm.最高等级 = 50;
-        utm.基础攻击力 = 260;
+        utm.基础攻击力 = 200;
         utm.基础防御力 = 80;
-        utm.基础血量 = 8500;
+        utm.基础血量 = 6500;
         utm.基础暴击率 = 10;
         utm.基础回血值 = 200;
-        utm.攻击力资质 = 1.0f;
+        utm.攻击力资质 = 0.7f;
         utm.防御力资质 = 0.5f;
-        utm.血量资质 = 1.2f;
+        utm.血量资质 = 0.7f;
         utm.成长 = 3;
         utm.攻击速度 = 1.2f;
         utm.基础经验值 = 25000;
@@ -160,49 +175,49 @@ public class m_yingfengxiagu : MonoBehaviour,I_monster
             cb.技能与粒度.Add("热血沸腾", 0.3f);
         if (!cb.技能与粒度.ContainsKey("狂战"))
             cb.技能与粒度.Add("狂战", 0.3f);
-        if (!cb.技能与粒度.ContainsKey("强击"))
-            cb.技能与粒度.Add("强击", 0.4f);
-        utm.添加基础掉落(cb,1);
-        return true;
+        if (!cb.技能与粒度.ContainsKey("撞击"))
+            cb.技能与粒度.Add("撞击", 0.4f);
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
-        return false;
+        return 0;
 
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物6赋值(combat cb)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public bool 怪物7赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物8赋值(combat cb)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public int 怪物9赋值(combat cb)
     {
         throw new System.NotImplementedException();
     }

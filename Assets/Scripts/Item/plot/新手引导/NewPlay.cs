@@ -9,6 +9,7 @@ public class NewPlay : BaseManager<NewPlay>
     private G_Util gut = NameMgr.画布.GetComponent<G_Util>();
     private EventCenter em = EventCenter.GetInstance();
     private PropMgr pm = PropMgr.GetInstance();
+    private Dictionary<string, string> 临时储存 = new Dictionary<string, string>();
 
 
 
@@ -102,8 +103,12 @@ public class NewPlay : BaseManager<NewPlay>
 
     public void 关闭对话框()
     {
-        Text_DaYin tdy = GameObject.Find("对话框(Clone)").GetComponent<Text_DaYin>();
-        tdy.关闭对话框();
+        GameObject 对话框 = GameObject.Find("对话框(Clone)");
+        if (对话框 != null)
+        {
+            Text_DaYin tdy = 对话框.GetComponent<Text_DaYin>();
+            tdy.关闭对话框();
+        }
     }
 
 
@@ -164,7 +169,7 @@ public class NewPlay : BaseManager<NewPlay>
     private void 提示005()
     {
         Sprite 立绘 = Resources.Load<Sprite>("怪物/老鼠");
-        string 内容 = "让我们开启自动使用吧.生命值低于70%时将自动使用道具,首先点击战斗设置按钮";
+        string 内容 = "让我们开启自动使用吧.自动使用暗器, 以及生命值低于70%时将自动使用血药,首先点击战斗设置按钮";
         生成提示("作者", 立绘, 内容, true, 引导006);
     }
 
@@ -267,7 +272,7 @@ public class NewPlay : BaseManager<NewPlay>
     private void 提示009()
     {
         Sprite 立绘 = Resources.Load<Sprite>("怪物/老鼠");
-        string 内容 = "介绍一下各种NCP:\n牛铁匠---可以打造装备.\n村长---进行任务或对话.\n王二---学习技能.";
+        string 内容 = "介绍一下各种NCP:\n牛铁匠:可以打造装备.\n村长:进行任务或对话.\n王二:学习技能.";
         生成提示("作者", 立绘, 内容, true, 引导012);
     }
 
@@ -279,7 +284,7 @@ public class NewPlay : BaseManager<NewPlay>
     private void 提示0010()
     {
         Sprite 立绘 = Resources.Load<Sprite>("怪物/老鼠");
-        string 内容 = "村口西有医师可以免费补血,被怪打残血了一定要找他们";
+        string 内容 = "村口东有医师可以免费补血,被怪打残血了一定要找他";
         生成提示("作者", 立绘, 内容, true, 引导013);
     }
     private void 引导013()
@@ -361,10 +366,10 @@ public class NewPlay : BaseManager<NewPlay>
     private void 点击打造装备(string name)
     {
 
-        if (GameObject.Find("打造_" + name) && GameObject.Find("道具界面(Clone)"))
+        if (GameObject.Find(name) && GameObject.Find("道具界面(Clone)"))
         {
             Ini_Building IB_装备 = GameObject.Find("道具界面(Clone)").GetComponent<Ini_Building>();
-            ChangeTag CT_装备 = GameObject.Find("打造_" + name).GetComponent<ChangeTag>();
+            ChangeTag CT_装备 = GameObject.Find(name).GetComponent<ChangeTag>();
             em.AddEventListener("引导", CT_装备.OnClick);
             em.AddEventListener("引导", IB_装备.打造装备);
         }
@@ -460,8 +465,9 @@ public class NewPlay : BaseManager<NewPlay>
     private void 提示0016()
     {
         Sprite 立绘 = Resources.Load<Sprite>("怪物/老鼠");
-        string 内容 = "为了方便,这里我就一次性穿上所有的一级装备了";
-        生成提示("作者", 立绘, 内容, true, 引导024);//为true则为下一引导
+        string 内容 = "越高等级/品质的装备属性越高,绿色及以上品质的装备附带额外随机属性\n" +
+            "好了,新手引导结束了,快开启你的冒险吧";
+        生成提示("作者", 立绘, 内容, true, 引导027);//为true则为下一引导
     }
 
     private void 点击背包项(string name)
@@ -497,7 +503,7 @@ public class NewPlay : BaseManager<NewPlay>
     private void 提示0017()
     {
         Sprite 立绘 = Resources.Load<Sprite>("怪物/老鼠");
-        string 内容 = "好了,新手引导结束了,开启你的冒险吧";
+        string 内容 = "";
         生成提示("作者", 立绘, 内容, true, 引导026);//为true则为下一引导
     }
     private void 引导026()
@@ -513,6 +519,13 @@ public class NewPlay : BaseManager<NewPlay>
         生成引导(new Vector2(220, 492));
 
     }
+
+    private void 引导027()
+    {
+        em.AddEventListener("引导", 关闭提示);
+        生成引导(new Vector2(326, -600));//当前引导
+    }
+
 
 
 

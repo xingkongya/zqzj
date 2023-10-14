@@ -17,9 +17,9 @@ public class PropEffect : BaseManager<PropEffect>
     private RoleMgr rm = RoleMgr.GetInstance();
 
 
-    public Dictionary<string, Action> 加载道具效果()
+    public Dictionary<string, Action<int>> 加载道具效果()
     {
-        Dictionary<string, Action> 道具名字和其效果 = new Dictionary<string, Action>();
+        Dictionary<string, Action<int>> 道具名字和其效果 = new Dictionary<string, Action<int>>();
         道具名字和其效果.Add("馒头", 使用背包CD道具);
         道具名字和其效果.Add("桃子", 使用背包CD道具);
         道具名字和其效果.Add("止血草", 使用背包CD道具);
@@ -74,17 +74,17 @@ public class PropEffect : BaseManager<PropEffect>
         道具名字和其效果.Add("≮九千年壬水蟠桃≯", 九千年壬水蟠桃);
         道具名字和其效果.Add("≮黄中李≯", 黄中李);
         道具名字和其效果.Add("≮人参果≯", 人参果);
-        道具名字和其效果.Add("Vip礼包1", Vip礼包1);
+        道具名字和其效果.Add("VIP礼盒", Vip礼盒);
         道具名字和其效果.Add("技能书<桃之夭夭(初级)>", 初级桃之夭夭技能书);
-        道具名字和其效果.Add("技能书<包扎>", 包扎技能书);
-        道具名字和其效果.Add("技能书<焚诀>", 焚诀技能书);
-        道具名字和其效果.Add("技能书<磐石>", 磐石技能书);
-        道具名字和其效果.Add("技能书<磐石身>", 磐石身技能书);
-        道具名字和其效果.Add("技能书<吞噬>", 吞噬技能书);
-        道具名字和其效果.Add("技能书<化龙>", 化龙技能书);
-        道具名字和其效果.Add("技能书<治愈之水>", 治愈之水技能书);
-        道具名字和其效果.Add("技能书<夺命三仙剑(伪)>", 夺命三仙剑_伪技能书);
-        道具名字和其效果.Add("技能书<大荒囚天拳(伪)>", 大荒囚天拳_伪技能书);
+        道具名字和其效果.Add("(绝招)<包扎>", 包扎技能书);
+        道具名字和其效果.Add("(心法)<焚诀>", 焚诀技能书);
+        道具名字和其效果.Add("(绝招)<磐石>", 磐石技能书);
+        道具名字和其效果.Add("(被动)<磐石身>", 磐石身技能书);
+        道具名字和其效果.Add("(绝招)<吞噬之触>", 吞噬之触技能书);
+        道具名字和其效果.Add("(绝招)<化龙>", 化龙技能书);
+        道具名字和其效果.Add("(绝招)<治愈之水>", 治愈之水技能书);
+        道具名字和其效果.Add("(绝招)<三仙剑>", 陨仙剑技能书);
+        道具名字和其效果.Add("(绝招)<大荒拳>", 荒天拳技能书);
         道具名字和其效果.Add("虾兵卵", 虾兵卵);
         道具名字和其效果.Add("蟹将卵", 蟹将卵);
         道具名字和其效果.Add("鲲鹏之卵", 鲲鹏卵);
@@ -115,7 +115,7 @@ public class PropEffect : BaseManager<PropEffect>
     /// 效果道具
     /// </summary>
     /// 
-    public void 馒头()
+    public void 馒头(int num)
     {
         if (pm.失去物品("馒头", 1).Equals("成功"))
         {
@@ -127,7 +127,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 桃子()
+    public void 桃子(int num)
     {
         if (pm.失去物品("桃子", 1).Equals("成功"))
         {
@@ -139,7 +139,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 止血草()
+    public void 止血草(int num)
     {
         if (pm.失去物品("止血草", 1).Equals("成功"))
         {
@@ -151,7 +151,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 金疮药()
+    public void 金疮药(int num)
     {
         if (pm.失去物品("金疮药", 1).Equals("成功"))
         {
@@ -163,7 +163,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 补元散()
+    public void 补元散(int num)
     {
         if (pm.失去物品("补元散", 1).Equals("成功"))
         {
@@ -175,7 +175,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 愈伤膏()
+    public void 愈伤膏(int num)
     {
         if (pm.失去物品("愈伤膏", 1).Equals("成功"))
         {
@@ -187,7 +187,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 人参精华()
+    public void 人参精华(int num)
     {
         if (pm.失去物品("人参精华", 1).Equals("成功"))
         {
@@ -199,29 +199,29 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 造化金丹()
+    public void 造化金丹(int num)
     {
-        if (pm.失去物品("造化金丹", 1).Equals("成功"))
+        if (pm.失去物品("造化金丹", num).Equals("成功"))
         {
             role_Data myData = io_.load();
             combat cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
-            myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + 1);
+            myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + num);
             io_.save(myData);
             cb.人物属性刷新();
         }
     }
 
-    public void 真龙精血()
+    public void 真龙精血(int num)
     {
         role_Data myData = io_.load();
-        if (myData.记录.ContainsKey("真龙精血") && int.Parse(myData.记录["真龙精血"]) >= 5)
+        if (myData.记录.ContainsKey("真龙精血") && (int.Parse(myData.记录["真龙精血"])+num) >= 5)
         {
             返回状态 = "使用达上限";
             return;
         }
         else
         {
-            if (pm.失去物品("真龙精血", 1).Equals("成功"))
+            if (pm.失去物品("真龙精血", num).Equals("成功"))
             {
                 myData = io_.load();
                 combat cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
@@ -233,21 +233,21 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 人参果()
+    public void 人参果(int num)
     {
         role_Data myData = io_.load();
-        if (myData.记录.ContainsKey("≮人参果≯") && int.Parse(myData.记录["≮人参果≯"]) >= 99)
+        if (myData.记录.ContainsKey("≮人参果≯") && (int.Parse(myData.记录["≮人参果≯"]) +num)>= 99)
         {
             返回状态 = "使用达上限";
             return;
         }
         else
         {
-            if (pm.失去物品("≮人参果≯", 1).Equals("成功"))
+            if (pm.失去物品("≮人参果≯", num).Equals("成功"))
             {
                 myData = io_.load();
                 combat cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
-                myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + 3);
+                myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + 3*num);
                 io_.save(myData);
                 cb.人物属性刷新();
                 rm.记录数据_数值增长("≮人参果≯", "1");
@@ -255,175 +255,175 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 黄中李()
+    public void 黄中李(int num)
     {
         if (pm.失去物品("≮黄中李≯", 1).Equals("成功"))
         {
             role_Data myData = io_.load();
             combat cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
-            myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + 50);
+            myData.灵根 = bm.Xitos(bm.Xstoi(myData.灵根) + 50*num);
             io_.save(myData);
             cb.人物属性刷新();
         }
     }
 
-    public void 灵芝()
+    public void 灵芝(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("灵芝", 1).Equals("成功"))
+        if (pm.失去物品("灵芝", num).Equals("成功"))
         {
-            gut.加经验值(50000);
+            gut.加经验值(50000*num);
         }
     }
 
-    public void 百年灵芝()
+    public void 百年灵芝(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("百年灵芝", 1).Equals("成功"))
+        if (pm.失去物品("百年灵芝", num).Equals("成功"))
         {
-            gut.加经验值(100000);
+            gut.加经验值(100000*num);
         }
     }
 
-    public void 千年灵芝()
+    public void 千年灵芝(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("千年灵芝", 1).Equals("成功"))
+        if (pm.失去物品("千年灵芝", num).Equals("成功"))
         {
-            gut.加经验值(500000);
+            gut.加经验值(500000*num);
         }
     }
 
-    public void 三千年壬水蟠桃()
+    public void 三千年壬水蟠桃(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("≮三千年壬水蟠桃≯", 1).Equals("成功"))
+        if (pm.失去物品("≮三千年壬水蟠桃≯", num).Equals("成功"))
         {
-            gut.加经验值(500000000);
+            gut.加经验值(500000000*num);
         }
     }
 
-    public void 六千年壬水蟠桃()
+    public void 六千年壬水蟠桃(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("≮六千年壬水蟠桃≯", 1).Equals("成功"))
+        if (pm.失去物品("≮六千年壬水蟠桃≯", num).Equals("成功"))
         {
-            gut.加经验值(2000000000);
+            gut.加经验值(2000000000*num);
         }
     }
 
-    public void 九千年壬水蟠桃()
+    public void 九千年壬水蟠桃(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("≮九千年壬水蟠桃≯", 1).Equals("成功"))
+        if (pm.失去物品("≮九千年壬水蟠桃≯", num).Equals("成功"))
         {
-            gut.加经验值(10000000000);
+            gut.加经验值(10000000000*num);
         }
     }
 
-    public void 大松果()
+    public void 大松果(int num)
     {
          gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("大松果", 1).Equals("成功"))
+        if (pm.失去物品("大松果", num).Equals("成功"))
         {
-            gut.加经验值(800);
+            gut.加经验值(800*num);
         }
     }
 
-    public void 祝福果子()
+    public void 祝福果子(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("祝福果子", 1).Equals("成功"))
+        if (pm.失去物品("祝福果子", num).Equals("成功"))
         {
-            gut.加经验值(6666);
+            gut.加经验值(6666*num);
         }
     }
 
-    public void 血菩提()
+    public void 血菩提(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("血菩提", 1).Equals("成功"))
+        if (pm.失去物品("血菩提", num).Equals("成功"))
         {
-            gut.加经验值(1000000);
+            gut.加经验值(1000000*num);
         }
     }
 
-    public void 下品涅槃果()
+    public void 下品涅槃果(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("下品涅槃果", 1).Equals("成功"))
+        if (pm.失去物品("下品涅槃果", num).Equals("成功"))
         {
-            gut.经验池加经验值(100000);
+            gut.经验池加经验值(100000*num);
         }
     }
 
-    public void 中品涅槃果()
+    public void 中品涅槃果(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("中品涅槃果", 1).Equals("成功"))
+        if (pm.失去物品("中品涅槃果", num).Equals("成功"))
         {
-            gut.经验池加经验值(1000000);
+            gut.经验池加经验值(1000000*num);
         }
     }
 
-    public void 上品涅槃果()
+    public void 上品涅槃果(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("上品涅槃果", 1).Equals("成功"))
+        if (pm.失去物品("上品涅槃果", num).Equals("成功"))
         {
-            gut.经验池加经验值(10000000);
+            gut.经验池加经验值(10000000*num);
         }
     }
 
-    public void 极品涅槃果()
+    public void 极品涅槃果(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("极品涅槃果", 1).Equals("成功"))
+        if (pm.失去物品("极品涅槃果", num).Equals("成功"))
         {
-            gut.经验池加经验值(100000000);
+            gut.经验池加经验值(100000000*num);
         }
     }
 
-    public void 神圣果子()
+    public void 神圣果子(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("神圣果子", 1).Equals("成功"))
+        if (pm.失去物品("神圣果子", num).Equals("成功"))
         {
-            gut.经验池加经验值(50000);
+            gut.经验池加经验值(50000*num);
         }
     }
 
 
-    public void 狗粮()
+    public void 狗粮(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("狗粮", 1).Equals("成功"))
+        if (pm.失去物品("狗粮", num).Equals("成功"))
         {
-            gut.经验池加经验值(1000);
+            gut.经验池加经验值(1000*num);
         }
     }
 
 
-    public void 美味大骨()
+    public void 美味大骨(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("美味大骨", 1).Equals("成功"))
+        if (pm.失去物品("美味大骨", num).Equals("成功"))
         {
-            gut.经验池加经验值(5000);
+            gut.经验池加经验值(5000*num);
         }
     }
 
-    public void 宠爱零食()
+    public void 宠爱零食(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("宠爱零食", 1).Equals("成功"))
+        if (pm.失去物品("宠爱零食", num).Equals("成功"))
         {
-            gut.经验池加经验值(20000);
+            gut.经验池加经验值(20000*num);
         }
     }
 
 
-    public void 飞羽() {
+    public void 飞羽(int num) {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("飞羽", 1).Equals("成功"))
         {
@@ -431,7 +431,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 绣花针()
+    public void 绣花针(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("绣花针", 1).Equals("成功"))
@@ -440,7 +440,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 飞镖()
+    public void 飞镖(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("飞镖", 1).Equals("成功"))
@@ -449,7 +449,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 暗箭()
+    public void 暗箭(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("暗箭", 1).Equals("成功"))
@@ -458,7 +458,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 十字弩()
+    public void 十字弩(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("十字弩", 1).Equals("成功"))
@@ -468,7 +468,7 @@ public class PropEffect : BaseManager<PropEffect>
     }
 
 
-    public void 含笑半步颠()
+    public void 含笑半步颠(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("含笑半步颠", 1).Equals("成功"))
@@ -482,12 +482,12 @@ public class PropEffect : BaseManager<PropEffect>
     /// 加金钱
     /// </summary>
     /// 
-    public void 钱袋子()
+    public void 钱袋子(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("钱袋子", 1).Equals("成功"))
+        if (pm.失去物品("钱袋子", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "铜币", 100 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "铜币", 100*num } };
             gut.加金钱(钱币);
         }
     }
@@ -496,83 +496,83 @@ public class PropEffect : BaseManager<PropEffect>
     /// <summary>
     /// 仙晶卡
     /// </summary>
-    public void 二仙晶卡()
+    public void 二仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("2仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("2仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 2 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 2*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 五仙晶卡()
+    public void 五仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("5仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("5仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 5 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 5*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 十仙晶卡()
+    public void 十仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("10仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("10仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 10 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 10*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 五十仙晶卡()
+    public void 五十仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("50仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("50仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 50 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 50*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 一百仙晶卡()
+    public void 一百仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("100仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("100仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 100 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 100*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 一千仙晶卡()
+    public void 一千仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("1000仙晶卡", 1).Equals("成功"))
+        if (pm.失去物品("1000仙晶卡", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 1000 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 1000*num } };
             gut.加金钱(钱币);
         }
     }
 
-    public void 九千九仙晶卡()
+    public void 九千九仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("☆9999仙晶卡☆", 1).Equals("成功"))
+        if (pm.失去物品("☆9999仙晶卡☆", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 9999 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 9999*num } };
             gut.加金钱(钱币);
         }
     }
 
 
-    public void 九万九仙晶卡()
+    public void 九万九仙晶卡(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("≮99999仙晶卡≯", 1).Equals("成功"))
+        if (pm.失去物品("≮99999仙晶卡≯", num).Equals("成功"))
         {
-            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 99999 } };
+            Dictionary<string, int> 钱币 = new Dictionary<string, int>() { { "仙晶", 99999*num } };
             gut.加金钱(钱币);
         }
     }
@@ -581,20 +581,20 @@ public class PropEffect : BaseManager<PropEffect>
     /// <summary>
     /// 礼包
     /// </summary>
-    public void 新手保送50级大礼包()
+    public void 新手保送50级大礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
-        if (pm.失去物品("新手保送50级大礼包", 1).Equals("成功"))
+        if (pm.失去物品("新手保送50级大礼包", num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("10级新手礼包"),1);
-            物品列表.Add(pm.检索物品("止血草"), 10);
+            物品列表.Add(pm.检索物品("10级新手礼包"),num);
+            物品列表.Add(pm.检索物品("止血草"), 10*num);
             pm.获取多个物品并显示特效(物品列表,"背包");
         }       
     }
 
-    public void 十级级新手礼包()
+    public void 十级级新手礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
@@ -605,17 +605,17 @@ public class PropEffect : BaseManager<PropEffect>
             return;
         }
 
-        if (pm.失去物品("10级新手礼包", 1).Equals("成功"))
+        if (pm.失去物品("10级新手礼包", num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("20级新手礼包"), 1);
-            物品列表.Add(pm.检索物品("灰色精华"), 10);
-            物品列表.Add(pm.检索物品("50仙晶卡"), 1);
+            物品列表.Add(pm.检索物品("20级新手礼包"), 1*num);
+            物品列表.Add(pm.检索物品("灰色精华"), 10*num);
+            物品列表.Add(pm.检索物品("50仙晶卡"), 1*num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
-    public void 二十级级新手礼包()
+    public void 二十级级新手礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
@@ -626,20 +626,20 @@ public class PropEffect : BaseManager<PropEffect>
             return;
         }
 
-        if (pm.失去物品("20级新手礼包", 1).Equals("成功"))
+        if (pm.失去物品("20级新手礼包", num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("30级新手礼包"), 1);
-            物品列表.Add(pm.检索物品("(完美)≮黄金鸟≯之卵"), 1);
-            物品列表.Add(pm.检索物品("绿色精华"), 5);
-            物品列表.Add(pm.检索物品("神圣果子"), 1);
-            物品列表.Add(pm.检索物品("100仙晶卡"), 2);
+            物品列表.Add(pm.检索物品("30级新手礼包"), 1*num);
+            物品列表.Add(pm.检索物品("(完美)≮黄金鸟≯之卵"), 1 * num);
+            物品列表.Add(pm.检索物品("绿色精华"), 5 * num);
+            物品列表.Add(pm.检索物品("神圣果子"), 1 * num);
+            物品列表.Add(pm.检索物品("100仙晶卡"), 2 * num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
 
-    public void 三十级级新手礼包()
+    public void 三十级级新手礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
@@ -650,18 +650,18 @@ public class PropEffect : BaseManager<PropEffect>
             return;
         }
 
-        if (pm.失去物品("30级新手礼包", 1).Equals("成功"))
+        if (pm.失去物品("30级新手礼包", 1 * num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("40级新手礼包"), 1);
-            物品列表.Add(pm.检索物品("下品涅槃果"), 1);
-            物品列表.Add(pm.检索物品("蓝色精华"), 3);
-            物品列表.Add(pm.检索物品("100仙晶卡"), 3);
+            物品列表.Add(pm.检索物品("40级新手礼包"), 1 * num);
+            物品列表.Add(pm.检索物品("下品涅槃果"), 1 * num);
+            物品列表.Add(pm.检索物品("蓝色精华"), 3 * num);
+            物品列表.Add(pm.检索物品("100仙晶卡"), 3 * num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
-    public void 四十级级新手礼包()
+    public void 四十级级新手礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
@@ -672,19 +672,19 @@ public class PropEffect : BaseManager<PropEffect>
             return;
         }
 
-        if (pm.失去物品("40级新手礼包", 1).Equals("成功"))
+        if (pm.失去物品("40级新手礼包", 1 * num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("50级新手礼包"), 1);
-            物品列表.Add(pm.检索物品("下品涅槃果"), 5);
-            物品列表.Add(pm.检索物品("紫色精华"), 2);
-            物品列表.Add(pm.检索物品("100仙晶卡"), 5);
+            物品列表.Add(pm.检索物品("50级新手礼包"), 1 * num);
+            物品列表.Add(pm.检索物品("下品涅槃果"), 5 * num);
+            物品列表.Add(pm.检索物品("紫色精华"), 2 * num);
+            物品列表.Add(pm.检索物品("100仙晶卡"), 5 * num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
 
-    public void 五十级级新手礼包()
+    public void 五十级级新手礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
@@ -695,70 +695,87 @@ public class PropEffect : BaseManager<PropEffect>
             return;
         }
 
-        if (pm.失去物品("50级新手礼包", 1).Equals("成功"))
+        if (pm.失去物品("50级新手礼包", 1 * num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("造化金丹"), 1);
-            物品列表.Add(pm.检索物品("仙兽精华"), 1);
-            物品列表.Add(pm.检索物品("1000仙晶卡"), 1);
+            物品列表.Add(pm.检索物品("造化金丹"), 1 * num);
+            物品列表.Add(pm.检索物品("仙兽精华"), 1 * num);
+            物品列表.Add(pm.检索物品("1000仙晶卡"), 1 * num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
-    public void 通天塔礼包() {
+    public void 通天塔礼包(int num) {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
         Dictionary<string, int> 礼包容器 = new Dictionary<string, int>();
         礼包容器.Add("坤坤之卵", 1);
         礼包容器.Add("☆9999仙晶卡☆", 2);
         礼包容器.Add("造化金丹",10);
-        礼包容器.Add("神兽精华", 10);
-        礼包容器.Add("技能书<通天秘典>", 10);
-        礼包容器.Add("1000仙晶卡", 20);
-        礼包容器.Add("通天剑", 25);
-        礼包容器.Add("通天甲", 25);
-        礼包容器.Add("通天头盔", 25); 
-        礼包容器.Add("通天战靴", 25);
-        礼包容器.Add("通天战戒", 25);
-        礼包容器.Add("神兽气息", 50);
-        礼包容器.Add("仙兽精华", 60);
-        礼包容器.Add("小金币", 60);
-        礼包容器.Add("100仙晶卡", 100);
-        礼包容器.Add("五帝铜钱", 150);
-        礼包容器.Add("生命之果", 300);
-        礼包容器.Add("仙兽气息", 300);
-        礼包容器.Add("血菩提", 300);
+        礼包容器.Add("神兽精华", 10);//
+        礼包容器.Add("(心法)<通天秘典>", 10);
+        礼包容器.Add("1000仙晶卡", 20);//
+        礼包容器.Add("通天剑", 10);//
+        礼包容器.Add("通天甲", 10);//
+        礼包容器.Add("通天头盔", 10); 
+        礼包容器.Add("通天战靴", 10);//
+        礼包容器.Add("通天战戒", 10);//
+        礼包容器.Add("神兽气息", 50);//
+        礼包容器.Add("仙兽精华", 60);//
+        礼包容器.Add("小元宝", 60);//
+        礼包容器.Add("100仙晶卡", 100);//
+        礼包容器.Add("五帝铜钱", 150);//
+        礼包容器.Add("生命之果", 300);//
+        礼包容器.Add("仙兽气息", 300);//
+        礼包容器.Add("血菩提", 300);//
         礼包容器.Add("下品涅槃果", 400);//v1898
-        礼包容器.Add("紫色精华", 500);
-        礼包容器.Add("归元露", 1000);
-        礼包容器.Add("蓝色精华", 1000);
-        礼包容器.Add("绿色精华", 1200);
-        礼包容器.Add("神圣果子", 1200);
-        礼包容器.Add("兽皮", 1100);
-        礼包容器.Add("兽骨", 1100);
-        if (pm.失去物品("通天塔礼包", 1).Equals("成功"))
+        礼包容器.Add("紫色精华", 500);//
+        礼包容器.Add("归元露", 1000);//
+        礼包容器.Add("蓝色精华", 1000);//
+        礼包容器.Add("绿色精华", 1200);//
+        礼包容器.Add("神圣果子", 1200);//
+        礼包容器.Add("兽皮", 1100);//
+        礼包容器.Add("兽骨", 1100);//
+        物品列表 = new Dictionary<Prop_bascis, int>();
+        if (pm.失去物品("通天塔礼包", num).Equals("成功"))
         {
-            string 物品名 = gut.概率_礼包(礼包容器, "进化宝石");//概率总数为1万,上面那些都没出的话,保底出进化宝石
-            物品列表 = new Dictionary<Prop_bascis, int>();
-            if (物品名.Equals("兽皮") || 物品名.Equals("兽骨"))
-            {
-                物品列表.Add(pm.检索物品(物品名), 5);
-            }
-            else
-            {
-                物品列表.Add(pm.检索物品(物品名), 1);
+            for (int i=0;i<num;i++) {
+                string 物品名 = gut.概率_礼包(礼包容器, "进化宝石");//概率总数为1万,上面那些都没出的话,保底出进化宝石   
+                if (物品名.Equals("兽皮") || 物品名.Equals("兽骨"))
+                {
+                    物品列表 = 物品列表添加奖品(物品列表, pm.检索物品(物品名), 5);
+                }
+                else
+                {
+                    物品列表 = 物品列表添加奖品(物品列表, pm.检索物品(物品名), 1);
+                }
             }
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
 
-    public void 二零二三礼包()
+
+    public Dictionary<Prop_bascis, int> 物品列表添加奖品(Dictionary<Prop_bascis, int> 物品列表, Prop_bascis 奖品,int 奖品数量 ) {
+        if (物品列表.ContainsKey(奖品))
+        {
+            物品列表[奖品] += 奖品数量;
+        }
+        else {
+            if (奖品!=null&&奖品.name!=null&&!奖品.name.Equals("")) {
+                物品列表.Add(奖品, 奖品数量);
+            }
+        }
+
+        return 物品列表;
+    }
+
+    public void 二零二三礼包(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
         Dictionary<string, int> 礼包容器 = new Dictionary<string, int>();
-        礼包容器.Add("技能书<夺命三仙剑(伪)>", 3333);
-        礼包容器.Add("技能书<大荒囚天拳(伪)>", 3333);
+        礼包容器.Add("(绝招)<三仙剑>", 3333);
+        礼包容器.Add("(绝招)<大荒拳>", 3333);
         if (pm.失去物品("2023礼包", 1).Equals("成功"))
         {
             string 物品名 = gut.概率_礼包(礼包容器, "技能书<不死印诀(伪)>");//概率总数为1万,上面那些都没出的话,保底出
@@ -768,16 +785,15 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void Vip礼包1()
+    public void Vip礼盒(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
 
-        if (pm.失去物品("Vip礼包1", 1).Equals("成功"))
+        if (pm.失去物品("VIP礼盒", num).Equals("成功"))
         {
             物品列表 = new Dictionary<Prop_bascis, int>();
-            物品列表.Add(pm.检索物品("VIP左卡"), 1);
-            物品列表.Add(pm.检索物品("VIP右卡"), 1);
-            物品列表.Add(pm.检索物品("1000仙晶卡"), 1);
+            物品列表.Add(pm.检索物品("VIP左卡"), 1*num);
+            物品列表.Add(pm.检索物品("VIP右卡"), 1 * num);
             pm.获取多个物品并显示特效(物品列表, "背包");
         }
     }
@@ -785,19 +801,19 @@ public class PropEffect : BaseManager<PropEffect>
     /// <summary>
     /// 地图钥匙
     /// </summary>
-    public void 听海石()
+    public void 听海石(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
           if (pm.失去物品("听海石", 1).Equals("成功"))
             {
             string SceneName = SceneManager.GetActiveScene().name;
-            if (SceneName.Equals("碎石滩"))
+            if (SceneName.Equals("乱石滩"))
             {
              GameObject 隐藏地图= GameObject.Find("combat_other").transform.Find("隐藏地图").gameObject;
                 隐藏地图.SetActive(true);
             }
             else
-                gut.生成警告框("什么都没发生");
+                返回状态="什么都没发生";
             }
       
     }
@@ -808,7 +824,7 @@ public class PropEffect : BaseManager<PropEffect>
     /// <summary>
     /// 技能书
     /// </summary>
-    public void 初级桃之夭夭技能书() {
+    public void 初级桃之夭夭技能书(int num) {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("桃之夭夭(初级)"))
         {
@@ -822,12 +838,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 包扎技能书()
+    public void 包扎技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("包扎"))
         {
-            if (!pm.失去物品("技能书<包扎>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<包扎>", 1).Equals("成功"))
             {
 
             }
@@ -838,12 +854,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 大荒囚天拳_伪技能书()
+    public void 荒天拳技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (sm.学习技能("大荒囚天拳(伪)"))
+        if (sm.学习技能("荒天拳"))
         {
-            if (!pm.失去物品("技能书<大荒囚天拳(伪)>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<大荒拳>", 1).Equals("成功"))
             {
 
             }
@@ -854,12 +870,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 夺命三仙剑_伪技能书()
+    public void 陨仙剑技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (sm.学习技能("夺命三仙剑(伪)"))
+        if (sm.学习技能("陨仙剑"))
         {
-            if (!pm.失去物品("技能书<夺命三仙剑(伪)>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<三仙剑>", 1).Equals("成功"))
             {
 
             }
@@ -870,12 +886,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 焚诀技能书()
+    public void 焚诀技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("≮焚诀≯"))
         {
-            if (!pm.失去物品("技能书<焚诀>", 1).Equals("成功"))
+            if (!pm.失去物品("(心法)<焚诀>", 1).Equals("成功"))
             {
 
             }
@@ -886,12 +902,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 磐石技能书()
+    public void 磐石技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("磐石"))
         {
-            if (!pm.失去物品("技能书<磐石>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<磐石>", 1).Equals("成功"))
             {
 
             }
@@ -902,12 +918,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 磐石身技能书()
+    public void 磐石身技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("磐石身"))
         {
-            if (!pm.失去物品("技能书<磐石身>", 1).Equals("成功"))
+            if (!pm.失去物品("(被动)<磐石身>", 1).Equals("成功"))
             {
 
             }
@@ -918,12 +934,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 化龙技能书()
+    public void 化龙技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("≮化龙≯"))
         {
-            if (!pm.失去物品("技能书<化龙>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<化龙>", 1).Equals("成功"))
             {
 
             }
@@ -934,12 +950,12 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 吞噬技能书()
+    public void 吞噬之触技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (sm.学习技能("吞噬"))
+        if (sm.学习技能("吞噬之触"))
         {
-            if (!pm.失去物品("技能书<吞噬>", 1).Equals("成功"))
+            if (!pm.失去物品("(绝招)<吞噬之触>", 1).Equals("成功"))
             {
 
             }
@@ -950,7 +966,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 治愈之水技能书()
+    public void 治愈之水技能书(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (sm.学习技能("治愈之水"))
@@ -970,7 +986,7 @@ public class PropEffect : BaseManager<PropEffect>
     /// <summary>
     /// 宠物蛋
     /// </summary>
-    public void 虾兵卵() {
+    public void 虾兵卵(int num) {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
         if (myData.宠物栏.Count < 6)
@@ -990,7 +1006,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 蟹将卵()
+    public void 蟹将卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1013,7 +1029,7 @@ public class PropEffect : BaseManager<PropEffect>
     }
 
 
-    public void 黄金鸟卵()
+    public void 黄金鸟卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1035,7 +1051,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 鲲鹏卵()
+    public void 鲲鹏卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1057,7 +1073,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 坤坤卵()
+    public void 坤坤卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1079,7 +1095,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 完美_黄金鸟卵()
+    public void 完美_黄金鸟卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1101,7 +1117,7 @@ public class PropEffect : BaseManager<PropEffect>
         }
     }
 
-    public void 完美_小鸡卵()
+    public void 完美_小鸡卵(int num)
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         role_Data myData = io_.load();
@@ -1124,7 +1140,7 @@ public class PropEffect : BaseManager<PropEffect>
     }
 
 
-    public void 使用背包CD道具() {
+    public void 使用背包CD道具(int num) {
         gut = NameMgr.画布.GetComponent<G_Util>();
         gut.背包使用CD道具();
     }

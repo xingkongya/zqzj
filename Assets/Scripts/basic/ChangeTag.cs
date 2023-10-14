@@ -47,7 +47,7 @@ public class ChangeTag : MonoBehaviour
         if (选中 != null) {
             string 名字 = 选中.transform.parent.parent.Find("名字/Text").GetComponent<Text>().text;
             Prop_bascis pb = pm.检索物品(名字);
-            gut.生成物品信息(pb, 0);
+            gut.生成物品信息(pb, 0,pb.name);
         }
     }
 

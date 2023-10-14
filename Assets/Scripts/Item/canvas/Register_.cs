@@ -32,47 +32,14 @@ public class Register_ : MonoBehaviour
     public void Start()
     {
         //加载excel文件
-        Ab包重复项预加载();
+        Ab包预加载();
     }
 
-    private void Ab包重复项预加载()
+    private void Ab包预加载()
     {
-        Dictionary<int, object> 参数集 = new Dictionary<int, object>();
-        StartCoroutine(bm.LoadABPrefabs("物品项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("打造装备信息", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("道具界面", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("光球", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("获得提示", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("combat", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("物品信息", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("ui", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("ui_other", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("画布", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("伤害", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("天气", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("气泡", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("警告框", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("选项框", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("选项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("文字提示", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("流光", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("技能背包", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("技能学习项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("技能项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("死亡", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("场景怪物信息", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("掉落项", 实例化空方法, 参数集));
-       // StartCoroutine(bm.LoadABPrefabs("宠物项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("技能框", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("道具购买项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("活动项", 实例化空方法, 参数集));
-        StartCoroutine(bm.LoadABPrefabs("升级特效", 实例化空方法, 参数集));
+        StartCoroutine(bm.LoadAB("ui"));
     }
 
-    private void 实例化空方法(GameObject 对象, Dictionary<int, object> 参数集)
-    {
-        return ;
-    }
 
 
     public void 新的旅程()
@@ -149,6 +116,8 @@ public class Register_ : MonoBehaviour
         {
             myData.记录.Add("游戏音效", "50");
         }
+        EvenMgr.GetInstance().存档添加事件("三年之约", "无限");
+        EvenMgr.GetInstance().存档添加事件("山海小师弟", "无限");
     }
 
     public void 加载游戏初始化() {
@@ -289,7 +258,7 @@ public class Register_ : MonoBehaviour
 
         //添加绑定
         GameObject 背包按钮 = UI_.transform.Find("战斗页/bag/bag_bg_pic").gameObject;
-        GameObject 任务按钮 = UI_.transform.Find("战斗页/task/task_bg_pic").gameObject;
+        GameObject 事件按钮 = UI_.transform.Find("战斗页/event/event_bg_pic").gameObject;
         GameObject 自动战斗按钮 = UI_.transform.Find("战斗页/combat_bg/2级画布/自动战斗/Text").gameObject;
         GameObject 角色面板按钮 = UI_.transform.Find("战斗页/state/head/head_bg").gameObject;//combat_bg
         GameObject 战斗背景 = UI_.transform.Find("战斗页/combat_bg").gameObject;
@@ -309,7 +278,7 @@ public class Register_ : MonoBehaviour
 
         bm.Banding(自动战斗按钮, gut.自动战斗);
         bm.Banding(背包按钮, gut.点击背包);
-        bm.Banding(任务按钮, gut.敬请期待);
+        //bm.Banding(事件按钮, gut.敬请期待);
         bm.Banding(角色面板按钮, gut.生成角色面板);
         bm.Banding(战斗背景, gut.关闭杂项);
        /* bm.Banding(关闭背景按钮, gut.关闭背景);
@@ -324,6 +293,7 @@ public class Register_ : MonoBehaviour
         bm.Banding(道具按钮, sa.使用CD道具);
 
         gut.加载UI信息(UI_);
+        DataMgr.GetInstance().本地对象.Add("UI", UI_);
         加载游戏初始化();
         生成战斗场地();
        

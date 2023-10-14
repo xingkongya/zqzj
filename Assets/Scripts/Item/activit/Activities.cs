@@ -22,21 +22,18 @@ public class Activities : MonoBehaviour
         内容父物体 = gameObject.transform.Find("活动信息面板/活动内容").gameObject;
         图标父物体 = gameObject.transform.Find("活动信息面板/头部背景/Scroll View/Viewport/Content").gameObject;
         活动列表.Add("挑战通天塔", 挑战通天塔);
-        活动列表.Add("限时挑战", 测试);
-        活动列表.Add("活动积分兑换", 测试);
-        活动列表.Add("新人特惠", 测试);
-        活动列表.Add("剩蛋小屋", 测试);
         gut = NameMgr.画布.GetComponent<G_Util>();
     }
 
 
     private void OnEnable()
     {
+        gut.操作子物体(内容父物体, 3);
         gut.刷新网络时间();
         int i = 0;
         foreach (string ActName in 活动列表.Keys)
         {
-            gut.生成活动项(图标父物体, ActName, i);
+            gut.生成活动项(图标父物体, ActName, i,"活动");
             i++;
         }
     }
@@ -82,7 +79,8 @@ public class Activities : MonoBehaviour
         Text 当前层数 = 活动实例.transform.Find("文本/当前/Panel/Text").GetComponent<Text>();
         Text 花费 = 活动实例.transform.Find("button/重置/Text").GetComponent<Text>();
         GameObject 挑战按钮 = 活动实例.transform.Find("button/挑战").gameObject;
-        GameObject 重置按钮 = 活动实例.transform.Find("button/重置").gameObject;
+        GameObject 金币商店按钮 = 活动实例.transform.Find("button/金币商城").gameObject;
+       // GameObject 重置按钮 = 活动实例.transform.Find("button/重置").gameObject;
         if (myData.记录.ContainsKey("通天塔记录"))
         {
             记录.text = "*最高通过层数为:" + myData.记录["通天塔记录"] + "层";
@@ -111,13 +109,20 @@ public class Activities : MonoBehaviour
         }
 
         bm.Banding(挑战按钮, 跳转至通天塔);
-        bm.Banding(重置按钮, 重置通天塔);
+        bm.Banding(金币商店按钮, 跳转至金币商店);
+        //bm.Banding(重置按钮, 重置通天塔);
     }
 
     public void 跳转至通天塔()
     {
         gameObject.SetActive(false);
         gut.跳转场景("通天塔");
+    }
+
+    public void 跳转至金币商店()
+    {
+        gameObject.SetActive(false);
+        gut.初始化金币商城();
     }
 
     public void 重置通天塔() {

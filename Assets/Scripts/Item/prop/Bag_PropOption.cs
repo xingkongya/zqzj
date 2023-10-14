@@ -9,6 +9,7 @@ public class Bag_PropOption : MonoBehaviour
     private PropMgr pm;
     private io io_;
     public string 名字;
+    public string UID;
     public string 地址;
     private void Awake()
     {
@@ -59,17 +60,16 @@ public class Bag_PropOption : MonoBehaviour
     public void 点击锁() {
         role_Data myData = io_.load();
         Image 锁图标 = gameObject.transform.Find("锁").GetComponent<Image>();
-        Prop_bascis 物品 = pm.检索物品(名字);
-        if (物品.type.Equals("3"))
+        if (PropMgr.装备表.ContainsKey(名字))
         {
-            if (myData.装备背包[名字].islock.Equals("0"))
+            if (myData.装备背包[UID].islock.Equals("0"))
             {
-                myData.装备背包[名字].islock = "1";
+                myData.装备背包[UID].islock = "1";
                 锁图标.sprite = Resources.Load("图标/关锁图标", typeof(Sprite)) as Sprite;
             }
             else
             {
-                myData.装备背包[名字].islock = "0";
+                myData.装备背包[UID].islock = "0";
                 锁图标.sprite = Resources.Load("图标/开锁图标", typeof(Sprite)) as Sprite;
             }
         }

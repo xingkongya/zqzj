@@ -47,8 +47,8 @@ public class Weather : MonoBehaviour
     {
         if (Time.frameCount % 20 == 0)
         {
-            int 前缀 = 随机类.Next(-1, 2);
-            float 增值_系数 = (float)随机类.NextDouble() * 10;
+            int 前缀 =  UnityEngine.Random.Range(-1, 2);
+            float 增值_系数 = (float) UnityEngine.Random.Range(0,1) * 10;
             float 增值 = (float)前缀 * 增值_系数;
             float 当前透明度 = 当前天气.GetComponent<Image>().color.a * 255;
             if (当前透明度 > 180)
@@ -61,7 +61,7 @@ public class Weather : MonoBehaviour
 
     int  随机天气() {
         随机类 = new Random(Guid.NewGuid().GetHashCode());
-        index_Wea = 随机类.Next(1, 101);
+        index_Wea =  UnityEngine.Random.Range(1, 101);
         return index_Wea;
     }
 

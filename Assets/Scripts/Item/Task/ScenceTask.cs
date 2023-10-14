@@ -13,9 +13,12 @@ public class ScenceTask : BaseManager<ScenceTask>
 
     public Dictionary<string, UnityAction> 加载任务事件表() {
         Dictionary<string, UnityAction> 任务事件表 = new Dictionary<string, UnityAction>();
-        任务事件表.Add("奖:收集柴火", 收集柴火);
-        任务事件表.Add("寻找让人百病不侵的护符", 寻找护符);
+        任务事件表.Add("收集柴火", 收集柴火);
+        任务事件表.Add("神奇松果", 神奇松果);
         任务事件表.Add("学习医术", 学习医术);
+        任务事件表.Add("任务一:清除食人花", 清除食人花);
+        任务事件表.Add("任务二:清剿蟊贼", 清剿蟊贼);
+        任务事件表.Add("任务三:清剿大蛇", 清剿大蛇);
         return 任务事件表;
     }
 
@@ -60,9 +63,9 @@ public class ScenceTask : BaseManager<ScenceTask>
 
     }
 
-    public void 寻找护符() {
+    public void 神奇松果() {
         gut = NameMgr.画布.GetComponent<G_Util>();
-        if (pm.失去物品("人参的守护", 1).Equals("成功"))
+        if (pm.失去物品("大松果", 1).Equals("成功"))
         {
             gut.生成获得框("灵芝",1);
             pm.获取物品("灵芝",1);
@@ -71,13 +74,50 @@ public class ScenceTask : BaseManager<ScenceTask>
         }
     }
 
+    public void 清除食人花()
+    {
+        gut = NameMgr.画布.GetComponent<G_Util>();
+        if (pm.失去物品("食人花的花冠", 10).Equals("成功"))
+        {
+            gut.生成获得框("百年灵芝", 1);
+            pm.获取物品("百年灵芝", 1);
+            gut.PlayerPrefs储存("任务一",1);
+            隐藏任务框();
+        }
+    }
+
+    public void 清剿蟊贼()
+    {
+        gut = NameMgr.画布.GetComponent<G_Util>();
+        if (pm.失去物品("钱袋子", 3).Equals("成功"))
+        {
+            gut.生成获得框("五帝铜钱", 1);
+            pm.获取物品("五帝铜钱", 1);
+            gut.PlayerPrefs储存("任务二", 1);
+            隐藏任务框();
+        }
+    }
+
+    public void 清剿大蛇()
+    {
+        gut = NameMgr.画布.GetComponent<G_Util>();
+        if (pm.失去物品("听海石", 1).Equals("成功"))
+        {
+            gut.生成获得框("拜师贴", 1);
+            pm.获取物品("拜师贴", 1);
+            gut.PlayerPrefs储存("任务三", 1);
+            隐藏任务框();
+            GameObject.Find("秦镇守").GetComponent<jq_linhai>().秦镇守海底剧情();
+        }
+    }
+
     public void 学习医术()
     {
         gut = NameMgr.画布.GetComponent<G_Util>();
         if (pm.失去物品("人参精华", 1).Equals("成功"))
         {
-            gut.生成获得框("技能书<包扎>",1);
-            pm.获取物品("技能书<包扎>", 1);
+            gut.生成获得框("(绝招)<包扎>",1);
+            pm.获取物品("(绝招)<包扎>", 1);
             隐藏任务框();
             GameObject.Find("柳医师").GetComponent<juqing_yunmeng>().柳医师剧情4();
         }

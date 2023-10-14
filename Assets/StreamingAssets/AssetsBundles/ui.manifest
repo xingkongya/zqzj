@@ -1,15 +1,19 @@
 ManifestFileVersion: 0
-CRC: 2487414833
+CRC: 4227333864
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ba715d466c0bc9c98e14870621d50c56
+    Hash: 8334bc4ac6fa64fa28a191c4423560f0
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 939888c827014032dc19cbc630027a8a
+    Hash: 3c8fab6f81be8e6ec71fbd07ba3cf28b
 HashAppended: 0
 ClassTypes:
 - Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 20
   Script: {instanceID: 0}
 - Class: 21
   Script: {instanceID: 0}
@@ -19,20 +23,36 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
+- Class: 81
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
 - Class: 91
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 0d0b652f32a2cc243917e4028fa0f046, type: 3}
 - Class: 114
@@ -42,11 +62,35 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: d3904fd8202768e42b9bd6ae9932c005, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b112a5a0bdd164c489c8d7b7d30c6f85, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 6555c1b5126fb494e82ee5769f120a71, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9482619dec20c114a938774baf841397, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 2a38014bae8a745429cf4e95d30981ea, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 07b5d7083836547ddbcb1c857c2779e2, type: 3}
+  Script: {fileID: 11500000, guid: 3e79a1b968c30bb4b98ad78bd6101366, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 29e8fad9a62a4aa4b91e1e643a1f8c16, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2d733fd0b4fc06f4c8b4dd3911feea9c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f6c0dad9fad77d74ca8cfdec0306fdb8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 460e644d0cee68b468220f8c2a16f38a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec6106fd3c400f248be7d6f720026ec5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2613ae3ded1755a49808faa6d2f26728, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 008c59b5bd14dfc4b9f3cb4cd916ef0f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
 - Class: 114
@@ -54,25 +98,83 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: aab8ef5ac7d0646bb95cd655329fdbd2, type: 3}
+  Script: {fileID: 11500000, guid: 517db3a00c7d55c4386232885f455e0a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: ae14c52bc020fdc429c4930121405d5a, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 9ad7c1440409d454f9ab93bccabf05e5, type: 3}
+  Script: {fileID: 11500000, guid: 78ae9004d336623409a5bdee5e19e406, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  Script: {fileID: 11500000, guid: 3e32fe2fa7488bf42b8cd010d4fb22dd, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 84b3c3dbef1a43d4a9444012e58fc394, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9ad7c1440409d454f9ab93bccabf05e5, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: f3fd66aed0529f4479d10b7240d8c039, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d178a214375637e4492d14e4eb1c0301, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 21ec2b2e648ebf8469719556fd62ef88, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 2e3be321651e4c143a7e9bf50e0a0226, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d10a4df3ddf15b445b85d8c6b6061f83, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a837234b753a16c489de1c07f1c1ded7, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4fc7b042626f43b44bc14b535a55d8f0, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 9faafc0e340d18f4582b27c7dfae7e9a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 16a7e7e8053bfeb48888f583e39de01f, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: f39c7156772fc415380e6ebbaf8c0448, type: 3}
+  Script: {fileID: 11500000, guid: a0916b9d7755e8c418309d16b82d3b60, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e6edb18f0c90967489943a70c5a4da68, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a8eebb7f083c27d498f1fec1569058be, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b619a036ef074624ab05651d3f9d37b0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a32f24553f5f7d44e92439b19a2e5b7a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: adc3761f584efe74683319917e70cad1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ebe875c03bce45146a3740d31cdefa6a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 894091639bdbc8b48b4ecbf5905e861d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e3ec926f7008f874199e60418a63d2b9, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 14d1de9f59c60124aac72dc6961899e2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d16f2d3d739465045bd447efa057ceb8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a477d7556da9919499b909ef52ba0cac, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 006a0153b199e6942a71069790cad421, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 496a9e48409b1bd42bf7cac725344a6f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ad7410f6b09c5824e88f65e106884e79, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a10283121963c9b4aa2ad65c4e86445e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5e4935f1f9f896846a10b557e940555c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 25b1da25fd178eb42b609080bd950fab, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 56f80d40221b5df45bb38c68c272ca59, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 426d0143d9b0aec4b92b2d66087e48d4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ca397d2095a9cac4ab330595b1316b7b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6d5cc9544a2512346be0b6722b08d4ed, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 609711b930696c349990ac496ff5261a, type: 3}
 - Class: 115
@@ -83,6 +185,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 199
   Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
 - Class: 222
@@ -92,6 +196,8 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.VertexGradient
 - AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.ArgumentCache
 - AssemblyName: UnityEngine.CoreModule
@@ -134,4 +240,67 @@ SerializeReferenceClassIdentifiers:
   ClassName: UnityEngine.UI.Toggle/ToggleEvent
 Assets:
 - Assets/Res_AssetsBundles/Prefabs/UI.prefab
+- "Assets/Res_AssetsBundles/Prefabs/boss\u8840\u6761.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u7269\u54C1\u4FE1\u606F.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6587\u5B57\u63D0\u793A.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6D3B\u52A8\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6BCD\u4EB2.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u9632\u5FA1\u7279\u6548.prefab"
+- Assets/Res_AssetsBundles/Prefabs/EventSystem.prefab
+- "Assets/Res_AssetsBundles/Prefabs/\u666E\u653B\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5151\u6362\u7801.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u88C5\u5907\u4FE1\u606F.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5355\u4F53\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u517D\u722A\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5149\u7403.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5F15\u5BFC.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u62F3\u7206\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6B7B\u4EA1.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5C5E\u6027\u9762\u677F.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u7269\u54C1\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u4F24\u5BB3.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u8BBE\u7F6E.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6280\u80FD\u5B66\u4E60\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5347\u7EA7\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6C14\u6CE1.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u4E09\u5251\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6389\u843D\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u706B\u7130\u7206\u70B8.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5408\u6210\u754C\u9762.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u9053\u5177\u754C\u9762.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6280\u80FD\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u4E3B\u89D2\u5149\u73AF\u754C\u9762.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5E7F\u544A\u9762\u677F.prefab"
+- Assets/Res_AssetsBundles/Prefabs/combat.prefab
+- "Assets/Res_AssetsBundles/Prefabs/\u9009\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u63D0\u793A.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u753B\u5E03.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5BF9\u8BDD\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u80CC\u5305.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5929\u8D4B\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u573A\u666F\u602A\u7269\u4FE1\u606F.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u8B66\u544A\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u8840\u6761.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u9053\u5177\u8D2D\u4E70\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u83B7\u5F97\u63D0\u793A.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6280\u80FD\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6D41\u5149.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6280\u80FD\u4FE1\u606F\u754C\u9762.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u83B7\u5F97\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6280\u80FD\u80CC\u5305.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5F3A\u5316\u754C\u9762.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u653B\u51FB\u7279\u6548.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u80CC\u5305\u6280\u80FD\u9879.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5956\u54C1\u83B7\u53D6\u6846.prefab"
+- Assets/Res_AssetsBundles/Prefabs/UI_Other.prefab
+- "Assets/Res_AssetsBundles/Prefabs/\u5267\u60C5_\u753B\u5E03.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6253\u9020\u88C5\u5907\u4FE1\u606F.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u6C34\u7206.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u4E8B\u4EF6\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u573A\u666F\u4EFB\u52A1\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u9009\u9879\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u786E\u8BA4\u6846.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u62C9\u6761.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u5730\u5740.prefab"
+- "Assets/Res_AssetsBundles/Prefabs/\u52A0\u70B9.prefab"
 Dependencies: []

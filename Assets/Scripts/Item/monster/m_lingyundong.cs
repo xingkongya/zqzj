@@ -29,7 +29,7 @@ public class m_lingyundong : MonoBehaviour, I_monster
         // 技能与粒度.Clear();
     }
 
-    public bool 怪物1赋值(combat cb)
+    public int 怪物1赋值(combat cb)
     {
         utm.怪物名字 = "龅牙兔";
         utm.怪物品质 = 0;
@@ -41,19 +41,19 @@ public class m_lingyundong : MonoBehaviour, I_monster
         utm.基础血量 = 520;
         utm.基础暴击率 = 0;
         utm.基础回血值 = 0;
-        utm.攻击力资质 = 0.65f;
+        utm.攻击力资质 = 0.6f;
         utm.防御力资质 = 0f;
-        utm.血量资质 = 0.9f;
+        utm.血量资质 = 0.5f;
         utm.成长 = 5f;
         utm.攻击速度 = 1.1f;
         utm.基础经验值 = 4500;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物2赋值(combat cb)
+    public int 怪物2赋值(combat cb)
     {
         utm.怪物名字 = "软耳兔";
         utm.怪物品质 = 0;
@@ -65,19 +65,19 @@ public class m_lingyundong : MonoBehaviour, I_monster
         utm.基础血量 = 650;
         utm.基础暴击率 = 0;
         utm.基础回血值 = 0;
-        utm.攻击力资质 = 0.6f;
+        utm.攻击力资质 = 0.65f;
         utm.防御力资质 = 0f;
-        utm.血量资质 = 0.95f;
+        utm.血量资质 = 0.55f;
         utm.成长 = 5f;
         utm.攻击速度 = 1.1f;
         utm.基础经验值 = 4600;
         utm.经验值系数 = 3;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物3赋值(combat cb)
+    public int 怪物3赋值(combat cb)
     {
         utm.怪物名字 = "『兔斯基』";
         utm.怪物品质 = 2;
@@ -90,18 +90,18 @@ public class m_lingyundong : MonoBehaviour, I_monster
         utm.基础暴击率 = 0;
         utm.基础回血值 = 0;
         utm.攻击力资质 = 0.65f;
-        utm.防御力资质 = 0f;
+        utm.防御力资质 = 0.25f;
         utm.血量资质 = 1.0f;
         utm.成长 = 5f;
         utm.攻击速度 = 0.9f;
         utm.基础经验值 = 6500;
         utm.经验值系数 = 5;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物4赋值(combat cb)
+    public int 怪物4赋值(combat cb)
     {
         utm.怪物名字 = "兔王";
         utm.怪物品质 = 3;
@@ -121,31 +121,31 @@ public class m_lingyundong : MonoBehaviour, I_monster
         utm.基础经验值 = 6500;
         utm.经验值系数 = 5;
         utm.铜币 = (int)(5 * utm.成长);
-        utm.添加基础掉落(cb,1);
-        return true;
+        utm.添加基础掉落(cb,utm.当前等级,1);
+         return utm.返回战斗力(utm.最高等级);
     }
 
-    public bool 怪物5赋值(combat cb)
+    public int 怪物5赋值(combat cb)
     {
-        return false;
+        return 0;
     }
 
-    public bool 怪物6赋值(combat cb)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool 怪物7赋值(combat cb)
+    public int 怪物6赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物8赋值(combat cb)
+    public int 怪物7赋值(combat cb)
     {
         throw new NotImplementedException();
     }
 
-    public bool 怪物9赋值(combat cb)
+    public int 怪物8赋值(combat cb)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int 怪物9赋值(combat cb)
     {
         throw new NotImplementedException();
     }

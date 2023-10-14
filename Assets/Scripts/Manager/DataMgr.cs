@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DataMgr : BaseManager<DataMgr>
 {
@@ -24,17 +26,17 @@ public class DataMgr : BaseManager<DataMgr>
         基础系数.Add("血量",bm.Xitos(30));
         基础系数.Add("攻击速度",bm.Xftos(1.2f));
         Dictionary<string, string> 剑修系数 = new Dictionary<string, string>();
-        剑修系数.Add("攻击", bm.Xitos(4));
+        剑修系数.Add("攻击", bm.Xitos(3));
         剑修系数.Add("防御", bm.Xitos(1));
-        剑修系数.Add("血量", bm.Xitos(40));
-        剑修系数.Add("攻击速度", bm.Xftos(1.0f));
+        剑修系数.Add("血量", bm.Xitos(30));
+        剑修系数.Add("攻击速度", bm.Xftos(1.2f));
         Dictionary<string, string> 体修系数 = new Dictionary<string, string>();
         体修系数.Add("攻击", bm.Xitos(3));
-        体修系数.Add("防御", bm.Xitos(2));
-        体修系数.Add("血量", bm.Xitos(50));
-        体修系数.Add("攻击速度", bm.Xftos(1.5f));
+        体修系数.Add("防御", bm.Xitos(1));
+        体修系数.Add("血量", bm.Xitos(30));
+        体修系数.Add("攻击速度", bm.Xftos(1.2f));
         Dictionary<string, string> 灵修系数 = new Dictionary<string, string>();
-        灵修系数.Add("攻击", bm.Xitos(5));
+        灵修系数.Add("攻击", bm.Xitos(3));
         灵修系数.Add("防御", bm.Xitos(1));
         灵修系数.Add("血量", bm.Xitos(30));
         灵修系数.Add("攻击速度", bm.Xftos(1.2f));
@@ -73,6 +75,17 @@ public class DataMgr : BaseManager<DataMgr>
         {
             储存缓存数据();
             index = 0;
+        }
+    }
+
+
+    public void 本地对象的添加(string 对象名字,GameObject 对象) {
+        if (本地对象.ContainsKey(对象名字))
+        {
+            本地对象[对象名字] = 对象;
+        }
+        else {
+            本地对象.Add(对象名字, 对象);
         }
     }
 
@@ -149,12 +162,20 @@ public class DataMgr : BaseManager<DataMgr>
             装备属性 = PropMgr.GetInstance().加载装备配置(cb);//先给--属性--赋值
             SkillMgr.GetInstance().加载技能配置();
             光环属性 = UtilMaGr.GetInstance().加载光环属性();
+            天赋属性 = TianFuMgr.GetInstance().加载天赋属性();
             属性相加(待加载属性, 光环属性);
             属性相加(待加载属性, 装备属性);
             属性相加(待加载属性, 技能属性);
+            属性相加(待加载属性, 天赋属性);
         }
-        属性相加(待加载属性, cb.临时属性);
         cb.属性刷新(待加载属性);
     }
 
+    public void 加载临时属性(combat cb) {
+        cb.加载临时属性();
+         
+    }
+
+
+  
 }

@@ -25,8 +25,10 @@ public class Role_Panel : MonoBehaviour
     public TianFu 天赋6;
     public TianFu 天赋7;
     public TianFu 天赋8;
+    public TianFu 天赋9;
     private io io_;
     private basicMgr bm;
+    private RoleMgr rem;
     private G_Util gut;
     private PropMgr pm;
     private TianFuMgr tf;
@@ -39,6 +41,7 @@ public class Role_Panel : MonoBehaviour
         bm = basicMgr.GetInstance();
         gut =NameMgr.画布.GetComponent<G_Util>();
         pm = PropMgr.GetInstance();
+        rem = RoleMgr.GetInstance();
         tf = TianFuMgr.GetInstance();
         左卡 = gameObject.transform.Find("bg/中部/装备页/装备列表/左卡/Text").GetComponent<Text>();
         右卡 = gameObject.transform.Find("bg/中部/装备页/装备列表/右卡/Text").GetComponent<Text>();
@@ -91,10 +94,11 @@ public class Role_Panel : MonoBehaviour
         基础.Add("修炼血脉");
         基础.Add("修炼灵识");
         ArrayList 剑修 = new ArrayList();
-        剑修.Add("剑-快剑");
+        剑修.Add("疾风意境");
         剑修.Add("剑意");
-        剑修.Add("魔剑");
-        剑修.Add("剑阵");
+        剑修.Add("心剑");
+        剑修.Add("剑势");
+        剑修.Add("无限剑制");
         ArrayList 体修 = new ArrayList();
         体修.Add("体-霸体");
         体修.Add("狂意");
@@ -154,7 +158,10 @@ public class Role_Panel : MonoBehaviour
         Image 背景图标 = 目标文字.transform.parent.Find("背景/Panel").GetComponent<Image>();
         if (装备 != null)
         {
-            目标文字.text = 装备.name;
+            if (bm.Xstoi(装备.lv) != 0)
+                目标文字.text = 装备.name+"+"+ bm.Xstoi(装备.lv);
+            else
+                目标文字.text = 装备.name;
             目标文字.color = bm.转换颜色(bm.Xstoi(装备.qua));
             gut.初始化图标(背景图标, 装备);
         }
@@ -227,6 +234,7 @@ public class Role_Panel : MonoBehaviour
     public void 刷新职业属性(role_Data myData) {
         GameObject 基础技能 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/基础加点").gameObject;
         GameObject 高级技能 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/高级加点").gameObject;
+        GameObject 核心技能 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/核心技能").gameObject;
         GameObject 一技能 = 基础技能.transform.Find("1").gameObject;
         GameObject 二技能 = 基础技能.transform.Find("2").gameObject;
         GameObject 三技能 = 基础技能.transform.Find("3").gameObject;
@@ -235,6 +243,7 @@ public class Role_Panel : MonoBehaviour
         GameObject 六技能 = 高级技能.transform.Find("6").gameObject;
         GameObject 七技能 = 高级技能.transform.Find("7").gameObject;
         GameObject 八技能 = 高级技能.transform.Find("8").gameObject;
+        GameObject 九技能 = 核心技能.transform.Find("9").gameObject;
 
          天赋1 =tf.返回天赋( 返回职业技能信息(1, myData));
          天赋2 =tf.返回天赋( 返回职业技能信息(2, myData));
@@ -244,6 +253,7 @@ public class Role_Panel : MonoBehaviour
          天赋6 =tf.返回天赋( 返回职业技能信息(6, myData));
          天赋7 =tf.返回天赋( 返回职业技能信息(7, myData));
          天赋8 =tf.返回天赋( 返回职业技能信息(8, myData));
+         天赋9 =tf.返回天赋( 返回职业技能信息(9, myData));
 
         tf.天赋加载图标(一技能,天赋1);
         tf.天赋加载图标(二技能,天赋2);
@@ -253,40 +263,86 @@ public class Role_Panel : MonoBehaviour
         tf.天赋加载图标(六技能,天赋6);
         tf.天赋加载图标(七技能,天赋7);
         tf.天赋加载图标(八技能,天赋8);
+        tf.天赋加载图标(九技能,天赋9);
 
+        刷新剩余技能点和技能等级();
+    }
+
+    public void 刷新剩余技能点和技能等级()
+    {
+        Text 基础技能 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/剩余技能点/基础技能点/点数").GetComponent<Text>();
+        Text 高级技能 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/剩余技能点/高级技能点/点数").GetComponent<Text>();
+        Text 基础1技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/基础加点/1/Text").GetComponent<Text>();
+        Text 基础2技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/基础加点/2/Text").GetComponent<Text>();
+        Text 基础3技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/基础加点/3/Text").GetComponent<Text>();
+        Text 基础4技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/基础加点/4/Text").GetComponent<Text>();
+        Text 高级5技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/高级加点/5/Text").GetComponent<Text>();
+        Text 高级6技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/高级加点/6/Text").GetComponent<Text>();
+        Text 高级7技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/高级加点/7/Text").GetComponent<Text>();
+        Text 高级8技能等级 = gameObject.transform.Find("bg/中部/职业页/加点界面/背景图/高级加点/8/Text").GetComponent<Text>();
+
+        role_Data myData = io_.load();
+
+        基础1技能等级.text = "当前" + tf.返回存档该天赋等级(天赋1)+"级";
+        基础2技能等级.text = "当前" + tf.返回存档该天赋等级(天赋2)+"级";
+        基础3技能等级.text = "当前" + tf.返回存档该天赋等级(天赋3)+"级";
+        基础4技能等级.text = "当前" + tf.返回存档该天赋等级(天赋4)+"级";
+        高级5技能等级.text = "当前" + tf.返回存档该天赋等级(天赋5)+"级";
+        高级6技能等级.text = "当前" + tf.返回存档该天赋等级(天赋6)+"级";
+        高级7技能等级.text = "当前" + tf.返回存档该天赋等级(天赋7)+"级";
+        高级8技能等级.text = "当前" + tf.返回存档该天赋等级(天赋8)+"级";
+
+        string x_基础;
+        string x_高级;
+        if (myData.天赋["职业"].ContainsKey("基础技能点"))
+        {
+            x_基础 = myData.天赋["职业"]["基础技能点"];
+        }
+        else
+        {
+            x_基础 = bm.Xitos(0);
+        }
+
+        if (myData.天赋["职业"].ContainsKey("高级技能点"))
+        {
+            x_高级 = myData.天赋["职业"]["高级技能点"];
+        }
+        else
+        {
+            x_高级 = bm.Xitos(0);
+
+        }
+
+        基础技能.text = bm.Xstoi(x_基础) + "";
+        高级技能.text = bm.Xstoi(x_高级) + "";
     }
 
 
     public void 生成职业一技能信息() {
-        天赋1= tf.刷新介绍(天赋1);
         gut.生成天赋框(gameObject,天赋1);
     }
 
 
     public void 生成职业二技能信息()
     {
-        天赋2 = tf.刷新介绍(天赋2);
         gut.生成天赋框(gameObject, 天赋2);
     }
 
 
     public void 生成职业三技能信息()
     {
-        天赋3 = tf.刷新介绍(天赋3);
         gut.生成天赋框(gameObject, 天赋3);
     }
 
 
     public void 生成职业四技能信息()
     {
-        天赋4 = tf.刷新介绍(天赋4);
         gut.生成天赋框(gameObject, 天赋4);
     }
 
 
     public void 生成职业五技能信息()
     {
-        天赋5 = tf.刷新介绍(天赋5);
         gut.生成天赋框(gameObject, 天赋5);
     }
 
@@ -294,7 +350,6 @@ public class Role_Panel : MonoBehaviour
 
     public void 生成职业六技能信息()
     {
-        天赋6 = tf.刷新介绍(天赋6);
         gut.生成天赋框(gameObject, 天赋6);
     }
 
@@ -310,6 +365,12 @@ public class Role_Panel : MonoBehaviour
     {
         天赋8 = tf.刷新介绍(天赋8);
         gut.生成天赋框(gameObject, 天赋8);
+    }
+
+    public void 生成职业九技能信息()
+    {
+        天赋9 = tf.刷新介绍(天赋9);
+        gut.生成天赋框(gameObject, 天赋9);
     }
 
 
@@ -397,66 +458,108 @@ public class Role_Panel : MonoBehaviour
     public void 职业确认(string 职业) {
         if (职业.Equals("剑修"))
         {
-            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+4\n防御+1→防御+1\n血量+30→血量+40\n<color=green>基础攻速1.2/s→基础攻速1.0/s</color>", 剑修确定);
+            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+4\n防御+1→防御+1\n血量+30→血量+40", 剑修确定);
         }
         else if (职业.Equals("体修")) 
         {
-            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+3\n防御+1→防御+2\n血量+30→血量+50\n<color=green>基础攻速1.2/s→基础攻速1.5/s</color>", 体修确定);
+            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+3\n防御+1→防御+2\n血量+30→血量+50", 体修确定);
         }
         else if (职业.Equals("灵修"))
         {
-            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+5\n防御+1→防御+1\n血量+30→血量+35\n<color=green>基础攻速1.2/s→基础攻速1.2/s</color>", 灵修确定);
+            gut.生成确认框("确认要消耗 <color=red>拜师贴</color>*1 选择<color=red>" + 职业 + "</color>\n\n<color=red>" + 职业 + "</color>每级  (攻,防,血):\n攻击+3→攻击+5\n防御+1→防御+1\n血量+30→血量+35", 灵修确定);
         }
     }
 
     public void 职业确定(string 职业)
     {
         role_Data myData = io_.load();
-        myData.天赋["职业"].Add("修炼拳脚", bm.Xitos(0));
-        myData.天赋["职业"].Add("修炼体魄", bm.Xitos(0));
-        myData.天赋["职业"].Add("修炼血脉", bm.Xitos(0));
-        myData.天赋["职业"].Add("修炼神识", bm.Xitos(0));
+        bm.字符串字典自适应添加键值对(myData.天赋["职业"],"修炼拳脚", bm.Xitos(0));
+        bm.字符串字典自适应添加键值对(myData.天赋["职业"],"修炼体魄", bm.Xitos(0));
+        bm.字符串字典自适应添加键值对(myData.天赋["职业"],"修炼血脉", bm.Xitos(0));
+        bm.字符串字典自适应添加键值对(myData.天赋["职业"],"修炼灵识", bm.Xitos(0));
         if (职业.Equals("剑修"))
         {
             myData.职业["职业"] = "剑修";
-            myData.天赋["职业"].Add("剑-快剑", bm.Xitos(0));
-            myData.天赋["职业"].Add("剑意", bm.Xitos(0));
-            myData.天赋["职业"].Add("剑阵", bm.Xitos(0));
-            myData.天赋["职业"].Add("魔剑", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"疾风意境", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"剑意", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"剑势", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"], "心剑", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"], "无限剑制", bm.Xitos(1));
+            myData.被动技能["职业"].Add("无限剑制");
         }
         else if (职业.Equals("体修"))
         {
             myData.职业["职业"] = "体修";
-            myData.天赋["职业"].Add("体-霸体", bm.Xitos(0));
-            myData.天赋["职业"].Add("狂意", bm.Xitos(0));
-            myData.天赋["职业"].Add("霸拳", bm.Xitos(0));
-            myData.天赋["职业"].Add("不灭之躯", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"体-霸体", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"狂意", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"霸拳", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"不灭之躯", bm.Xitos(0));
         }
         else if (职业.Equals("灵修"))
         {
             myData.职业["职业"] = "灵修";
-            myData.天赋["职业"].Add("灵-强诀", bm.Xitos(0));
-            myData.天赋["职业"].Add("落雷", bm.Xitos(0));
-            myData.天赋["职业"].Add("三灾", bm.Xitos(0));
-            myData.天赋["职业"].Add("大道之力", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"灵-强诀", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"落雷", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"三灾", bm.Xitos(0));
+            bm.字符串字典自适应添加键值对(myData.天赋["职业"],"大道之力", bm.Xitos(0));
         }
         io_.save(myData);
-        DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>().人物属性刷新();
+        gut.面板属性刷新(gameObject);
     }
 
 
     public void 重置职业() {
+        gut.生成确认框("叛出师门将会取消当前职业,失去所有职业技能并返还所有技能点", 重置确定);
+    }
+
+
+    private void 重置确定() {
+        gut.删除确认框();
         role_Data myData = io_.load();
         myData.职业["职业"] = "";
         myData.天赋["职业"].Clear();
         io_.save(myData);
-        DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>().人物属性刷新();
+        rem.重置技能点();
+        gut.面板属性刷新(gameObject);
         初始化职业();
     }
 
+    public void 重置技能点()
+    {
+        gut.生成确认框("确定要消耗 <color=red>技能重置券</color>*1,重置所有职业技能吗?", 重置技能点确定);
+    }
+
+
+    private void 重置技能点确定()
+    {
+        string 返回值 = pm.失去物品("技能重置券", 1);
+        if (!返回值.Equals("成功"))
+        {
+            gut.生成警告框(返回值);
+        }
+        else {
+            gut.删除确认框();
+            role_Data myData = io_.load();
+            myData.天赋["职业"].Clear();
+            io_.save(myData);
+            rem.重置技能点();
+            刷新剩余技能点和技能等级();
+            tf.刷新核心技能();
+         }
+            
+      
+    }
+
+
+    
 
     public void 关闭自己() {
         gut.删除对象(gameObject);
+    }
+
+    public void 隐藏杂项()
+    {
+        gut.隐藏杂项();
     }
 
     public void 剑修确认()
@@ -475,22 +578,32 @@ public class Role_Panel : MonoBehaviour
     }
     public void 剑修确定()
     {
-        职业确定("剑修");
-        初始化职业();
-        关闭确认框();
+        string 返回 = pm.失去物品("拜师贴", 1);
+        if (返回.Equals("成功"))
+        {
+            职业确定("剑修");
+            初始化职业();
+            关闭确认框();
+        }
+        else {
+            gut.生成警告框(返回);
+        }
+
     }
 
     public void 体修确定()
     {
-        职业确定("体修");
-        初始化职业();
+        /*职业确定("体修");
+        初始化职业();*/
+        gut.敬请期待();
         关闭确认框();
     }
 
     public void 灵修确定()
     {
-        职业确定("灵修");
-        初始化职业();
+        /*职业确定("灵修");
+        初始化职业();*/
+        gut.敬请期待();
         关闭确认框();
     }
 

@@ -63,7 +63,6 @@ public class jq_jia : MonoBehaviour
         }
 
     public void 母亲对话索引() {
-        Debug.Log("1");
         int index_talk = PlayerPrefs.GetInt("母亲");
         int index_遗物 = PlayerPrefs.GetInt("村长的帮助");
         if (index_talk == 0)
@@ -85,7 +84,7 @@ public class jq_jia : MonoBehaviour
     private void 母亲剧情0(int index)
     {
         EventCenter.GetInstance().AddEventListener("对话后剧情", 获得馒头);
-        string str = "孩子,振作起来,你一定可以在三年后打败她的!!!这里是一些干粮,你爸他在黄沙地打猎,你去找到他吧...他有些东西要给你";
+        string str = "孩子,振作起来,你一定可以在三年后打败她的!!!这里是一些干粮,你爸在荒原打猎,你去找到他吧...他有些东西要给你";
         ut.生成对话框(str, index, 0.08f, "母亲");
     }
 
@@ -93,6 +92,7 @@ public class jq_jia : MonoBehaviour
     public void 获得馒头() {
         ut.生成获得框("馒头",10);
         pm.获取物品("馒头", 10);
+        EvenMgr.GetInstance().存档添加事件("获得宠物", "无限");
     }
 
 

@@ -46,9 +46,23 @@ public class UtilMaGr : BaseManager<UtilMaGr>
 
     public void 存档检测(role_Data 存档)
     {
-        if (存档.职业 == null||存档.职业.Count!=11) {
+        存档= 更新存档(存档);
+        io.GetInstance().save(存档);
+    }
+
+
+    public role_Data 更新存档(role_Data 存档) {
+        存档=职业更新(存档);
+        存档=宠物更新(存档);
+        存档 = 被动技能更新(存档);
+        return 存档;
+    }
+
+    public role_Data 职业更新(role_Data 存档) {
+        if (存档.职业 == null || 存档.职业.Count != 11)
+        {
             存档.职业 = new Dictionary<string, string>();
-            存档.职业.Add("职业","");
+            存档.职业.Add("职业", "");
             存档.职业.Add("1技能", "");
             存档.职业.Add("2技能", "");
             存档.职业.Add("3技能", "");
@@ -57,23 +71,17 @@ public class UtilMaGr : BaseManager<UtilMaGr>
             存档.职业.Add("6技能", "");
             存档.职业.Add("7技能", "");
             存档.职业.Add("8技能", "");
-            存档.职业.Add("初级职业点", "");
-            存档.职业.Add("高级职业点", "");
+            存档.职业.Add("基础技能点", "");
+            存档.职业.Add("高级技能点", "");
         }
-
-        更新存档(存档);
-        io.GetInstance().save(存档);
-    }
-
-
-    public role_Data 更新存档(role_Data 存档) {
-        宠物更新(存档);
-        //检测血脉(存档);
         return 存档;
     }
 
-    private role_Data 检测血脉(role_Data 存档) {
-        存档.宠物栏[0]= (Pet_Data)实体类加额外属性(存档.宠物栏[0], "血脉", "大荒");
+    private role_Data 被动技能更新(role_Data 存档) {
+        if (存档.被动技能 ==null||!存档.被动技能.ContainsKey("职业") ) {
+            存档.被动技能 = new Dictionary<string, List<string>>();
+            存档.被动技能.Add("职业", new List<string>());
+        }
         return 存档;
     }
 

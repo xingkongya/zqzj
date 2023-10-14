@@ -42,6 +42,24 @@ public class combat : MonoBehaviour
     public string 基础伤害减免;
     public string 基础固定吸血;
     public string 基础吸血加成;
+    public string 战斗攻击力;
+    public string 战斗防御力;
+    public string 战斗暴击率;
+    public string 战斗血量;
+    public string 战斗回血值;
+    public string 战斗攻击速度;
+    public string 战斗移动速度;
+    public string 战斗固定伤害;
+    public string 战斗固定减伤;
+    public string 战斗伤害加成;
+    public string 战斗暴伤加成;
+    public string 战斗伤害减免;
+    public string 战斗固定吸血;
+    public string 战斗吸血加成;
+    public string 战斗攻击力加成;
+    public string 战斗防御力加成;
+    public string 战斗血量加成;
+    public string 战斗回血值加成;
     public string 金钱加成;
     public string 经验加成;
     public string 暴伤加成;
@@ -86,7 +104,7 @@ public class combat : MonoBehaviour
 
 
     //引用
-    private string 怪物名字_;
+    public string 怪物名字;
     private int 怪物品质;
     public string 目标名字;
     public Dictionary<string, int> 仇恨列表 = new Dictionary<string, int>();
@@ -105,6 +123,10 @@ public class combat : MonoBehaviour
     public Dictionary<string, float> 技能与CD = new Dictionary<string, float>();
     public Dictionary<string, string> 临时属性 = basicMgr.GetInstance().返回空的战斗属性();
     public List<string> 技能名容器 = new List<string>();
+    public Dictionary<string, BuffData> buff栏 = new Dictionary<string, BuffData>();
+    public Dictionary<string, GameObject> buff显示栏 = new Dictionary<string, GameObject>();
+    public Dictionary<int,string> 颜色设置 = new Dictionary<int,string>();
+
 
     //自定义
     private UT_monster utm;
@@ -185,13 +207,14 @@ public class combat : MonoBehaviour
             timer = 0f;
             攻击坐标 = new Vector3(transform.localPosition.x, transform.localPosition.y + 20, transform.localPosition.z);
         }
-        else if (gameObject.CompareTag("怪物"))
+        else if (gameObject.CompareTag("怪物")|| gameObject.CompareTag("倒计时"))
         {
             timer = (float.Parse(bm.Xor(xor_攻击速度_))) / 2.0f;
             攻击坐标 = new Vector3(transform.localPosition.x, transform.localPosition.y - 20, transform.localPosition.z);
         }
         else if (gameObject.CompareTag("boss"))
         {
+            gameObject.name = 怪物名字;
             GameObject 图片 = gameObject.transform.Find("图片").gameObject;
             攻击坐标 = new Vector2(图片.transform.localPosition.x, 图片.transform.localPosition.y - 20);
             原来坐标 = 图片.transform.position;
@@ -209,13 +232,28 @@ public class combat : MonoBehaviour
             人物初始化();
         else if (gameObject.CompareTag("宠物"))
             宠物初始化();
-        else if ((gameObject.CompareTag("怪物") || gameObject.CompareTag("boss")) && num == 1)
+        else if ((gameObject.CompareTag("怪物") || gameObject.CompareTag("boss")|| gameObject.CompareTag("倒计时")) && num == 1)
             怪物初始化();
         else if (gameObject.CompareTag("建筑") && num == 1)
             建筑初始化();
 
-
         边框初始化();
+
+
+        //DataMgr数据管理器里初始化
+        //Data管理器储存数据
+        if (gameObject.CompareTag("人物"))
+        {
+            DataMgr.GetInstance().本地对象的添加("人物", gameObject);
+        }
+        else if (gameObject.CompareTag("宠物"))
+        {
+            DataMgr.GetInstance().本地对象的添加("宠物", gameObject);
+        }
+        else
+        {
+            DataMgr.GetInstance().本地对象的添加(gameObject.name, gameObject);
+        }
     }
 
     public void 位置初始化() {
@@ -231,7 +269,7 @@ public class combat : MonoBehaviour
             //绑定图标
             if (gameObject.CompareTag("怪物"))
             {
-                if (怪物名字_ != null && 怪物名字_.Contains("≮"))
+                if (怪物名字 != null && 怪物名字.Contains("≮"))
                     边框.sprite = Resources.Load("血条边框/boss边框", typeof(Sprite)) as Sprite;
                 else
                     边框.sprite = Resources.Load("血条边框/怪物边框", typeof(Sprite)) as Sprite;
@@ -259,6 +297,8 @@ public class combat : MonoBehaviour
             ec.RemoveEventListener<combat>("角色失败", 角色失败事件);
         else
             ec.RemoveEventListener<combat>("怪物失败", 怪物失败事件);
+
+        StopAllCoroutines();
     }
 
     void 触发失败监听()
@@ -272,13 +312,28 @@ public class combat : MonoBehaviour
 
     private void OnDisable()
     {
-        if (str_tag == "怪物" || str_tag == "建筑" || str_tag == "boss")
+        //清空buff(待补充,清空特效)
+        //死亡,清空buff   
+         foreach (string buff名字 in buff显示栏.Keys)
+         {
+            buff显示栏[buff名字].SetActive(false);
+         }
+         buff显示栏.Clear();
+
+
+
+ 
+     
+
+
+        if (str_tag == "怪物" || str_tag == "建筑" || str_tag == "boss"|| str_tag == "倒计时")
         {
             mrf = gameObject.transform.parent.GetComponent<m_Refresh>();
             if (mrf != null)
                 mrf.isRefresh = true;
             if (ut.现有怪物集合.ContainsKey(gameObject.name))
                 ut.现有怪物集合.Remove(gameObject.name);
+
         }
         else
         {
@@ -326,7 +381,7 @@ public class combat : MonoBehaviour
 
     public void 怪物赋值(string 怪物名字, string 等级, int 怪物品质, bool 是否主动攻击, bool 眩晕状态, string 攻击力, string 防御力, string 血量, string 剩余血量, string 回血值, string 回血时间, string 攻击速度, string 暴击率, string 经验值, string 铜币, string 金币)
     {
-        怪物名字_ = 怪物名字;
+        this.怪物名字 = 怪物名字;
         this.等级 = 等级;
         this.怪物品质 = 怪物品质;
         isAttack = 是否主动攻击;
@@ -362,6 +417,8 @@ public class combat : MonoBehaviour
         人物属性刷新();
         if (!ut.现有角色集合.ContainsKey(gameObject.name))
             ut.现有角色集合.Add(gameObject.name, gameObject);
+
+        加载出售设置();
     }
 
     public void 人物属性刷新()
@@ -377,7 +434,7 @@ public class combat : MonoBehaviour
 
         基础回血值 = bm.Xitos((int)(bm.Xstoi(myData.回血值) + (bm.Xstoi(myData.等级) - 1) * bm.Xstoi(myData.灵根) * 1.5f));
         基础暴击率 = myData.暴击率;
-        基础攻击速度 = bm.Xftos(dm.返回属性系数("攻击速度"));
+        基础攻击速度 = bm.Xftos(1.2f);
         回血时间 = myData.回血时间;
         基础固定伤害 = myData.固定伤害;
         基础固定减伤 = myData.固定减伤;
@@ -428,18 +485,18 @@ public class combat : MonoBehaviour
             else if (属性名.Equals("血量"))
             {
                 hp = bm.Xitos(bm.Xstoi(hp) + bm.Xstoi(属性[属性名]));
-                剩余血量 = bm.Xitos(bm.Xstoi(剩余血量) + bm.Xstoi(属性[属性名]));
+                //剩余血量 = bm.Xitos(bm.Xstoi(剩余血量) + bm.Xstoi(属性[属性名]));
             }
             else if (属性名.Equals("回血值"))
                 hpr = bm.Xitos(bm.Xstoi(hpr) + bm.Xstoi(属性[属性名]));
             else if (属性名.Equals("攻击力加成"))
-                atk_p = bm.Xftos(bm.Xstof(atk_p) + bm.Xstof(属性[属性名]) / 100.0f);
+                攻击力加成 = bm.Xftos(bm.Xstof(atk_p) + bm.Xstof(属性[属性名]) / 100.0f);
             else if (属性名.Equals("防御力加成"))
-                def_p = bm.Xftos(bm.Xstof(def_p) + bm.Xstof(属性[属性名]) / 100.0f);
+                防御力加成 = bm.Xftos(bm.Xstof(def_p) + bm.Xstof(属性[属性名]) / 100.0f);
             else if (属性名.Equals("血量加成"))
-                hp_p = bm.Xftos(bm.Xstof(hp_p) + bm.Xstof(属性[属性名]) / 100.0f);
+                血量加成 = bm.Xftos(bm.Xstof(hp_p) + bm.Xstof(属性[属性名]) / 100.0f);
             else if (属性名.Equals("回血值加成"))
-                hpr_p = bm.Xftos(bm.Xstof(hpr_p) + bm.Xstof(属性[属性名]) / 100.0f);
+                回血值加成 = bm.Xftos(bm.Xstof(hpr_p) + bm.Xstof(属性[属性名]) / 100.0f);
             else if (属性名.Equals("固定伤害"))
                 固定伤害 = bm.Xitos(bm.Xstoi(基础固定伤害) + bm.Xstoi(属性[属性名]));
             else if (属性名.Equals("伤害加成"))
@@ -466,10 +523,66 @@ public class combat : MonoBehaviour
 
         }
 
-        攻击力 = bm.Xitos((int)(bm.Xstoi(基础攻击力) * bm.Xstof(atk_p) + bm.Xstoi(atk)));
-        防御力 = bm.Xftos(bm.Xstoi(基础防御力) * bm.Xstof(def_p) + bm.Xstoi(def));
-        血量 = bm.Xftos(bm.Xstoi(基础血量) * bm.Xstof(hp_p) + bm.Xstoi(hp));
-        回血值 = bm.Xftos(bm.Xstoi(基础回血值) * bm.Xstof(hpr_p) + bm.Xstoi(hpr));
+        攻击力 = bm.Xitos((int)(bm.Xstoi(基础攻击力) * bm.Xstof(攻击力加成) + bm.Xstoi(atk)));
+        防御力 = bm.Xftos(bm.Xstoi(基础防御力) * bm.Xstof(防御力加成) + bm.Xstoi(def));
+        血量 = bm.Xftos(bm.Xstoi(基础血量) * bm.Xstof(血量加成) + bm.Xstoi(hp));
+        回血值 = bm.Xftos(bm.Xstoi(基础回血值) * bm.Xstof(回血值加成) + bm.Xstoi(hpr));
+
+
+        加载临时属性();
+
+    }
+
+
+    /// <summary>
+    /// 加载临时属性
+    /// </summary>
+    public void 加载临时属性()
+    {
+
+        foreach (string 属性名 in 临时属性.Keys)
+        {
+
+            if (属性名.Equals("攻击力"))
+                战斗攻击力 = bm.Xftos(bm.Xstoi(攻击力) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("防御力"))
+                战斗防御力 = bm.Xftos(bm.Xstoi(防御力) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("血量"))
+            {
+                战斗血量 = bm.Xftos(bm.Xstoi(血量) + bm.Xstoi(临时属性[属性名]));
+                剩余血量 = bm.Xftos(bm.Xstoi(剩余血量) + bm.Xstoi(临时属性[属性名]));
+            }
+            else if (属性名.Equals("回血值"))
+                战斗回血值 = bm.Xftos(bm.Xstoi(回血值) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("攻击力加成"))
+                战斗攻击力加成 = bm.Xftos(bm.Xstof(攻击力加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("防御力加成"))
+                战斗防御力加成 = bm.Xftos(bm.Xstof(防御力加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("血量加成"))
+                战斗血量加成 = bm.Xftos(bm.Xstof(血量加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("回血值加成"))
+                战斗回血值加成 = bm.Xftos(bm.Xstof(回血值加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("固定伤害"))
+                战斗固定伤害 = bm.Xftos(bm.Xstoi(固定伤害) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("伤害加成"))
+                战斗伤害加成 = bm.Xftos(bm.Xstof(伤害加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("固定减伤"))
+                战斗固定减伤 = bm.Xftos(bm.Xstoi(固定减伤) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("伤害减免"))
+                战斗伤害减免 = bm.Xftos(bm.Xstof(伤害减免) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("固定吸血"))
+                战斗固定吸血 = bm.Xftos(bm.Xstoi(固定吸血) + bm.Xstoi(临时属性[属性名]));
+            else if (属性名.Equals("吸血加成"))
+                战斗吸血加成 = bm.Xftos(bm.Xstof(吸血加成) + bm.Xstof(临时属性[属性名]) / 100.0f);
+            else if (属性名.Equals("暴击率"))
+                战斗暴击率 = bm.Xftos(bm.Xstof(暴击率) + bm.Xstof(临时属性[属性名]));
+            else if (属性名.Equals("攻击速度"))
+            {
+                //攻击速度_  /= (float)(1 + ((float)临时属性[属性名] / 100.0f));
+                战斗攻击速度 = bm.Xftos(bm.Xstof(攻击速度_) / (1 + bm.Xstof(临时属性[属性名]) / 100.0f));
+            }
+
+        }
 
     }
 
@@ -578,6 +691,7 @@ public class combat : MonoBehaviour
         //怪物初始攻击状态判定
         if (isAttack == true)
             开启战斗();
+
     }
 
 
@@ -625,16 +739,25 @@ public class combat : MonoBehaviour
                     目标名字 = 反击名单[0];
                     开启战斗();
                 }
-                else if (gameObject.CompareTag("宠物") && myData.列表型记录["战斗设置"]["战斗设置"].Contains("宠物主动攻击"))
+                else if (gameObject.CompareTag("宠物") )
                 {
-                    combat petcb = gameObject.GetComponent<combat>();
-                    ut.自动攻击(petcb);
+                    if (myData.列表型记录["战斗设置"]["战斗设置"].Contains("宠物主动攻击"))
+                    {
+                        combat petcb = gameObject.GetComponent<combat>();
+                        ut.自动攻击(petcb);
+                    }
+                    else {
+                        取消攻击_清楚所有敌人();
+                    }
+                   
                 }
                 初始颜色();
             }
         }
     }
 
+
+  
 
     public void 初始颜色()
     {
@@ -651,15 +774,15 @@ public class combat : MonoBehaviour
     {
         //回血计时器,5秒回一次血
         Time_hp -= Time.deltaTime;
-        if (Time_hp <= 0 && bm.Xstoi(回血值) > 0)
+        if (Time_hp <= 0 && bm.Xstoi(战斗回血值) > 0)
         {
-            int 时回血 = bm.Xstoi(回血值);
+            int 时回血 = bm.Xstoi(战斗回血值);
             回血时间 = bm.Xor("5.0");
             if (!isAttack)
             {
-                时回血 = (int)(bm.Xstoi(回血值) * 1.5f);
-                if (时回血 > (bm.Xstoi(血量) / 5))
-                    时回血 = bm.Xstoi(血量) / 5;
+                时回血 = (int)(bm.Xstoi(战斗回血值) * 1.5f);
+                if (时回血 > (bm.Xstoi(战斗血量) / 5))
+                    时回血 = bm.Xstoi(战斗血量) / 5;
                 回血时间 = bm.Xor("3.0");
             }
             剩余血量 = bm.Xitos(bm.Xstoi(剩余血量) + 时回血);
@@ -692,7 +815,7 @@ public class combat : MonoBehaviour
         }
 
         GameObject 人物 = DataMgr.GetInstance().本地对象["主角"];
-        if (敌人列表.Count > 0)
+        if (敌人列表.Count > 0&&DataMgr.GetInstance().本地对象.ContainsKey(敌人列表[0])&& DataMgr.GetInstance().本地对象[敌人列表[0]] !=null&& DataMgr.GetInstance().本地对象[敌人列表[0]].activeSelf)
             return 敌人列表[0];
         else if (人物 != null && !gameObject.CompareTag("宠物"))
             return 人物.name;
@@ -717,7 +840,7 @@ public class combat : MonoBehaviour
 
         if (Time.frameCount % 10 == 0)//因为方法里的循环很消耗性能,所以每10帧执行一次
         {
-            if (str_tag.Equals("怪物") || str_tag.Equals("boss"))//怪物是根据仇恨打目标,人物是自己点或者随机打
+            if (str_tag.Equals("怪物") || str_tag.Equals("boss")|| str_tag.Equals("倒计时"))//怪物是根据仇恨打目标,人物是自己点或者随机打
             {
                 目标名字 = 怪物仇恨();
             }
@@ -726,8 +849,23 @@ public class combat : MonoBehaviour
         }
 
 
-
-        目标 = GameObject.Find(目标名字);
+        //有bug
+        if (DataMgr.GetInstance().本地对象.ContainsKey(目标名字))
+        {
+            if (DataMgr.GetInstance().本地对象[目标名字]!=null&&DataMgr.GetInstance().本地对象[目标名字].activeSelf)
+            {
+                目标 = DataMgr.GetInstance().本地对象[目标名字];
+            }
+            else
+            {
+                Debug.Log("敌人隐藏:"+目标名字);
+                目标 = null;
+            }
+        }
+        else {
+            Debug.Log("找不到敌人:" + 目标名字);
+            isAttack = false;
+        }
         if (目标 != null)
         {
             combat cb = 目标.GetComponent<combat>();
@@ -737,17 +875,19 @@ public class combat : MonoBehaviour
         }
         else
         {
-            if (gameObject.CompareTag("怪物") || gameObject.CompareTag("boss"))
+            if (gameObject.CompareTag("怪物") || gameObject.CompareTag("boss")|| gameObject.CompareTag("倒计时"))
             {
                 清除怪物的仇恨(目标名字);
                 目标名字 = 怪物仇恨();
             }
             else if (gameObject.CompareTag("宠物") && !myData.列表型记录["战斗设置"]["战斗设置"].Contains("宠物主动攻击"))
             {
-                isAttack = false;
+                取消攻击_清楚所有敌人();
             }
 
         }
+
+
 
         //当战斗设置改变时,另一个脚本更新该cb中的myData的值
         if (gameObject.CompareTag("人物") && myData.列表型记录["战斗设置"]["战斗设置"].Contains("自动释放绝招") && !myData.技能槽["1"].Equals("") && !sa.CD集合.ContainsKey("绝招"))
@@ -762,6 +902,12 @@ public class combat : MonoBehaviour
         else
             攻击(目标);
 
+    }
+
+    public void 取消攻击_清楚所有敌人() {
+        isAttack = false;
+        目标名字 = "";
+        仇恨列表.Clear();
     }
 
     private void 眩晕状态()
@@ -811,23 +957,23 @@ public class combat : MonoBehaviour
                                 普通攻击动画(cb.gameObject);
 
                                 //暴击
-                                暴击 = ut.概率((int)bm.Xstof(暴击率), 100);
+                                暴击 = ut.概率((int)bm.Xstof(战斗暴击率), 100);
                                 if (!暴击)//无暴击   
                                     当前暴伤加成 = bm.Xor("1.0");
                                 else
                                     当前暴伤加成 = 暴伤加成;
 
                                 int 伤害 = 普攻伤害计算(cb);
-                                timer = bm.Xstof(攻击速度_);
+                                timer = bm.Xstof(战斗攻击速度)<0.15f?0.15f:bm.Xstof(战斗攻击速度);
                                 if (暴击)
                                     扣血行为(目标, "暴击", 伤害);
                                 else if (gameObject.CompareTag("boss"))
                                     扣血行为(目标, "普通", 伤害);
 
                                 //吸血
-                                if (bm.Xstoi(固定吸血) != 0 || bm.Xstof(吸血加成) != 0)
+                                if (bm.Xstoi(战斗固定吸血) != 0 || bm.Xstof(战斗吸血加成) != 0)
                                 {
-                                    int 吸血 = (int)(bm.Xstof(吸血加成) * 伤害 + bm.Xstoi(固定吸血));
+                                    int 吸血 = (int)(bm.Xstof(战斗吸血加成) * 伤害 + bm.Xstoi(战斗固定吸血));
                                     剩余血量 = bm.Xitos(bm.Xstoi(剩余血量) + 吸血);
                                     HPReduce HpR = gameObject.GetComponent<HPReduce>();
                                     HpR.AddHPEffect();
@@ -837,7 +983,7 @@ public class combat : MonoBehaviour
                         }
                         else
                         {
-                            timer = bm.Xstof(攻击速度_);
+                            timer = bm.Xstof(战斗攻击速度) < 0.15f ? 0.15f : bm.Xstof(战斗攻击速度);
                             技能标记 = false;
                         }
                     }
@@ -853,15 +999,15 @@ public class combat : MonoBehaviour
                             if (!粒度与CD判定())
                             {
                                 //暴击
-                                暴击 = ut.概率((int)bm.Xstof(暴击率), 100);
+                                暴击 = ut.概率((int)bm.Xstof(战斗暴击率), 100);
                                 if (!暴击)//无暴击   
-                                    当前暴伤加成 = bm.Xor("1.0");
+                                    当前暴伤加成 = bm.Xftos(1.0f);
                                 else
                                     当前暴伤加成 = 暴伤加成;
 
 
                                 int 伤害 = 普攻伤害计算(cb);
-                                if (gameObject.CompareTag("人物") || gameObject.CompareTag("伙伴") || gameObject.CompareTag("怪物") || gameObject.CompareTag("宠物"))
+                                if (gameObject.CompareTag("人物") || gameObject.CompareTag("伙伴") || gameObject.CompareTag("怪物") || gameObject.CompareTag("宠物")|| gameObject.CompareTag("倒计时"))
                                     StartCoroutine(普通攻击移动());
                                 if (!攻击标记)
                                 {
@@ -869,16 +1015,16 @@ public class combat : MonoBehaviour
                                     攻击标记 = true;
 
                                     //吸血
-                                    if (bm.Xstoi(固定吸血) != 0 || bm.Xstof(吸血加成) != 0)
+                                    if (bm.Xstoi(战斗固定吸血) != 0 || bm.Xstof(战斗吸血加成) != 0)
                                     {
-                                        int 吸血 = (int)(bm.Xstof(吸血加成) * 伤害 + bm.Xstoi(固定吸血));
+                                        int 吸血 = (int)(bm.Xstof(战斗吸血加成) * 伤害 + bm.Xstoi(战斗固定吸血));
                                         剩余血量 = bm.Xitos(bm.Xstoi(剩余血量) + 吸血);
                                         HPReduce HpR = gameObject.GetComponent<HPReduce>();
                                         HpR.AddHPEffect();
                                         ut.扣血显示(gameObject.transform.parent.gameObject, 吸血, "回血");
                                     }
 
-                                    timer = bm.Xstof(攻击速度_);
+                                    timer = bm.Xstof(战斗攻击速度) < 0.15f ? 0.15f : bm.Xstof(战斗攻击速度);
                                     攻击标记 = false;
                                     if (暴击)
                                     {
@@ -888,12 +1034,17 @@ public class combat : MonoBehaviour
                                         扣血行为(目标, "宠物", 伤害);
                                     else
                                         扣血行为(目标, "普通", 伤害);
+
+
+                                    //被动触发
+                                    if (gameObject.CompareTag("人物"))
+                                        sa.触发攻击后被动();
                                 }
                             }
                         }
                         else
                         {
-                            timer = bm.Xstof(攻击速度_);
+                            timer = bm.Xstof(战斗攻击速度) < 0.15f ? 0.15f : bm.Xstof(战斗攻击速度);
                             技能标记 = false;
                         }
 
@@ -907,16 +1058,15 @@ public class combat : MonoBehaviour
 
     public int 普攻伤害计算(combat cb)
     {
-        int 伤害 = -1;
+        int 伤害;
 
-        if (bm.Xstof(攻击力) > bm.Xstof(cb.防御力)*1.5f)
-            伤害 = (int)((bm.Xstof(攻击力) - bm.Xstof(cb.防御力)) * (bm.Xstof(伤害加成) - bm.Xstof(cb.伤害减免)) * bm.Xstof(当前暴伤加成) + (bm.Xstoi(固定伤害) - bm.Xstoi(cb.固定减伤)));
+        if (bm.Xstof(战斗攻击力) > bm.Xstof(cb.战斗防御力) *1.5f)
+            伤害 = (int)((bm.Xstof(战斗攻击力) - bm.Xstof(cb.战斗防御力)) * (bm.Xstof(战斗伤害加成) - bm.Xstof(cb.战斗伤害减免)) * bm.Xstof(当前暴伤加成) + (bm.Xstoi(战斗固定伤害) - bm.Xstoi(cb.战斗固定减伤)));
         else
-            伤害 = (int)(bm.Xstof(攻击力)*0.33f*(bm.Xstof(攻击力)/ (bm.Xstof(cb.防御力) * 1.1f )) * (bm.Xstof(伤害加成) - bm.Xstof(cb.伤害减免)) * bm.Xstof(当前暴伤加成) + (bm.Xstoi(固定伤害) - bm.Xstoi(cb.固定减伤)));
+            伤害 = (int)(bm.Xstof(战斗攻击力) *0.33f*(bm.Xstof(战斗攻击力) / (bm.Xstof(cb.战斗防御力) * 1.1f )) * (bm.Xstof(战斗伤害加成) - bm.Xstof(cb.战斗伤害减免)) * bm.Xstof(当前暴伤加成) + (bm.Xstoi(战斗固定伤害) - bm.Xstoi(cb.战斗固定减伤)));
 
 
-        Random 随机类 = new Random(Guid.NewGuid().GetHashCode());
-        int 随机比率 = 随机类.Next(900, 1101);
+        int 随机比率 =  UnityEngine.Random.Range(900, 1101);
         伤害 = (int)(伤害 * (随机比率 / 1000f));
 
 
@@ -940,7 +1090,7 @@ public class combat : MonoBehaviour
                 else
                     cb.仇恨列表.Add(gameObject.name, 伤害);
 
-                if (目标.CompareTag("怪物") || 目标.CompareTag("boss"))
+                if (目标.CompareTag("怪物") || 目标.CompareTag("boss")|| 目标.CompareTag("倒计时"))
                     cb.开启战斗();
 
             }
@@ -988,7 +1138,7 @@ public class combat : MonoBehaviour
         if (str_tag != "建筑")
             isAttack = true;
         //怪物脚本者行为
-        if (str_tag == "怪物" || str_tag == "boss")
+        if (str_tag == "怪物" || str_tag == "boss" || str_tag == "倒计时")
         {
             //联网(多人)时要改成搜索唯一的名字来查找
             GameObject 人物 = DataMgr.GetInstance().本地对象["主角"];
@@ -1076,14 +1226,14 @@ public class combat : MonoBehaviour
 
     void 怪物失败事件(combat cb) {
         isAttack = false;
-       
-            //myData = io_.load();
-            if (cb.gameObject.CompareTag("boss"))//死亡者属于boss,开始刷新
+
+        //myData = io_.load();
+        if (cb.gameObject.CompareTag("boss")|| cb.gameObject.CompareTag("倒计时"))//死亡者属于boss,开始刷新
             {
                 mrf = gameObject.transform.parent.GetComponent<m_Refresh>();
                 if (mrf != null && !sa.CD集合.ContainsKey(cb.gameObject.name))
                 {
-                    sa.CD集合.Add(cb.gameObject.name, mrf.刷新时间);
+                    sa.CD集合.Add(cb.怪物名字, mrf.刷新时间);
                 }
 
                 if (cb.gameObject.transform.parent.parent.Find("倒计时") != null)//如果有计时器,则显示计时器
@@ -1172,7 +1322,7 @@ public class combat : MonoBehaviour
 
                 }
 
-                cb.掉落();//待改造
+                StartCoroutine(cb.掉落());//待改造
                 cb.gameObject.SetActive(false);
             }
         
@@ -1196,7 +1346,7 @@ public class combat : MonoBehaviour
                 if (目标 != null)
                 {
                     combat mcb = 目标.GetComponent<combat>();
-                    cm.战斗播报(mcb.怪物名字_, mcb.怪物品质, new Dictionary<Prop_bascis, int>(), new Dictionary<string, string>(), "死亡");
+                    cm.战斗播报(mcb.怪物名字, mcb.怪物品质, new Dictionary<Prop_bascis, int>(), new Dictionary<string, string>(), "死亡");
                 }
                 else
                 {
@@ -1215,7 +1365,7 @@ public class combat : MonoBehaviour
         ut.生成死亡动画(gameObject);
     }
 
-    void 掉落()
+    IEnumerator 掉落()
     {
         combat cb =DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
         GameObject UI = GameObject.FindGameObjectWithTag("UI");
@@ -1230,17 +1380,48 @@ public class combat : MonoBehaviour
 
             经验值 = bm.Xor(Math.Floor(bm.Xstof(总经验加成) * bm.Xstoi(经验值)) + "");
             ut.刷新经验条UI_不进行IO(UI,bm.Xstoi(经验值));//临时存经验
-            经验钱币.Add("经验", 经验值 + "");
+            if (!经验钱币.ContainsKey("经验")) {
+                经验钱币.Add("经验", 经验值 + "");
+            }
         }
+
+        Dictionary<Prop_bascis, int> 真_掉落集合 = new Dictionary<Prop_bascis, int>();
         if (掉落集合.Count > 0)//持久化道具
-        {
+        {    
             //掉落光球效果
             bagTf = NameMgr.背包图片坐标;
             foreach (Prop_bascis 物品 in 掉落集合.Keys)
             {
+                //装备品质重新刷新
+                if (物品.name != null && !物品.name.Equals("") && PropMgr.装备表.ContainsKey(物品.name))
+                {
+                    combat r_cb = DataMgr.GetInstance().本地对象["主角"].GetComponent<combat>();
+                    //品质等级随机
+                    pm.装备特别初始化_等级不变其他刷新((Equipment)物品);
+                    if (!r_cb.颜色设置.ContainsKey(bm.Xstoi(物品.qua)))
+                    {
+                        真_掉落集合.Add(物品, 掉落集合[物品]);
+                    }
+                    else
+                    {
+                        if (真_掉落集合.ContainsKey(pm.检索物品(r_cb.颜色设置[bm.Xstoi(物品.qua)])))
+                        {
+                            真_掉落集合[pm.检索物品(r_cb.颜色设置[bm.Xstoi(物品.qua)])]+= 掉落集合[物品];
+                        }
+                        else {
+                            真_掉落集合.Add(pm.检索物品(r_cb.颜色设置[bm.Xstoi(物品.qua)]), 掉落集合[物品]);
+
+                        }
+                    }
+
+                }
+                else {
+                    真_掉落集合.Add(物品, 掉落集合[物品]);
+                }
                 ut.生成光球by品质(bm.Xstoi(物品.qua), gameObject.transform.parent.gameObject, bagTf, 0.5f);
             }
-            dm.添加临时物品列表(掉落集合);
+
+            dm.添加临时物品列表(真_掉落集合);
         }
 
 
@@ -1248,7 +1429,7 @@ public class combat : MonoBehaviour
         {
             铜币 = bm.Xitos((int)(bm.Xstof(金钱加成) * bm.Xstoi(铜币)));
             金币 = bm.Xitos((int)(bm.Xstof(金钱加成) * bm.Xstoi(金币)));
-            ut.刷新金钱UI_不进行IO(UI,new Dictionary<string, int>() { { "铜币", bm.Xstoi(铜币) }, { "金币", bm.Xstoi(金币) } });
+            ut.临时刷新金钱UI(UI,new Dictionary<string, int>() { { "铜币", bm.Xstoi(铜币) }, { "金币", bm.Xstoi(金币) } });
             经验钱币.Add("铜币", 铜币 + "");
             经验钱币.Add("金币", 金币 + "");
         }
@@ -1258,7 +1439,7 @@ public class combat : MonoBehaviour
         else
             dm.计数();
 
-        cm.战斗播报(怪物名字_, 怪物品质, 掉落集合, 经验钱币, "掉落");//战斗播报
+        cm.战斗播报(怪物名字, 怪物品质, 真_掉落集合, 经验钱币, "掉落");//战斗播报
 
 
         掉落集合.Clear();//清空掉落集合
@@ -1267,9 +1448,33 @@ public class combat : MonoBehaviour
         铜币 = bm.Xor("0");
         金币 = bm.Xor("0");
 
+        yield break;
     }
 
-    
+
+    public void 加载出售设置() {
+        //初始化
+        颜色设置.Clear();
+        //自动分解装备
+        if (myData.列表型记录["出售设置"]["类型"].Count > 0 && myData.列表型记录["出售设置"]["颜色"].Count > 0)
+        {
+            for (int i = 0; i < myData.列表型记录["出售设置"]["颜色"].Count; i++)
+            {
+                if (myData.列表型记录["出售设置"]["颜色"][i].Equals("白色"))
+                    颜色设置.Add(0, "灰色晶矿");
+                else if (myData.列表型记录["出售设置"]["颜色"][i].Equals("绿色"))
+                    颜色设置.Add(1, "绿色晶矿");
+                else if (myData.列表型记录["出售设置"]["颜色"][i].Equals("蓝色"))
+                    颜色设置.Add(2, "蓝色晶矿");
+                else if (myData.列表型记录["出售设置"]["颜色"][i].Equals("紫色"))
+                    颜色设置.Add(3, "紫色晶矿");
+                else if (myData.列表型记录["出售设置"]["颜色"][i].Equals("金色"))
+                    颜色设置.Add(4, "橙色晶矿");
+            }
+            //Debug.Log("加载颜色设置:"+颜色设置.Count);
+
+        }
+    }
 
 
 }
